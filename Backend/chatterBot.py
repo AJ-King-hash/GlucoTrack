@@ -3,9 +3,6 @@
 # # Create the chatbot
 # chatbot = ChatBot('HealthBot')  # or your preferred name
 
-
-
-
 # # Create the trainer
 # trainer = ListTrainer(chatbot)
 
