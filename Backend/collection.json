@@ -1,0 +1,1019 @@
+{
+  "info": {
+    "name": "FastAPI",
+    "version": "0.1.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/auth/login",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gluco Analysis",
+      "item": [
+        {
+          "name": "Get All Analysis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/analyse/all/{id}?user_id=",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "analyse",
+                "all",
+                "{id}"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Analyse",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/analyse/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "analyse",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gluco Bot",
+      "item": [
+        {
+          "name": "Create Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/conversation",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "conversation"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/conversation/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "conversation",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Conversation",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/conversation/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "conversation",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/conversation/all/{user_id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "conversation",
+                "all",
+                "{user_id}"
+              ],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/message",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "message"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/bot/message/all/{conv_id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "bot",
+                "message",
+                "all",
+                "{conv_id}"
+              ],
+              "variable": [
+                {
+                  "key": "conv_id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Meals",
+      "item": [
+        {
+          "name": "Create Meal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/meal/",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "meal",
+                ""
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Meal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/meal/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "meal",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Set Reminders",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/notification/{user_id}/reminders",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "notification",
+                "{user_id}",
+                "reminders"
+              ],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Fcm Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/notification/{user_id}/fcm-token",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "notification",
+                "{user_id}",
+                "fcm-token"
+              ],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Otps",
+      "item": [
+        {
+          "name": "Index",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/otp/check",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "otp",
+                "check"
+              ],
+              "variable": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/otp/forgot-password",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "otp",
+                "forgot-password"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/otp/verify-otp",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "otp",
+                "verify-otp"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/otp/reset-password",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "otp",
+                "reset-password"
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Risk Factors",
+      "item": [
+        {
+          "name": "Create Risk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/risk/",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "risk",
+                ""
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Risk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/risk/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "risk",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Risk",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/risk/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "risk",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Risk",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/risk/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "risk",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/user/",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                ""
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/user/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/user/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Fill in JSON body here\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{scheme}}://{{host}}/user/{id}",
+              "protocol": "{{scheme}}",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "user",
+                "{id}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080",
+      "type": "string"
+    },
+    {
+      "key": "scheme",
+      "value": "http",
+      "type": "string"
+    },
+    {
+      "key": "host",
+      "value": "127.0.0.1:8080",
+      "type": "string"
+    }
+  ]
+}

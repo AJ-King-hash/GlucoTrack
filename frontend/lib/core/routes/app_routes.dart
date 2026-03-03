@@ -1,0 +1,39 @@
+import 'package:untitled10/features/archives/presentaiton/view/archive_details_page.dart';
+import 'package:untitled10/features/auth/presentaion/view/get_started_page.dart';
+import 'package:untitled10/features/auth/presentaion/view/login_page.dart';
+import 'package:untitled10/features/auth/presentaion/view/otp_page.dart';
+import 'package:untitled10/features/auth/presentaion/view/register_page.dart';
+import 'package:untitled10/features/auth/presentaion/view/reset_password.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:untitled10/features/auth/presentaion/view/splash_page.dart';
+import 'package:untitled10/features/home/presentation/view/edite_profile_page.dart';
+import 'package:untitled10/features/home/presentation/view/home_page.dart';
+import 'package:untitled10/features/home/presentation/widgets/about_app.dart';
+class AppRoutes{
+  static const login ="/login";
+  static const started ="/started";
+  static const register ="/register";
+  static const resetPassword="/reset-password";
+  static const home ="/home";
+  static const otp="/otp";
+  static const editProfile = "/editprofile";
+  static const archiveDetailsPage="/archiveDetailsPage";
+  static const splashScreen ="/splashScreen";
+  static const aboutApp ="/aboutApp";
+  static Map<String, WidgetBuilder> routes = {
+    login: (context) => LoginPage(),
+    register: (context) => RegisterPage(),
+    resetPassword: (context) => ResetPasswordPage(),
+    otp:(context) =>  OtpPage(),
+    home:(context)=> HomePage(),
+    started:(context)=>GetStartedPage(),
+    editProfile:(context)=>EditeProfilePage(),
+   // archiveDetailsPage:(context)=>ArchiveDetailsPage(),
+    splashScreen:(context)=>SplashScreen(),
+    aboutApp:(context)=>AboutAppPage(),
+  
+
+
+   
+  };
+}

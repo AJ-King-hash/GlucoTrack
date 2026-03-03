@@ -1,0 +1,19 @@
+{
+  "functions": {
+    "main.py": {
+      "runtime": "vercel-python@0.0.6"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/notification/trigger-reminders",
+      "schedule": "*/10 * * * *" 
+    }
+  ]
+}

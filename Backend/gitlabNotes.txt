@@ -1,0 +1,35 @@
+steps:
+# Make sure you have at least one commit
+git add .
+git commit -m "Initial commit"
+
+# If you haven't already, set the remote and branch
+git remote add origin https://gitlab.com/highfiveupdate/health-app.git
+git branch -M main
+
+# Push without --force
+git push -u origin main
+
+# Pull the existing remote files first (keep GitLab's initial files)
+git pull origin main --allow-unrelated-histories
+
+# add your files:
+git add .
+git commit -m "Add my project files"
+git push -u origin main
+
+
+##### making the branch:
+git checkout main
+git pull origin main
+
+git checkout -b branch-name
+git checkout branch-name
+
+git add .
+git commit -m "Initial branch-name setup"
+
+#set upstream mode:
+git push -u origin backend
+
+# https://console.firebase.google.com/u/0/
