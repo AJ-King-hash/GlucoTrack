@@ -1,28 +1,53 @@
 import 'package:dio/dio.dart';
-import 'package:untitled10/core/utils/pref_helper.dart';
-//every thing we need to dio package
-class DioClient{
-final Dio _dio = Dio(
-  BaseOptions(
-   baseUrl: "{{scheme}}://{{host}}/",
-   headers: {
-     "Content-Type":'application/json',
-     "Accept":'application/json',
-   },
-  )
-);
-DioClient(){
-  _dio.interceptors.add(
-   InterceptorsWrapper(
-     onRequest: (option,handler)async{
-       final token =await PrefHelper.getToken();
-       if(token != null && token.isNotEmpty){
-         option.headers["Authorization"] = "Bearer $token";
-       }
-        handler.next(option);
-     }
-   )
-  );
-}
-Dio get dio => _dio;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import '../utils/source_storage_service.dart';
+import 'auth_interceptor.dart';
+
+class DioClient {
+  DioClient._internal();
+
+  static const String baseUrl = "http://192.168.251.59:8000";
+  static final DioClient _instance = DioClient._internal();
+
+  factory DioClient() => _instance;
+
+  late final Dio dio = _createDio();
+
+  Dio _createDio() {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 15),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      ),
+    );
+
+    dio.interceptors.add(AuthInterceptor());
+    dio.interceptors.add(
+      PrettyDioLogger(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        error: true,
+      ),
+    );
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await SecureStorageService.getToken();
+          if (token != null) {
+            options.headers["Authorization"] = "Bearer $token";
+          }
+          return handler.next(options);
+        },
+      ),
+    );
+
+    return dio;
+  }
 }

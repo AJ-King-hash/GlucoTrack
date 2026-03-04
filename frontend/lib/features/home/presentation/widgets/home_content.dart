@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/show_meal_bottom_sheet.dart';
 import '../manager/home_cubit.dart';
 import '../manager/home_state.dart';
-import '../widgets/section_card.dart';
 import '../widgets/option_card.dart';
 import '../widgets/user_info_card.dart';
 import '../widgets/card_widget.dart';
@@ -37,7 +37,7 @@ class HomeContent extends StatelessWidget {
             backgroundColor: AppColor.backgroundNeutral,
             actions: [
               IconButton(
-                icon: const Icon(CupertinoIcons.bell,color: AppColor.info,),
+                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
                 onPressed: () {},
               ),
             ],
@@ -48,7 +48,9 @@ class HomeContent extends StatelessWidget {
                 /// Header Card
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.w, vertical: 20.h),
+                    horizontal: 20.w,
+                    vertical: 20.h,
+                  ),
                   child: MedicalHeaderCard(),
                 ),
                 Expanded(
@@ -61,7 +63,10 @@ class HomeContent extends StatelessWidget {
                       ),
                     ),
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 24.h,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -98,11 +103,20 @@ class HomeContent extends StatelessWidget {
                                 },
                               );
                             },
-                            onGenderChanged: (g) => context.read<HomeCubit>().updateGender(g),
-                            onMaritalStatusChanged: (m) => context.read<HomeCubit>().updateMaterialStatus(m),
-                            onPregnancyCountChanged: (c) => context.read<HomeCubit>().updatePregnancyCount(c),
+                            onGenderChanged:
+                                (g) =>
+                                    context.read<HomeCubit>().updateGender(g),
+                            onMaritalStatusChanged:
+                                (m) => context
+                                    .read<HomeCubit>()
+                                    .updateMaterialStatus(m),
+                            onPregnancyCountChanged:
+                                (c) => context
+                                    .read<HomeCubit>()
+                                    .updatePregnancyCount(c),
                           ),
                           SizedBox(height: 32.h),
+
                           /// Types Section
                           buildMedicalSection(
                             title: locale.translate('types'),
@@ -111,13 +125,19 @@ class HomeContent extends StatelessWidget {
                                 label: locale.translate('type1'),
                                 icon: Icons.nightlight_round,
                                 selected: state.mealTime == 0,
-                                onTap: () => context.read<HomeCubit>().updateMealTime(0),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateMealTime(0),
                               ),
                               OptionCard(
                                 label: locale.translate('type2'),
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 2,
-                                onTap: () => context.read<HomeCubit>().updateMealTime(2),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateMealTime(2),
                               ),
                             ],
                           ),
@@ -132,19 +152,28 @@ class HomeContent extends StatelessWidget {
                                 label: locale.translate('fasting'),
                                 icon: Icons.nightlight_round,
                                 selected: state.mealTime == 0,
-                                onTap: () => context.read<HomeCubit>().updateMealTime(0),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateMealTime(0),
                               ),
                               OptionCard(
                                 label: locale.translate('before'),
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 1,
-                                onTap: () => context.read<HomeCubit>().updateMealTime(1),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateMealTime(1),
                               ),
                               OptionCard(
                                 label: locale.translate('after'),
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 2,
-                                onTap: () => context.read<HomeCubit>().updateMealTime(2),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateMealTime(2),
                               ),
                             ],
                           ),
@@ -159,19 +188,28 @@ class HomeContent extends StatelessWidget {
                                 label: locale.translate('low'),
                                 icon: Icons.bed,
                                 selected: state.activity == 0,
-                                onTap: () => context.read<HomeCubit>().updateActivity(0),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateActivity(0),
                               ),
                               OptionCard(
                                 label: locale.translate('medarate'),
                                 icon: Icons.directions_walk,
                                 selected: state.activity == 1,
-                                onTap: () => context.read<HomeCubit>().updateActivity(1),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateActivity(1),
                               ),
                               OptionCard(
                                 label: locale.translate('height'),
                                 icon: Icons.directions_run,
                                 selected: state.activity == 2,
-                                onTap: () => context.read<HomeCubit>().updateActivity(2),
+                                onTap:
+                                    () => context
+                                        .read<HomeCubit>()
+                                        .updateActivity(2),
                               ),
                             ],
                           ),
@@ -180,6 +218,7 @@ class HomeContent extends StatelessWidget {
                           _buildAnalyzeButton(context, locale),
 
                           SizedBox(height: 20.h),
+                          _buildRiskManagementButton(context),
                         ],
                       ),
                     ),
@@ -191,11 +230,7 @@ class HomeContent extends StatelessWidget {
         );
       },
     );
-
   }
-
-
-
 
   Widget _buildAnalyzeButton(BuildContext context, LocaleCubit locale) {
     return SizedBox(
@@ -221,6 +256,35 @@ class HomeContent extends StatelessWidget {
         ),
         onPressed: () {
           showMealBottomSheet(context);
+        },
+      ),
+    );
+  }
+
+  Widget _buildRiskManagementButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 55.h,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColor.info,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          elevation: 6,
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+        ),
+        icon: const Icon(Icons.warning, color: Colors.white),
+        label: Text(
+          'Risk Management',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
+          ),
+        ),
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.risk);
         },
       ),
     );
@@ -271,14 +335,15 @@ Widget buildMedicalSection({
         ),
         SizedBox(height: 14.h),
         Column(
-          children: children
-              .map(
-                (child) => Padding(
-              padding: EdgeInsets.only(bottom: 10.h),
-              child: child,
-            ),
-          )
-              .toList(),
+          children:
+              children
+                  .map(
+                    (child) => Padding(
+                      padding: EdgeInsets.only(bottom: 10.h),
+                      child: child,
+                    ),
+                  )
+                  .toList(),
         ),
       ],
     ),

@@ -1,26 +1,32 @@
-import 'package:dio/dio.dart';
+import 'package:untitled10/core/utils/either.dart';
+import 'package:untitled10/core/errors/failure.dart';
+import 'package:untitled10/core/api/api_service.dart';
 import '../data/model/archives_model.dart';
-
 import 'archive_repository.dart';
 
 class ArchiveRepositoryImpl implements ArchiveRepository {
-  final Dio dio;
+  final ApiService apiService;
 
-  ArchiveRepositoryImpl({required this.dio});
+  ArchiveRepositoryImpl({required this.apiService});
 
   @override
-  Future<List<ArchiveModel>> getUserArchives(int userId) async {
-    final response = await dio.get('/analyse/all/$userId');
+  Future<Either<Failure, List<ArchiveModel>>> getUserArchives(
+    int userId,
+  ) async {
+    final result = await apiService.getAllAnalysis(userId, userId);
 
-    final List data = response.data;
-
-    return data
-        .map((json) => ArchiveModel.fromJson(json))
-        .toList();
+    return result.fold(
+      (failure) => Left(failure),
+      (data) => Right(
+        (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
+      ),
+    );
   }
 
   @override
-  Future<void> deleteArchive(int archiveId) async {
-    await dio.delete('/analyse/$archiveId');
+  Future<Either<Failure, void>> deleteArchive(int archiveId) async {
+    final result = await apiService.deleteAnalysis(archiveId);
+
+    return result.fold((failure) => Left(failure), (_) => const Right(null));
   }
 }

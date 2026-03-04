@@ -1,48 +1,166 @@
 import 'package:dio/dio.dart';
-import 'package:untitled10/core/api/api_exceptions.dart';
 import 'package:untitled10/core/api/dio_client.dart';
+import 'package:untitled10/core/api/end_point.dart';
+import 'package:untitled10/core/errors/failure.dart';
+import 'package:untitled10/core/utils/either.dart';
 
+class ApiService {
+  final Dio _dio = DioClient().dio;
 
-////implementation crud methods for api service
-class ApiService{
-  final DioClient _dioClient = DioClient();
-//get
-Future<dynamic>get(String endPoint)async{
-  try{
-    final response = await _dioClient.dio.get(endPoint);
-    return response.data;
-  }on DioException catch(e){
-    return ApiExceptions.handleError(e);
-  }
-}
-//post
-Future<dynamic>post(String endPoint,Map<String,dynamic>body)async{
-  try{
-    final response = await _dioClient.dio.post(endPoint,data: body);
-    return response.data;
-  }on DioException catch(e){
-    return ApiExceptions.handleError(e);
-  }
-}
-
-
-//put||update
-  Future<dynamic>put(String endPoint,Map<String,dynamic>body)async{
-    try{
-      final response = await _dioClient.dio.put(endPoint,data: body);
-      return response.data;
-    }on DioException catch(e){
-      return ApiExceptions.handleError(e);
+  Future<Either<Failure, T>> _handleRequest<T>(
+    Future<Response<dynamic>> request,
+    T Function(dynamic data) converter,
+  ) async {
+    try {
+      final response = await request;
+      return Right(converter(response.data));
+    } on DioException catch (e) {
+      return Left(_mapError(e));
+    } catch (e) {
+      return Left(UnknownFailure(message: "Unexpected error"));
     }
   }
 
-//delete
-  Future<dynamic>delete(String endPoint,Map<String,dynamic>body)async{
-    try{
-      final response = await _dioClient.dio.delete(endPoint,data: body);
-      return response.data;
-    }on DioException catch(e){
-      return ApiExceptions.handleError(e);
+  Failure _mapError(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return NetworkFailure(message: "Connection timeout. Please try again.");
     }
+
+    final status = e.response?.statusCode;
+    final message = e.response?.data?.toString() ?? "Network error";
+
+    if (status == 422) return ValidationFailure(message: message, code: status);
+    if (status == 401)
+      return UnauthorizedFailure(message: message, code: status);
+    if (status == 500) return ServerFailure(message: message, code: status);
+    if (status == null) return NetworkFailure(message: "Network error");
+
+    return ServerFailure(message: message, code: status);
   }
+
+  // ================= AUTH =================
+
+  Future<Either<Failure, dynamic>> login(Map<String, dynamic> body) =>
+      _handleRequest(_dio.post(ApiEndpoints.login, data: body), (data) => data);
+
+  Future<Either<Failure, dynamic>> logout() =>
+      _handleRequest(_dio.post("/logout", data: {}), (data) => data);
+
+  // ================= USER =================
+
+  Future<Either<Failure, dynamic>> createUser(Map<String, dynamic> body) =>
+      _handleRequest(_dio.post(ApiEndpoints.user, data: body), (data) => data);
+
+  Future<Either<Failure, dynamic>> getUser() =>
+      _handleRequest(_dio.get("/user"), (data) => data);
+
+  Future<Either<Failure, dynamic>> updateUser(Map<String, dynamic> body) =>
+      _handleRequest(_dio.put("/user/update", data: body), (data) => data);
+
+  Future<Either<Failure, dynamic>> getUserById(int id) =>
+      _handleRequest(_dio.get(ApiEndpoints.userById(id)), (data) => data);
+
+  // ================= BOT =================
+
+  Future<Either<Failure, dynamic>> createConversation(
+    Map<String, dynamic> body,
+  ) => _handleRequest(
+    _dio.post(ApiEndpoints.conversation, data: body),
+    (data) => data,
+  );
+
+  Future<Either<Failure, dynamic>> getConversation(int id) => _handleRequest(
+    _dio.get(ApiEndpoints.conversationById(id)),
+    (data) => data,
+  );
+
+  Future<Either<Failure, dynamic>> getAllConversations(int userId) =>
+      _handleRequest(
+        _dio.get(ApiEndpoints.allConversations(userId)),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> deleteConversation(int id) => _handleRequest(
+    _dio.delete(ApiEndpoints.conversationById(id)),
+    (data) => data,
+  );
+
+  Future<Either<Failure, dynamic>> createMessage(Map<String, dynamic> body) =>
+      _handleRequest(
+        _dio.post(ApiEndpoints.message, data: body),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> getMessages(int conversationId) =>
+      _handleRequest(
+        _dio.get(ApiEndpoints.allMessages(conversationId)),
+        (data) => data,
+      );
+
+  // ================= RISK =================
+
+  Future<Either<Failure, dynamic>> createRisk(Map<String, dynamic> body) =>
+      _handleRequest(_dio.post(ApiEndpoints.risk, data: body), (data) => data);
+
+  Future<Either<Failure, dynamic>> getRisk(int id) =>
+      _handleRequest(_dio.get(ApiEndpoints.riskById(id)), (data) => data);
+
+  Future<Either<Failure, dynamic>> updateRisk(
+    int id,
+    Map<String, dynamic> body,
+  ) => _handleRequest(
+    _dio.put(ApiEndpoints.riskById(id), data: body),
+    (data) => data,
+  );
+
+  Future<Either<Failure, dynamic>> deleteRisk(int id) =>
+      _handleRequest(_dio.delete(ApiEndpoints.riskById(id)), (data) => data);
+
+  // ================= MEAL =================
+
+  Future<Either<Failure, dynamic>> createMeal(Map<String, dynamic> body) =>
+      _handleRequest(_dio.post(ApiEndpoints.meal, data: body), (data) => data);
+
+  Future<Either<Failure, dynamic>> getMeal(int id) =>
+      _handleRequest(_dio.get(ApiEndpoints.mealById(id)), (data) => data);
+
+  // ================= ANALYSIS =================
+
+  Future<Either<Failure, dynamic>> getAllAnalysis(int id, int userId) =>
+      _handleRequest(
+        _dio.get(
+          ApiEndpoints.allAnalysis(id),
+          queryParameters: {"user_id": userId},
+        ),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> deleteAnalysis(int id) => _handleRequest(
+    _dio.delete(ApiEndpoints.deleteAnalysis(id)),
+    (data) => data,
+  );
+
+  // ================= OTP =================
+
+  Future<Either<Failure, dynamic>> otpCheck() =>
+      _handleRequest(_dio.get(ApiEndpoints.otpCheck), (data) => data);
+
+  Future<Either<Failure, dynamic>> forgotPassword(Map<String, dynamic> body) =>
+      _handleRequest(
+        _dio.post(ApiEndpoints.otpForgotPassword, data: body),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> verifyOtp(Map<String, dynamic> body) =>
+      _handleRequest(
+        _dio.post(ApiEndpoints.otpVerify, data: body),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> resetPassword(Map<String, dynamic> body) =>
+      _handleRequest(
+        _dio.post(ApiEndpoints.otpResetPassword, data: body),
+        (data) => data,
+      );
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/core/color/app_color.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/helperfile//api_service.dart';
+import 'package:untitled10/core/api/api_service.dart';
 import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
 import 'package:untitled10/features/chat/domain/usecase/create_conversation_usecase.dart';
 import 'package:untitled10/features/chat/domain/usecase/delete_conversation_usecase.dart';
@@ -41,22 +41,37 @@ class _ChatPageState extends State<ChatPage> {
       }
     });
   }
+
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => BotCubit(
-        createConversationUseCase: CreateConversationUseCase(BotRepositoryImpl(ApiService())),
-        getConversationUseCase: GetConversationUseCase(BotRepositoryImpl(ApiService())),
-        getAllConversationsUseCase:GetAllConversationUseCase(BotRepositoryImpl(ApiService())),
-        deleteConversationUseCase: DeleteConversationUseCase(BotRepositoryImpl(ApiService())),
-        sendMessageUseCase:SendMessageUseCase(BotRepositoryImpl(ApiService())),
-        getAllMessagesUseCase: GetAllMessageUseCase(BotRepositoryImpl(ApiService())),
-      ),
+      create:
+          (_) => BotCubit(
+            createConversationUseCase: CreateConversationUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+            getConversationUseCase: GetConversationUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+            getAllConversationsUseCase: GetAllConversationUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+            deleteConversationUseCase: DeleteConversationUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+            sendMessageUseCase: SendMessageUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+            getAllMessagesUseCase: GetAllMessageUseCase(
+              BotRepositoryImpl(ApiService()),
+            ),
+          ),
       child: Scaffold(
         backgroundColor: AppColor.backgroundNeutral,
         resizeToAvoidBottomInset: true,
@@ -77,9 +92,10 @@ class _ChatPageState extends State<ChatPage> {
                         radius: 18,
                         backgroundColor: AppColor.info.withOpacity(0.1),
                         child: const Icon(
-                            Icons.medical_services_outlined,
-                            size: 18,
-                            color: AppColor.info),
+                          Icons.medical_services_outlined,
+                          size: 18,
+                          color: AppColor.info,
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
@@ -99,13 +115,13 @@ class _ChatPageState extends State<ChatPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         context.read<LocaleCubit>().translate('tit'),
                         style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600),
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    
                     ],
                   ),
                 ],
@@ -142,7 +158,8 @@ class _ChatPageState extends State<ChatPage> {
                           reverse: true,
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
-                            final message = messages[messages.length - 1 - index];
+                            final message =
+                                messages[messages.length - 1 - index];
                             return MessageBubble(
                               message: message,
                               isUser: message.role == 'user',

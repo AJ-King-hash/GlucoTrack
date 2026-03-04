@@ -28,7 +28,7 @@ apscheduler
 
 pytz
 
-hashing
+# hashing
 
 psycopg2-binary
 

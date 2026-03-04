@@ -18,7 +18,7 @@ class SwitchItem extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.titleColor,
-    this.iconColor
+    this.iconColor,
   });
 
   @override
@@ -30,8 +30,10 @@ class SwitchItem extends StatelessWidget {
         title: Text(title),
         value: value,
         onChanged: onChanged,
-        activeColor: AppColor.positive, // لون عند تشغيل التبديل
-        inactiveThumbColor: AppColor.textNeutral.withOpacity(0.6), // لون المؤشر عند الايقاف
+        activeThumbColor: AppColor.positive, // لون عند تشغيل التبديل
+        inactiveThumbColor: AppColor.textNeutral.withOpacity(
+          0.6,
+        ), // لون المؤشر عند الايقاف
         inactiveTrackColor: AppColor.textNeutral.withOpacity(0.3),
       ),
     );

@@ -1,55 +1,47 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repo/archive_repository.dart';
 import 'archives_state.dart';
+import 'package:untitled10/core/errors/failure.dart';
 
 class ArchiveCubit extends Cubit<ArchiveState> {
- final ArchiveRepository repository;
+  final ArchiveRepository repository;
 
- ArchiveCubit({required this.repository})
-     : super(const ArchiveState());
+  ArchiveCubit({required this.repository}) : super(const ArchiveState());
 
- Future<void> fetchArchives(int userId) async {
-  emit(state.copyWith(status: ArchiveStatus.loading));
+  Future<void> fetchArchives(int userId) async {
+    emit(state.copyWith(status: ArchiveStatus.loading));
 
-  try {
-   final archives = await repository.getUserArchives(userId);
+    final result = await repository.getUserArchives(userId);
 
-   emit(
-    state.copyWith(
-     status: ArchiveStatus.success,
-     archives: archives,
-    ),
-   );
-  } catch (e) {
-   emit(
-    state.copyWith(
-     status: ArchiveStatus.error,
-     errorMessage: e.toString(),
-    ),
-   );
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: ArchiveStatus.error,
+          errorMessage: failure.message,
+        ),
+      ),
+      (archives) => emit(
+        state.copyWith(status: ArchiveStatus.success, archives: archives),
+      ),
+    );
   }
- }
 
- Future<void> deleteArchive(int archiveId) async {
-  try {
-   await repository.deleteArchive(archiveId);
+  Future<void> deleteArchive(int archiveId) async {
+    final result = await repository.deleteArchive(archiveId);
 
-   final updatedList = state.archives
-       .where((archive) => archive.id != archiveId)
-       .toList();
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: ArchiveStatus.error,
+          errorMessage: failure.message,
+        ),
+      ),
+      (_) {
+        final updatedList =
+            state.archives.where((archive) => archive.id != archiveId).toList();
 
-   emit(
-    state.copyWith(
-     archives: updatedList,
-    ),
-   );
-  } catch (e) {
-   emit(
-    state.copyWith(
-     status: ArchiveStatus.error,
-     errorMessage: e.toString(),
-    ),
-   );
+        emit(state.copyWith(archives: updatedList));
+      },
+    );
   }
- }
 }

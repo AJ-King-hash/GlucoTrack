@@ -12,7 +12,7 @@ import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
 class OtpPage extends StatefulWidget {
-final String? email;
+  final String? email;
 
   const OtpPage({super.key, this.email});
 
@@ -26,12 +26,10 @@ class _OtpPageState extends State<OtpPage> {
   late List<TextEditingController> controllers;
   @override
   void initState() {
-    controllers = List.generate(
-      4,
-          (_) => TextEditingController(),
-    );
+    controllers = List.generate(4, (_) => TextEditingController());
     super.initState();
   }
+
   @override
   void dispose() {
     for (var controller in controllers) {
@@ -39,20 +37,18 @@ class _OtpPageState extends State<OtpPage> {
     }
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
-    return BlocListener<AuthCubit,AuthState>(
-      listener: (context, state){
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
         if (state is AuthSuccess) {
           Navigator.pushReplacementNamed(context, AppRoutes.home);
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
       },
@@ -91,6 +87,7 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                         ),
                         SizedBox(height: 40.h),
+
                         /// OTP FORM
                         Form(
                           key: _formKey,
@@ -104,18 +101,15 @@ class _OtpPageState extends State<OtpPage> {
                                   (index) => SizedBox(
                                     width: 65.w,
                                     child: OtpBox(
-                                      controller:
-                                      controllers[index],
+                                      controller: controllers[index],
                                       autoFocus: index == 0,
                                       onChanged: (value) {
-                                        if (value.length == 1 &&
-                                            index < 3) {
-                                          FocusScope.of(context)
-                                              .nextFocus();
+                                        if (value.length == 1 && index < 3) {
+                                          FocusScope.of(context).nextFocus();
                                         }
                                       },
-                                      validator: (value) =>
-                                          value!.isEmpty ? '' : null,
+                                      validator:
+                                          (value) => value!.isEmpty ? '' : null,
                                     ),
                                   ),
                                 ),
@@ -123,37 +117,38 @@ class _OtpPageState extends State<OtpPage> {
                               SizedBox(height: 32.h),
                               isLoading
                                   ? SizedBox(
-                                      height: 48.h,
-                                      child:
-                                          const CircularProgressIndicator(),
-                                    )
+                                    height: 48.h,
+                                    child: const CircularProgressIndicator(),
+                                  )
                                   : AppButton(
-                                icon: Icons.send,
-                                      iconColor:  AppColor.info,
-                                      text: "تأكيد",
-                                      height: 50.h,
-                                      fontSize: 16.sp,
-                                      textColor: Colors.white,
-                                      backgroundColor:
-                                          AppColor.positive,
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          final otp = controllers.map((e) => e.text).join();
-                                        //  cubit.verifyOtp(widget.email!, otp);
-                                        }
-
-                                      },
-                                    ),
+                                    icon: Icons.send,
+                                    iconColor: AppColor.info,
+                                    text: "تأكيد",
+                                    height: 50.h,
+                                    fontSize: 16.sp,
+                                    textColor: Colors.white,
+                                    backgroundColor: AppColor.positive,
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        final otp =
+                                            controllers
+                                                .map((e) => e.text)
+                                                .join();
+                                        cubit.verifyOtp(widget.email!, otp);
+                                      }
+                                    },
+                                  ),
                             ],
                           ),
                         ),
                         SizedBox(height: 24.h),
                         TextButton(
-                          onPressed: isLoading
-                              ? null
-                              : () {
-                            cubit.close();
-                          },
+                          onPressed:
+                              isLoading
+                                  ? null
+                                  : () {
+                                    cubit.close();
+                                  },
                           child: Text(
                             "إعادة إرسال الرمز",
                             style: TextStyle(

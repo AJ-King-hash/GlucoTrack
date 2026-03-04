@@ -69,14 +69,18 @@ class UserInfoCard extends StatelessWidget {
             children: [
               _infoItem(
                 label: locale.translate('age'),
-                value: locale.translate('age_years').replaceAll('{age}', age.toString()),
+                value: locale
+                    .translate('age_years')
+                    .replaceAll('{age}', age.toString()),
                 icon: Icons.cake,
                 onTap: onAgeTap,
               ),
               SizedBox(width: 16.w),
               _infoItem(
                 label: locale.translate('weight'),
-                value: locale.translate('weight_kg').replaceAll('{weight}', weight.toString()),
+                value: locale
+                    .translate('weight_kg')
+                    .replaceAll('{weight}', weight.toString()),
                 icon: Icons.monitor_weight,
                 onTap: onWeightTap,
               ),
@@ -89,7 +93,6 @@ class UserInfoCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
               ChoiceChip(
                 label: Text(locale.translate('male')),
                 selected: gender == Gender.male,
@@ -114,13 +117,15 @@ class UserInfoCard extends StatelessWidget {
                 ChoiceChip(
                   label: Text(locale.translate('single')),
                   selected: maritalStatus == MaritalStatus.single,
-                  onSelected: (_) => onMaritalStatusChanged(MaritalStatus.single),
+                  onSelected:
+                      (_) => onMaritalStatusChanged(MaritalStatus.single),
                 ),
                 SizedBox(width: 10.w),
                 ChoiceChip(
                   label: Text(locale.translate('married')),
                   selected: maritalStatus == MaritalStatus.married,
-                  onSelected: (_) => onMaritalStatusChanged(MaritalStatus.married),
+                  onSelected:
+                      (_) => onMaritalStatusChanged(MaritalStatus.married),
                 ),
               ],
             ),
@@ -131,7 +136,7 @@ class UserInfoCard extends StatelessWidget {
           if (gender == Gender.female && maritalStatus == MaritalStatus.married)
             Row(
               children: [
-                Text(locale.translate('pregnancy_count') + ': $pregnancyCount'),
+                Text('${locale.translate('pregnancy_count')}: $pregnancyCount'),
                 SizedBox(width: 10.w),
                 IconButton(
                   onPressed: () => onPregnancyCountChanged(pregnancyCount + 1),
@@ -139,7 +144,9 @@ class UserInfoCard extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    if (pregnancyCount > 0) onPregnancyCountChanged(pregnancyCount - 1);
+                    if (pregnancyCount > 0) {
+                      onPregnancyCountChanged(pregnancyCount - 1);
+                    }
                   },
                   icon: Icon(Icons.remove),
                 ),
