@@ -1,39 +1,46 @@
 // file: api_endpoints.dart
 
+/// Backend API Endpoints Configuration
+///
+/// Base URL: http://192.168.251.59:8000
+/// All endpoints are prefixed with the base URL
 class ApiEndpoints {
   ApiEndpoints._();
 
-  // Auth
+  // ==================== AUTH ====================
   static const String login = "/auth/login";
+  static const String logout = "/auth/logout";
 
-  // User
+  // ==================== USER ====================
   static const String user = "/user/";
   static String userById(int id) => "/user/$id";
+  static const String userUpdate = "/user/";
+  static const String userDelete = "/user/";
 
-  // Bot - Conversation
+  // ==================== BOT - CONVERSATION ====================
   static const String conversation = "/bot/conversation";
   static String conversationById(int id) => "/bot/conversation/$id";
-  static String allConversations(int userId) =>
-      "/bot/conversation/all/$userId";
+  static const String allConversations = "/bot/conversation/all/";
 
-  // Bot - Message
+  // ==================== BOT - MESSAGE ====================
   static const String message = "/bot/message";
-  static String allMessages(int convId) =>
-      "/bot/message/all/$convId";
+  static String allMessages(int convId) => "/bot/message/all/$convId";
 
-  // Risk
+  // ==================== RISK ====================
+  /// Note: Risk endpoints use current authenticated user
+  /// Backend routes: POST /risk/, GET /risk/, PUT /risk/, DELETE /risk/
   static const String risk = "/risk/";
-  static String riskById(int id) => "/risk/$id";
 
-  // Meal
+  // ==================== MEAL ====================
   static const String meal = "/meal/";
   static String mealById(int id) => "/meal/$id";
+  static const String allMeals = "/meal/all/";
 
-  // Analysis
-  static String allAnalysis(int id) => "/analyse/all/$id";
+  // ==================== ANALYSIS ====================
+  static const String allAnalysis = "/analyse/all/";
   static String deleteAnalysis(int id) => "/analyse/$id";
 
-  // OTP
+  // ==================== OTP ====================
   static const String otpCheck = "/otp/check";
   static const String otpForgotPassword = "/otp/forgot-password";
   static const String otpVerify = "/otp/verify-otp";

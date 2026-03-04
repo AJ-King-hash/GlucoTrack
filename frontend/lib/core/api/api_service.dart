@@ -75,11 +75,8 @@ class ApiService {
     (data) => data,
   );
 
-  Future<Either<Failure, dynamic>> getAllConversations(int userId) =>
-      _handleRequest(
-        _dio.get(ApiEndpoints.allConversations(userId)),
-        (data) => data,
-      );
+  Future<Either<Failure, dynamic>> getAllConversations() =>
+      _handleRequest(_dio.get(ApiEndpoints.allConversations), (data) => data);
 
   Future<Either<Failure, dynamic>> deleteConversation(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.conversationById(id)),
@@ -99,23 +96,19 @@ class ApiService {
       );
 
   // ================= RISK =================
+  /// Note: Risk endpoints use current authenticated user from token
 
   Future<Either<Failure, dynamic>> createRisk(Map<String, dynamic> body) =>
       _handleRequest(_dio.post(ApiEndpoints.risk, data: body), (data) => data);
 
-  Future<Either<Failure, dynamic>> getRisk(int id) =>
-      _handleRequest(_dio.get(ApiEndpoints.riskById(id)), (data) => data);
+  Future<Either<Failure, dynamic>> getRisk() =>
+      _handleRequest(_dio.get(ApiEndpoints.risk), (data) => data);
 
-  Future<Either<Failure, dynamic>> updateRisk(
-    int id,
-    Map<String, dynamic> body,
-  ) => _handleRequest(
-    _dio.put(ApiEndpoints.riskById(id), data: body),
-    (data) => data,
-  );
+  Future<Either<Failure, dynamic>> updateRisk(Map<String, dynamic> body) =>
+      _handleRequest(_dio.put(ApiEndpoints.risk, data: body), (data) => data);
 
-  Future<Either<Failure, dynamic>> deleteRisk(int id) =>
-      _handleRequest(_dio.delete(ApiEndpoints.riskById(id)), (data) => data);
+  Future<Either<Failure, dynamic>> deleteRisk() =>
+      _handleRequest(_dio.delete(ApiEndpoints.risk), (data) => data);
 
   // ================= MEAL =================
 
@@ -126,15 +119,10 @@ class ApiService {
       _handleRequest(_dio.get(ApiEndpoints.mealById(id)), (data) => data);
 
   // ================= ANALYSIS =================
+  /// Note: Analysis endpoints use current authenticated user from token
 
-  Future<Either<Failure, dynamic>> getAllAnalysis(int id, int userId) =>
-      _handleRequest(
-        _dio.get(
-          ApiEndpoints.allAnalysis(id),
-          queryParameters: {"user_id": userId},
-        ),
-        (data) => data,
-      );
+  Future<Either<Failure, dynamic>> getAllAnalysis() =>
+      _handleRequest(_dio.get(ApiEndpoints.allAnalysis), (data) => data);
 
   Future<Either<Failure, dynamic>> deleteAnalysis(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.deleteAnalysis(id)),
@@ -163,4 +151,15 @@ class ApiService {
         _dio.post(ApiEndpoints.otpResetPassword, data: body),
         (data) => data,
       );
+
+  // ================= MEAL =================
+  /// Note: Meal endpoints use current authenticated user from token
+
+  Future<Either<Failure, dynamic>> getAllMeals() =>
+      _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
+
+  // ================= USER =================
+
+  Future<Either<Failure, dynamic>> deleteUser() =>
+      _handleRequest(_dio.delete(ApiEndpoints.userDelete), (data) => data);
 }

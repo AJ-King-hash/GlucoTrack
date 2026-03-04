@@ -36,10 +36,9 @@ class BotRepositoryImpl implements BotRepository {
   }
 
   @override
-  Future<Either<Failure, List<ConversationEntity>>> getAllConversations(
-    int userId,
-  ) async {
-    final result = await apiService.getAllConversations(userId);
+  Future<Either<Failure, List<ConversationEntity>>>
+  getAllConversations() async {
+    final result = await apiService.getAllConversations();
 
     return result.fold(
       (failure) => Left(failure),

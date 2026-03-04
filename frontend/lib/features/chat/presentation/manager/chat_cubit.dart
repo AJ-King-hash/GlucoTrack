@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled10/core/base_usecase/base_usecase.dart';
 import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
 import '../../domain/usecase/create_conversation_usecase.dart';
 import '../../domain/usecase/delete_conversation_usecase.dart';
@@ -44,9 +45,9 @@ class BotCubit extends Cubit<BotState> {
     );
   }
 
-  Future<void> getAllConversations(int userId) async {
+  Future<void> getAllConversations() async {
     emit(const BotLoading());
-    final result = await getAllConversationsUseCase(userId);
+    final result = await getAllConversationsUseCase(const NoParams());
     result.fold(
       (failure) => emit(BotError(failure)),
       (data) => emit(BotListSuccess(data)),
@@ -55,7 +56,9 @@ class BotCubit extends Cubit<BotState> {
 
   Future<void> deleteConversation(int conversationId) async {
     emit(const BotLoading());
-    final result = await deleteConversationUseCase(DeleteConversationParams(conversationId));
+    final result = await deleteConversationUseCase(
+      DeleteConversationParams(conversationId),
+    );
     result.fold(
       (failure) => emit(BotError(failure)),
       (data) => emit(BotSuccess(data)),

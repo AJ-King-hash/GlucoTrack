@@ -10,10 +10,8 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   ArchiveRepositoryImpl({required this.apiService});
 
   @override
-  Future<Either<Failure, List<ArchiveModel>>> getUserArchives(
-    int userId,
-  ) async {
-    final result = await apiService.getAllAnalysis(userId, userId);
+  Future<Either<Failure, List<ArchiveModel>>> getUserArchives() async {
+    final result = await apiService.getAllAnalysis();
 
     return result.fold(
       (failure) => Left(failure),

@@ -3,20 +3,20 @@
 import 'package:dio/dio.dart';
 import 'package:untitled10/core/api/api_error.dart';
 
-class ApiExceptions{
-  static ApiError handleError(DioException error){
+class ApiExceptions {
+  static ApiError handleError(DioException error) {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
-    if(data is Map<String,dynamic>&&data['message']!=null){
-      return ApiError(message: data['message'],statusCode: statusCode);
+    if (data is Map<String, dynamic> && data['message'] != null) {
+      return ApiError(message: data['message'], statusCode: statusCode);
     }
     print(statusCode);
     print(data);
-if(statusCode==302){
-  throw ApiError(message: "This email already taken");
-}
+    if (statusCode == 302) {
+      return ApiError(message: "This email already taken");
+    }
 
-    switch (error.type){
+    switch (error.type) {
       case DioExceptionType.connectionTimeout:
         return ApiError(message: "Bad Connection");
       case DioExceptionType.badResponse:
@@ -29,8 +29,8 @@ if(statusCode==302){
         return ApiError(message: "Request Timeout");
       case DioExceptionType.receiveTimeout:
         return ApiError(message: "Response Timeout");
-        default:
-          return ApiError(message: "SomeThing Went Wrong");
+      default:
+        return ApiError(message: "SomeThing Went Wrong");
     }
   }
 }

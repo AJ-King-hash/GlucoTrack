@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/api/api_error.dart';
-import 'package:untitled10/core/errors/failure.dart';
 import 'package:untitled10/features/auth/presentaion/manager/auth_state.dart';
 import 'package:untitled10/features/auth/repo/auth_repo.dart';
 
