@@ -23,7 +23,8 @@ void main() async {
   // Initialize dependency injection
   await init();
 
-  // ensure prefs are loaded if other code relies on them during startup
+  // Note: Token storage now uses FlutterSecureStorage (SecureStorageService)
+  // SharedPreferences is initialized here for potential future use (e.g., locale persistence)
   await SharedPreferences.getInstance();
 
   runApp(const MyApp());

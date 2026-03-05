@@ -1,21 +1,31 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'source_storage_service.dart';
 
-class PrefHelper{
-  static const String _tokenKey ="auth_token";
-  //save token
-  static Future<void>saveToken(String token)async{
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, token);
+/// Token management wrapper that delegates to SecureStorageService.
+///
+/// This class provides a consistent interface for token storage operations
+/// while using FlutterSecureStorage for secure token persistence.
+/// All token operations are delegated to [SecureStorageService] to ensure
+/// consistent secure storage across the application.
+class PrefHelper {
+  /// Saves the authentication token securely.
+  ///
+  /// Delegates to [SecureStorageService.saveToken] for secure storage.
+  static Future<void> saveToken(String token) async {
+    await SecureStorageService.saveToken(token);
   }
-  //get token
-  static Future<String?>getToken()async{
-    final prefs = await SharedPreferences.getInstance();
-     return prefs.getString(_tokenKey);
 
+  /// Retrieves the stored authentication token.
+  ///
+  /// Delegates to [SecureStorageService.getToken] for secure retrieval.
+  /// Returns null if no token is stored.
+  static Future<String?> getToken() async {
+    return await SecureStorageService.getToken();
   }
-  //clear token
-  static Future<void>clearToken()async{
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(_tokenKey);
+
+  /// Clears the stored authentication token.
+  ///
+  /// Delegates to [SecureStorageService.deleteToken] for secure deletion.
+  static Future<void> clearToken() async {
+    await SecureStorageService.deleteToken();
   }
 }
