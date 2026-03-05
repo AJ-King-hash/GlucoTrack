@@ -31,8 +31,9 @@ class ApiService {
     final message = e.response?.data?.toString() ?? "Network error";
 
     if (status == 422) return ValidationFailure(message: message, code: status);
-    if (status == 401)
+    if (status == 401) {
       return UnauthorizedFailure(message: message, code: status);
+    }
     if (status == 500) return ServerFailure(message: message, code: status);
     if (status == null) return NetworkFailure(message: "Network error");
 

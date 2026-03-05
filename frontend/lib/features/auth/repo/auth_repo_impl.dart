@@ -10,7 +10,8 @@ class AuthRepoImpl extends AuthRepository {
   final ApiService apiService;
   UserModel? _currentUser;
   final UserRepository? userRepository;
-  AuthRepoImpl(this.apiService, this._currentUser, this.userRepository);
+
+  AuthRepoImpl(this.apiService, this.userRepository);
   //Login method
 
   @override

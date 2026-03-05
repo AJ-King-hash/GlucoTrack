@@ -10,8 +10,6 @@ class ApiExceptions {
     if (data is Map<String, dynamic> && data['message'] != null) {
       return ApiError(message: data['message'], statusCode: statusCode);
     }
-    print(statusCode);
-    print(data);
     if (statusCode == 302) {
       return ApiError(message: "This email already taken");
     }

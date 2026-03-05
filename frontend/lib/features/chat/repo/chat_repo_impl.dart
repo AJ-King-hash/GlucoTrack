@@ -1,6 +1,6 @@
-import '../../../../core/utils/either.dart';
-import '../../../core/errors/failure.dart';
-import '../../../core/api/api_service.dart';
+import 'package:untitled10/core/utils/either.dart';
+import 'package:untitled10/core/errors/failure.dart';
+import 'package:untitled10/core/api/api_service.dart';
 
 import '../data/conversation_model.dart';
 import '../data/message_model.dart';
