@@ -4,6 +4,10 @@ import 'package:untitled10/core/api/end_point.dart';
 import 'package:untitled10/core/errors/failure.dart';
 import 'package:untitled10/core/utils/either.dart';
 
+/// Unified API Service for GlucoTrack Application
+///
+/// This service provides a consistent interface for all backend API calls
+/// using the ResponseModel pattern with Either for error handling.
 class ApiService {
   final Dio _dio = DioClient().dio;
 
@@ -46,7 +50,7 @@ class ApiService {
       _handleRequest(_dio.post(ApiEndpoints.login, data: body), (data) => data);
 
   Future<Either<Failure, dynamic>> logout() =>
-      _handleRequest(_dio.post("/logout", data: {}), (data) => data);
+      _handleRequest(_dio.post(ApiEndpoints.logout, data: {}), (data) => data);
 
   // ================= USER =================
 
@@ -54,15 +58,21 @@ class ApiService {
       _handleRequest(_dio.post(ApiEndpoints.user, data: body), (data) => data);
 
   Future<Either<Failure, dynamic>> getUser() =>
-      _handleRequest(_dio.get("/user"), (data) => data);
-
-  Future<Either<Failure, dynamic>> updateUser(Map<String, dynamic> body) =>
-      _handleRequest(_dio.put("/user/update", data: body), (data) => data);
+      _handleRequest(_dio.get(ApiEndpoints.user), (data) => data);
 
   Future<Either<Failure, dynamic>> getUserById(int id) =>
       _handleRequest(_dio.get(ApiEndpoints.userById(id)), (data) => data);
 
-  // ================= BOT =================
+  Future<Either<Failure, dynamic>> updateUser(Map<String, dynamic> body) =>
+      _handleRequest(
+        _dio.put(ApiEndpoints.userUpdate, data: body),
+        (data) => data,
+      );
+
+  Future<Either<Failure, dynamic>> deleteUser() =>
+      _handleRequest(_dio.delete(ApiEndpoints.userDelete), (data) => data);
+
+  // ================= BOT - CONVERSATION =================
 
   Future<Either<Failure, dynamic>> createConversation(
     Map<String, dynamic> body,
@@ -84,6 +94,8 @@ class ApiService {
     (data) => data,
   );
 
+  // ================= BOT - MESSAGE =================
+
   Future<Either<Failure, dynamic>> createMessage(Map<String, dynamic> body) =>
       _handleRequest(
         _dio.post(ApiEndpoints.message, data: body),
@@ -97,7 +109,8 @@ class ApiService {
       );
 
   // ================= RISK =================
-  /// Note: Risk endpoints use current authenticated user from token
+  /// Note: Risk endpoints use current authenticated user from token.
+  /// The user ID is extracted from the JWT token on the backend.
 
   Future<Either<Failure, dynamic>> createRisk(Map<String, dynamic> body) =>
       _handleRequest(_dio.post(ApiEndpoints.risk, data: body), (data) => data);
@@ -112,6 +125,7 @@ class ApiService {
       _handleRequest(_dio.delete(ApiEndpoints.risk), (data) => data);
 
   // ================= MEAL =================
+  /// Note: Some meal endpoints use current authenticated user from token.
 
   Future<Either<Failure, dynamic>> createMeal(Map<String, dynamic> body) =>
       _handleRequest(_dio.post(ApiEndpoints.meal, data: body), (data) => data);
@@ -119,8 +133,12 @@ class ApiService {
   Future<Either<Failure, dynamic>> getMeal(int id) =>
       _handleRequest(_dio.get(ApiEndpoints.mealById(id)), (data) => data);
 
+  Future<Either<Failure, dynamic>> getAllMeals() =>
+      _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
+
   // ================= ANALYSIS =================
-  /// Note: Analysis endpoints use current authenticated user from token
+  /// Note: Analysis endpoints use current authenticated user from token.
+  /// The user ID is extracted from the JWT token on the backend.
 
   Future<Either<Failure, dynamic>> getAllAnalysis() =>
       _handleRequest(_dio.get(ApiEndpoints.allAnalysis), (data) => data);
@@ -152,15 +170,4 @@ class ApiService {
         _dio.post(ApiEndpoints.otpResetPassword, data: body),
         (data) => data,
       );
-
-  // ================= MEAL =================
-  /// Note: Meal endpoints use current authenticated user from token
-
-  Future<Either<Failure, dynamic>> getAllMeals() =>
-      _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
-
-  // ================= USER =================
-
-  Future<Either<Failure, dynamic>> deleteUser() =>
-      _handleRequest(_dio.delete(ApiEndpoints.userDelete), (data) => data);
 }
