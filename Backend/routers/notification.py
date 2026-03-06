@@ -8,29 +8,50 @@ from apscheduler.triggers.interval import IntervalTrigger
 import firebase_admin
 import models
 import json
+import os
+import logging
 from firebase_admin import credentials, messaging
 from schemas import FCMTokenUpdate, UserReminderUpdate
 import schemas
 import oauth2
 from contextlib import asynccontextmanager
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 router = APIRouter(
     prefix="/notification",
     tags=["Notifications"]
 )
 
+# Firebase initialization flag
+_firebase_initialized = False
+
 # Initialize Firebase
 try:
     cred = credentials.Certificate("firebase-service-account.json")
     firebase_admin.initialize_app(cred)
+    _firebase_initialized = True
+    logger.info("Firebase initialized successfully")
+except FileNotFoundError:
+    logger.warning("Firebase service account file not found. Notifications will not work.")
 except Exception as e:
-    print(f"Firebase initialization error: {e}")
+    logger.error(f"Firebase initialization failed: {e}")
 
 scheduler = AsyncIOScheduler()
+
+# Get scheduler interval from environment (default: 5 minutes)
+SCHEDULER_INTERVAL_MINUTES = int(os.getenv("NOTIFICATION_INTERVAL_MINUTES", "5"))
 
 
 async def send_reminders():
     """Send reminders to all users whose reminder time has passed."""
+    # Skip if Firebase is not initialized
+    if not _firebase_initialized:
+        logger.warning("Skipping reminders: Firebase not initialized")
+        return
+    
     now = datetime.now(timezone.utc)
     db = SessionLocal()
     
@@ -98,8 +119,10 @@ async def send_reminders():
 
 
 @router.get("/trigger-reminders") 
-async def trigger_reminders(): 
-    """Manually trigger reminder check (for testing)."""
+async def trigger_reminders(
+    current_user: schemas.User = Depends(oauth2.get_current_user)
+): 
+    """Manually trigger reminder check (for testing). Requires authentication."""
     await send_reminders()
     return {"status": "success", "message": "Reminders triggered"}
 
@@ -152,10 +175,11 @@ def set_fcm_token(
 
 @router.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint. Returns basic status without exposing sensitive info."""
     return {
         "status": "healthy",
-        "scheduler_running": scheduler.running
+        "service": "notification",
+        "firebase_initialized": _firebase_initialized
     }
 
 
@@ -163,12 +187,17 @@ async def health_check():
 @asynccontextmanager
 async def lifespan(app):
     # Startup
-    scheduler.add_job(send_reminders, IntervalTrigger(minutes=1))
+    scheduler.add_job(
+        send_reminders, 
+        IntervalTrigger(minutes=SCHEDULER_INTERVAL_MINUTES),
+        id="send_reminders",
+        replace_existing=True
+    )
     scheduler.start()
-    print("Notification scheduler started")
+    logger.info(f"Notification scheduler started (interval: {SCHEDULER_INTERVAL_MINUTES} minutes)")
     
     yield
     
     # Shutdown
     scheduler.shutdown()
-    print("Notification scheduler stopped")
+    logger.info("Notification scheduler stopped")
