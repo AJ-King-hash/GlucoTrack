@@ -45,4 +45,14 @@ class ApiEndpoints {
   static const String otpForgotPassword = "/otp/forgot-password";
   static const String otpVerify = "/otp/verify-otp";
   static const String otpResetPassword = "/otp/reset-password";
+
+  // ==================== NOTIFICATIONS ====================
+  /// Update user reminder times (medicine_time, gluco_time)
+  static const String updateReminders = "/notification/reminders";
+
+  /// Update FCM token for push notifications
+  static const String updateFcmToken = "/notification/fcm-token";
+
+  /// Trigger reminders manually (for testing)
+  static const String triggerReminders = "/notification/trigger-reminders";
 }

@@ -170,4 +170,37 @@ class ApiService {
         _dio.post(ApiEndpoints.otpResetPassword, data: body),
         (data) => data,
       );
+
+  // ================= NOTIFICATIONS =================
+
+  /// Update reminder times for the authenticated user
+  /// [glucoTime] - Time for glucose check reminder (format: "HH:mm", e.g., "08:00")
+  /// [medicineTime] - Time for medicine reminder (format: "HH:mm", e.g., "20:00")
+  /// [timezone] - User's timezone (e.g., "Asia/Riyadh")
+  Future<Either<Failure, dynamic>> updateReminders({
+    String? glucoTime,
+    String? medicineTime,
+    String? timezone,
+  }) {
+    final body = <String, dynamic>{};
+    if (glucoTime != null) body['gluco_time'] = glucoTime;
+    if (medicineTime != null) body['medicine_time'] = medicineTime;
+    if (timezone != null) body['timezone'] = timezone;
+
+    return _handleRequest(
+      _dio.put(ApiEndpoints.updateReminders, data: body),
+      (data) => data,
+    );
+  }
+
+  /// Update FCM token for push notifications
+  Future<Either<Failure, dynamic>> updateFcmToken(String token) =>
+      _handleRequest(
+        _dio.post(ApiEndpoints.updateFcmToken, data: {'fcm_token': token}),
+        (data) => data,
+      );
+
+  /// Trigger reminders manually (for testing)
+  Future<Either<Failure, dynamic>> triggerReminders() =>
+      _handleRequest(_dio.get(ApiEndpoints.triggerReminders), (data) => data);
 }

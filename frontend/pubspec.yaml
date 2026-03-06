@@ -53,6 +53,12 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   flutter_localizations:
     sdk: flutter
+  # Firebase packages for notifications
+  firebase_core: ^3.12.1
+  firebase_messaging: ^15.2.4
+  flutter_local_notifications: ^18.0.1
+  fluttertoast: ^8.2.10
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:
