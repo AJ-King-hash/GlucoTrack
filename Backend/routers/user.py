@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi import APIRouter,responses
 from StartingPackages import *
 from repositories import userRepo
 from JwtToken import timedelta,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
@@ -7,6 +8,10 @@ router=APIRouter(
 prefix="/user",
 tags=["Users"],
 )
+
+@router.options("/")
+async def options_user():
+    return responses.JSONResponse(status_code=200,content={"message":"OK"},headers={'Access-Control-Allow-Origin':"*","Access-Control-Allow-Methods":"POST,OPTIONS","Access-Control-Allow-Headers":"*"})
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUserWithMessageToken)

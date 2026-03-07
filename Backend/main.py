@@ -1,13 +1,15 @@
 # NOTE: to run the swaggerUI we need to go to the localhost:http://127.0.0.1:8080/docs#/
 from StartingPackages import *
 from routers import otp,user,auth,meal,analyse,bot,risk,notification
-
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
 
 # Create all tables
 models.Base.metadata.create_all(bind=engine)
+
+app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_Methods=["GET","POST","OPTIONS","PUT","DELETE"],allow_headers=["*"])
 
 app.include_router(auth.router)
 app.include_router(user.router)
