@@ -9,15 +9,6 @@ prefix="/user",
 tags=["Users"],
 )
 
-@router.options("/")
-async def options_user():
-    return responses.JSONResponse(status_code=200,content={"message":"OK"},headers={'Access-Control-Allow-Origin':"*","Access-Control-Allow-Methods":"POST,OPTIONS","Access-Control-Allow-Headers":"*"})
-
-
-@router.options("/")
-async def options_user():
-    return responses.JSONResponse(status_code=200,content={"message":"OK"},headers={'Access-Control-Allow-Origin':"*","Access-Control-Allow-Methods":"POST,OPTIONS","Access-Control-Allow-Headers":"*"})
-
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUserWithMessageToken)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
     user=userRepo.create(request,db)

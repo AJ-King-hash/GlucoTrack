@@ -5,7 +5,7 @@ import 'auth_interceptor.dart';
 class DioClient {
   DioClient._internal();
 
-  static const String baseUrl = "http://127.0.0.1:8000";
+  static const String baseUrl = "http://10.248.171.223:8000";
   static final DioClient _instance = DioClient._internal();
 
   factory DioClient() => _instance;

@@ -9,7 +9,7 @@ app = FastAPI()
 # Create all tables
 models.Base.metadata.create_all(bind=engine)
 
-app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_Methods=["GET","POST","OPTIONS","PUT","DELETE"],allow_headers=["*"])
+app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_methods=["GET","POST","OPTIONS","PUT","DELETE"],allow_headers=["*"])
 
 app.include_router(auth.router)
 app.include_router(user.router)
