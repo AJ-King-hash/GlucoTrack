@@ -46,8 +46,18 @@ class ApiService {
 
   // ================= AUTH =================
 
-  Future<Either<Failure, dynamic>> login(Map<String, dynamic> body) =>
-      _handleRequest(_dio.post(ApiEndpoints.login, data: body), (data) => data);
+  Future<Either<Failure, dynamic>> login(Map<String, dynamic> body) {
+    // Convert body to form-urlencoded format
+    final formData = FormData.fromMap(body);
+    return _handleRequest(
+      _dio.post(
+        ApiEndpoints.login,
+        data: formData,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      ),
+      (data) => data,
+    );
+  }
 
   Future<Either<Failure, dynamic>> logout() =>
       _handleRequest(_dio.post(ApiEndpoints.logout, data: {}), (data) => data);

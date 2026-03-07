@@ -20,7 +20,7 @@ class AuthRepoImpl extends AuthRepository {
     String password,
   ) async {
     final result = await apiService.login({
-      'email': email,
+      'usernae': email,
       'password': password,
     });
 
