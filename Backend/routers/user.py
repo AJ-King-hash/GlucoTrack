@@ -6,7 +6,6 @@ import oauth2
 router=APIRouter(
 prefix="/user",
 tags=["Users"],
-
 )
 
 
