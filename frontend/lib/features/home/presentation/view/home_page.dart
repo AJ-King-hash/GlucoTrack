@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/color/app_color.dart';
+import 'package:untitled10/core/injection_container.dart';
 import 'package:untitled10/features/home/presentation/manager/bottom_nav_cubit.dart';
 import 'package:untitled10/features/home/presentation/manager/home_cubit.dart';
 import 'package:untitled10/features/archives/presentaiton/view/archive_page.dart';
@@ -22,7 +23,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => HomeCubit()),
+        BlocProvider(create: (_) => sl<HomeCubit>()),
         BlocProvider(create: (_) => BottomNavCubit()),
       ],
 

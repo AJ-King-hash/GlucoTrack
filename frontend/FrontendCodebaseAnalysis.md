@@ -172,9 +172,9 @@ void _navigateToNextScreen() {
 
 ---
 
-## 5. API Response Handling
+## 5. API Response Handling (Fixed)
 
-**Current Code**: [auth_repo_impl.dart:18-41](frontend/lib/features/auth/repo/auth_repo_impl.dart:18)
+**Current Code**: [auth_repo_impl.dart:18-47](frontend/lib/features/auth/repo/auth_repo_impl.dart:18)
 
 ```dart
 Future<Either<Failure, UserModel?>> login(String email, String password) async {
@@ -183,24 +183,52 @@ Future<Either<Failure, UserModel?>> login(String email, String password) async {
     'password': password,
   });
 
-  return result.fold((failure) => Left(failure), (data) {
+  return await result.fold((failure) async => Left(failure), (data) async {
     final responseData = data as Map<String, dynamic>;
-    if (responseData['code'] == 200 && responseData['data'] != null) {
-      final user = UserModel.fromJson(responseData['data']);
+    if (responseData['user'] != null && responseData['token'] != null) {
+      // Create UserModel from the response data
+      final userData = responseData['user'] as Map<String, dynamic>;
+      final tokenData = responseData['token'] as Map<String, dynamic>;
+
+      // Combine user and token data
+      final combinedData = {
+        ...userData,
+        'token': tokenData['access_token'], // Assuming UserModel expects 'token' field
+      };
+
+      final user = UserModel.fromJson(combinedData);
       if (user.token != null) {
-        SecureStorageService.saveToken(user.token!);
+        final tokenSaved = await SecureStorageService.saveToken(user.token!);
+        if (!tokenSaved) {
+          return Left(ServerFailure(message: 'Failed to save token'));
+        }
+      } else {
+        return Left(ServerFailure(message: 'No token received'));
       }
       _currentUser = user;
+      // Set isFirstTime to false after successful login
+      await SecureStorageService.saveIsFirstTime(false);
       return Right(user);
     }
-    return Left(ServerFailure(
-      message: responseData['message'] ?? 'Login failed',
-    ));
+    return Left(
+      ServerFailure(message: responseData['message'] ?? 'Login failed'),
+    );
   });
 }
 ```
 
-**Problem**: The API response structure is assumed. If the backend changes the response format (e.g., `code` field becomes `status`), the login will fail silently.
+**Change**: Updated the login method to match the actual backend response structure which includes `user` and `token` fields directly, not nested under `data`. The response structure is:
+
+```json
+{
+  "message": "User Login Successfully!",
+  "user": { "id": 7, "name": "baboji", "email": "baboji@gmail.com" },
+  "token": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer"
+  }
+}
+```
 
 ---
 
@@ -228,14 +256,15 @@ Future<void> onRequest(
 
 ## Summary of Critical Issues
 
-| Issue                               | Severity | Impact                      | Files Affected                                       |
-| ----------------------------------- | -------- | --------------------------- | ---------------------------------------------------- |
-| No error handling for token storage | High     | Silent login failures       | `auth_repo_impl.dart`, `source_storage_service.dart` |
-| No token validation on auto login   | High     | Expired tokens cause issues | `auth_repo_impl.dart`                                |
-| Hardcoded isFirstTime in splash     | High     | Always shows login screen   | `splash_page.dart`                                   |
-| AuthCubit/UserCubit not in DI       | Medium   | Difficult to test           | `injection_container.dart`                           |
-| Token retrieval on every request    | Medium   | Performance impact          | `auth_interceptor.dart`                              |
-| No loading state for token storage  | Medium   | UX inconsistency            | `auth_cubit.dart`                                    |
+| Issue                               | Severity | Impact                      | Files Affected                                       | Status  |
+| ----------------------------------- | -------- | --------------------------- | ---------------------------------------------------- | ------- |
+| No error handling for token storage | High     | Silent login failures       | `auth_repo_impl.dart`, `source_storage_service.dart` | Fixed   |
+| No token validation on auto login   | High     | Expired tokens cause issues | `auth_repo_impl.dart`                                | Fixed   |
+| Hardcoded isFirstTime in splash     | High     | Always shows login screen   | `splash_page.dart`                                   | Fixed   |
+| AuthCubit/UserCubit not in DI       | Medium   | Difficult to test           | `injection_container.dart`                           | Fixed   |
+| Token retrieval on every request    | Medium   | Performance impact          | `auth_interceptor.dart`                              | Pending |
+| No loading state for token storage  | Medium   | UX inconsistency            | `auth_cubit.dart`                                    | Pending |
+| API response structure mismatch     | High     | Login failure               | `auth_repo_impl.dart`, `user_model.dart`             | Fixed   |
 
 ---
 
@@ -249,5 +278,47 @@ Future<void> onRequest(
 6. Extend loading state to include token storage operation
 7. Add more robust API response handling
 8. Implement token refresh mechanism
+
+## UserModel Updates (Fixed)
+
+**Current Code**: [user_model.dart:1-20](frontend/lib/features/auth/data/models/user_model.dart)
+
+```dart
+class UserModel{
+  final String name;
+  final String email;
+  final String? password;
+  final String? token;
+  final int? id;
+  UserModel({
+    required this.name,
+    required this.email,
+    this.password,
+    this.token,
+    this.id
+});
+  factory UserModel.fromJson(Map<String,dynamic> map){
+    return UserModel(
+        name: map['name'],
+        email: map['email'],
+        password: map['password'],
+        token:map['token'],
+        id: map['id']
+    );
+  }
+}
+```
+
+**Changes**:
+
+1. Made `password` field optional (nullable) since backend response doesn't include it
+2. Added `id` field to store user ID from backend response
+
+## Summary of Fixed Issues
+
+The login navigation issue is now resolved by:
+
+1. Updating `auth_repo_impl.dart` to handle the correct backend response structure
+2. Modifying `user_model.dart` to accept the response format and make password optional
 
 These improvements will ensure a more reliable and user-friendly login experience.
