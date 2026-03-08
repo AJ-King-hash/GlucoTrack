@@ -117,9 +117,7 @@ class LoginPage extends StatelessWidget {
                       SizedBox(height: 24.h),
                       BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
-                          print('Auth state: $state');
                           if (state is AuthSuccess) {
-                            print('Navigating to home');
                             Navigator.pushReplacementNamed(
                               context,
                               AppRoutes.home,

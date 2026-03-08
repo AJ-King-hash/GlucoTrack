@@ -116,7 +116,7 @@ class _ChatPageState extends State<ChatPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.read<LocaleCubit>().translate('tit'),
+                        context.read<LocaleCubit>().translate('chat_title'),
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,

@@ -5,11 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/core/color/app_color.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:untitled10/features/auth/presentaion/manager/auth_cubit.dart';
 import 'package:untitled10/features/home/presentation/manager/settings_cubit.dart';
 import 'package:untitled10/features/home/presentation/manager/settings_state.dart';
 import 'package:untitled10/features/home/presentation/widgets/change_password_bottom_sheet.dart';
 import 'package:untitled10/features/home/presentation/widgets/settings_item.dart';
-import 'package:untitled10/features/home/presentation/widgets/switch-item.dart';
+import 'package:untitled10/features/home/presentation/widgets/switch_item.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -21,7 +22,7 @@ class SettingsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'GlucoTrack',
+            context.read<LocaleCubit>().translate('app_title'),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
@@ -32,64 +33,82 @@ class SettingsPage extends StatelessWidget {
           backgroundColor: AppColor.backgroundNeutral,
           actions: [
             IconButton(
-              icon: const Icon(CupertinoIcons.bell,color: AppColor.info,),
-              onPressed: () {},
+              icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.notifications);
+              },
             ),
           ],
         ),
         backgroundColor: AppColor.backgroundNeutral,
-        body: BlocBuilder<SettingsCubit,SettingsState>(
-          builder: (context,state){
+        body: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
             if (state is! SettingsInitial) {
               return const Center(child: CircularProgressIndicator());
             }
-          
+
             return ListView(
               padding: EdgeInsets.all(16.w),
               children: [
                 _sectionTitle(context.read<LocaleCubit>().translate('profile')),
                 SettingsItem(
                   icon: Icons.person,
-                    iconColor: AppColor.info,
-                   title: context.read<LocaleCubit>().translate('edit_profile'),
-                    titleColor: AppColor.textNeutral,
-                    onTap: (){
-                    Navigator.pushNamed(context, AppRoutes.editProfile);
-                    }),
-                _sectionTitle(context.read<LocaleCubit>().translate('aa')),
-              SwitchItem(
-                icon: Icons.monitor_heart,
                   iconColor: AppColor.info,
-                 title:context.read<LocaleCubit>().translate('bb'),
+                  title: context.read<LocaleCubit>().translate('edit_profile'),
                   titleColor: AppColor.textNeutral,
-                  value: state.sugarReminder, 
-                  onChanged: (v)=>context.read<SettingsCubit>().toggleSugarReminder(v)
-                  ),   
-                   SwitchItem(
-                  icon: Icons.medication,
-                     iconColor: AppColor.info,
-                  title: context.read<LocaleCubit>().translate('cc'),
-                     titleColor: AppColor.textNeutral,
-                  value: state.medicineReminder,
-                  onChanged: (v) =>
-                      context.read<SettingsCubit>().toggleMedicineReminder(v),
-                ),
-
-                 _sectionTitle(context.read<LocaleCubit>().translate('hh')),
-                   SettingsItem(
-                  icon: Icons.lock,
-                     iconColor: AppColor.info,
-                     titleColor: AppColor.textNeutral,
-                  title: context.read<LocaleCubit>().translate('ii'),
                   onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_)=>const ChangePasswordBottomSheet());
+                    Navigator.pushNamed(context, AppRoutes.editProfile);
                   },
                 ),
-                 _sectionTitle(context.read<LocaleCubit>().translate('jj')),
+                _sectionTitle(
+                  context.read<LocaleCubit>().translate('reminders'),
+                ),
+                SwitchItem(
+                  icon: Icons.monitor_heart,
+                  iconColor: AppColor.info,
+                  title: context.read<LocaleCubit>().translate(
+                    'sugar_reminder',
+                  ),
+                  titleColor: AppColor.textNeutral,
+                  value: state.sugarReminder,
+                  onChanged:
+                      (v) =>
+                          context.read<SettingsCubit>().toggleSugarReminder(v),
+                ),
+                SwitchItem(
+                  icon: Icons.medication,
+                  iconColor: AppColor.info,
+                  title: context.read<LocaleCubit>().translate(
+                    'medicine_reminder',
+                  ),
+                  titleColor: AppColor.textNeutral,
+                  value: state.medicineReminder,
+                  onChanged:
+                      (v) => context
+                          .read<SettingsCubit>()
+                          .toggleMedicineReminder(v),
+                ),
+
+                _sectionTitle(
+                  context.read<LocaleCubit>().translate('security'),
+                ),
+                SettingsItem(
+                  icon: Icons.lock,
+                  iconColor: AppColor.info,
+                  titleColor: AppColor.textNeutral,
+                  title: context.read<LocaleCubit>().translate(
+                    'change_password',
+                  ),
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => const ChangePasswordBottomSheet(),
+                    );
+                  },
+                ),
+                _sectionTitle(context.read<LocaleCubit>().translate('about')),
 
                 SettingsItem(
                   icon: Icons.info_outline,
@@ -100,30 +119,74 @@ class SettingsPage extends StatelessWidget {
                     Navigator.pushNamed(context, AppRoutes.aboutApp);
                   },
                 ),
-                SizedBox(height: 24.h,),
+                SizedBox(height: 24.h),
                 ElevatedButton.icon(
-                 style: ElevatedButton.styleFrom(
-                   backgroundColor: AppColor.negative,
-                    minimumSize: Size(double.infinity, 50.h),),
-                     icon: const Icon(Icons.logout,color: AppColor.info,),
-                  label: Text(context.read<LocaleCubit>().translate('kk'),
-                      style:TextStyle(color: AppColor.textNeutral)),
-                  onPressed: () {},
-                )
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.negative,
+                    minimumSize: Size(double.infinity, 50.h),
+                  ),
+                  icon: const Icon(Icons.logout, color: AppColor.info),
+                  label: Text(
+                    context.read<LocaleCubit>().translate('logout'),
+                    style: TextStyle(color: AppColor.textNeutral),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            context.read<LocaleCubit>().translate('logout'),
+                          ),
+                          content: Text(
+                            context.read<LocaleCubit>().translate(
+                              'are_you_sure_logout',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                context.read<LocaleCubit>().translate('cancel'),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                context.read<LocaleCubit>().translate('yes'),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                context.read<AuthCubit>().logout();
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  AppRoutes.login,
+                                  (route) => false,
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
               ],
-
             );
-          }),
-      ));
+          },
+        ),
+      ),
+    );
   }
 }
+
 Widget _sectionTitle(String title) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 16.h),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-
         /// Accent Medical Bar
         Container(
           width: 4.w,
@@ -150,4 +213,3 @@ Widget _sectionTitle(String title) {
     ),
   );
 }
-

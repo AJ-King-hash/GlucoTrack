@@ -8,21 +8,17 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authRepository) : super(AuthInitial());
 
   Future<void> login({required String email, required String password}) async {
-    print('Login called');
     emit(AuthLoading());
     try {
       final result = await authRepository.login(email, password);
-      print('Login result: $result');
       result.fold((failure) => emit(AuthError(failure.message)), (user) {
         if (user != null) {
-          print('Login successful, emitting AuthSuccess');
           emit(AuthSuccess("Login successful"));
         } else {
           emit(AuthError("Invalid credentials"));
         }
       });
     } catch (e) {
-      print('Login error: $e');
       String errMsg = "Error in Login";
       if (e is ApiError) {
         errMsg = e.message;

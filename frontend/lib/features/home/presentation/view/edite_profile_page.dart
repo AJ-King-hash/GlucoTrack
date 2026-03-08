@@ -32,9 +32,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
   void initState() {
     context.read<UserCubit>()
       ..getUser().then((v) {
-        print(originalName);
-        print(originalEmail);
-        print(originalPassword);
         originalName = widget.userModel?.name ?? "your name";
         originalEmail = widget.userModel?.email ?? "xxxxx@gmail.com";
         originalPassword = widget.userModel?.password ?? "***********";
