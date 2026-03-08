@@ -20,18 +20,36 @@ class AuthRepoImpl extends AuthRepository {
     String password,
   ) async {
     final result = await apiService.login({
-      'usernae': email,
+      'username': email,
       'password': password,
     });
 
-    return result.fold((failure) => Left(failure), (data) {
+    return await result.fold((failure) async => Left(failure), (data) async {
       final responseData = data as Map<String, dynamic>;
-      if (responseData['code'] == 200 && responseData['data'] != null) {
-        final user = UserModel.fromJson(responseData['data']);
+      if (responseData['user'] != null && responseData['token'] != null) {
+        // Create UserModel from the response data
+        final userData = responseData['user'] as Map<String, dynamic>;
+        final tokenData = responseData['token'] as Map<String, dynamic>;
+
+        // Combine user and token data
+        final combinedData = {
+          ...userData,
+          'token':
+              tokenData['access_token'], // Assuming UserModel expects 'token' field
+        };
+
+        final user = UserModel.fromJson(combinedData);
         if (user.token != null) {
-          SecureStorageService.saveToken(user.token!);
+          final tokenSaved = await SecureStorageService.saveToken(user.token!);
+          if (!tokenSaved) {
+            return Left(ServerFailure(message: 'Failed to save token'));
+          }
+        } else {
+          return Left(ServerFailure(message: 'No token received'));
         }
         _currentUser = user;
+        // Set isFirstTime to false after successful login
+        await SecureStorageService.saveIsFirstTime(false);
         return Right(user);
       }
       return Left(

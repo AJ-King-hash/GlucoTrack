@@ -5,9 +5,8 @@ import 'package:sizer/sizer.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
 
 import '../../../../core/localization/locale_cubit.dart';
+import '../../../../core/utils/source_storage_service.dart';
 import '../../../../core/widgets/custom_icon_widget.dart';
-
-
 
 /// Splash Screen for DiabetesAssistant application
 /// Provides branded app launch experience while initializing diabetes management services
@@ -59,21 +58,27 @@ class _SplashScreenState extends State<SplashScreen>
         _statusMessage = context.read<LocaleCubit>().translate('loading');
       });
 
-
       await Future.delayed(const Duration(milliseconds: 800));
-      setState(() => _statusMessage = context.read<LocaleCubit>().translate('verify'));
-
+      setState(
+        () => _statusMessage = context.read<LocaleCubit>().translate('verify'),
+      );
 
       await Future.delayed(const Duration(milliseconds: 600));
-      setState(() => _statusMessage =context.read<LocaleCubit>().translate('loadingst'));
-
+      setState(
+        () =>
+            _statusMessage = context.read<LocaleCubit>().translate('loadingst'),
+      );
 
       await Future.delayed(const Duration(milliseconds: 700));
-      setState(() => _statusMessage = context.read<LocaleCubit>().translate('syncing'));
-
+      setState(
+        () => _statusMessage = context.read<LocaleCubit>().translate('syncing'),
+      );
 
       await Future.delayed(const Duration(milliseconds: 500));
-      setState(() => _statusMessage = context.read<LocaleCubit>().translate('settingth'));
+      setState(
+        () =>
+            _statusMessage = context.read<LocaleCubit>().translate('settingth'),
+      );
 
       await Future.delayed(const Duration(milliseconds: 400));
 
@@ -81,7 +86,6 @@ class _SplashScreenState extends State<SplashScreen>
         _navigateToNextScreen();
       }
     } catch (e) {
-
       if (mounted) {
         setState(() {
           _isInitializing = false;
@@ -92,16 +96,30 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  void _navigateToNextScreen() {
+  void _navigateToNextScreen() async {
+    final bool isFirstTime = await SecureStorageService.getIsFirstTime();
+    final String? token = await SecureStorageService.getToken();
 
-    final bool isFirstTime = true;
-
-    if (isFirstTime) {
-      // New users see onboarding flow
-      Navigator.of(
-        context,
-        rootNavigator: true,
-      ).pushReplacementNamed(AppRoutes.login);
+    if (mounted) {
+      if (token != null) {
+        // User is already logged in
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).pushReplacementNamed(AppRoutes.home);
+      } else if (isFirstTime) {
+        // New users see login page
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).pushReplacementNamed(AppRoutes.login);
+      } else {
+        // Existing users see login page
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).pushReplacementNamed(AppRoutes.login);
+      }
     }
   }
 

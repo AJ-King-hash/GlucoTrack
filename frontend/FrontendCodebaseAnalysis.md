@@ -1,154 +1,253 @@
-# GlucoTrack Frontend Codebase Analysis
+# GlucoTrack Frontend Codebase Analysis Report
 
-## Summary
+## 1. Current Project Structure
 
-This report contains all identified errors, warnings, and information issues within the GlucoTrack frontend Flutter codebase. The analysis was performed using `flutter analyze` and manual code review.
+The GlucoTrack application is a Flutter-based diabetes management app with a clear architectural separation:
 
----
+- **Core Layer**: Shared utilities, API service, dependency injection, routing, and localization
+- **Features Layer**: Modular implementation of auth, home, chat, risk assessment, notifications, and archives
+- **Presentation Layer**: UI components with BLoC for state management
+- **Data Layer**: API calls through Dio with error handling
 
-## Errors
+## 2. Login Flow Analysis
 
-### 1. Undefined Methods in Chat Repository Implementation
+### Current Login Flow
 
-**File:** [`chat_repo_impl.dart`](lib/features/chat/repo/chat_repo_impl.dart)
+```
+Login Page → AuthCubit.login(email, password) → AuthRepoImpl.login() → ApiService.login()
+```
 
-- **Line 30:** `The method 'getConversation' isn't defined for the type 'ApiService'`
-- **Line 42:** `The method 'getAllConversations' isn't defined for the type 'ApiService'`
-- **Line 56:** `The method 'deleteConversation' isn't defined for the type 'ApiService'`
-- **Line 68:** `The method 'createMessage' isn't defined for the type 'ApiService'`
-- **Line 88:** `The method 'getMessages' isn't defined for the type 'ApiService'`
+Key Files:
 
-These errors occur because the `ApiService` class in [`api_service.dart`](lib/core/helperfile/api_service.dart) does not implement the required methods for chat functionality. The `ApiService` class only implements methods for risk, meal, analysis, and OTP operations.
+- `login_page.dart`: UI and BlocConsumer listener for navigation
+- `auth_cubit.dart`: Business logic and state management
+- `auth_repo_impl.dart`: API call and token storage
+- `api_service.dart`: HTTP client using Dio
 
----
+## 3. Potential Issues in Login Flow
 
-## Warnings
+### Issue 1: Token Storage and Auth Interceptor (Critical)
 
-### 1. Unused Local Variable - Auth Cubit
+**Current Code**: [auth_repo_impl.dart:31-32](frontend/lib/features/auth/repo/auth_repo_impl.dart:31)
 
-**File:** [`auth_cubit.dart`](lib/features/auth/presentaion/manager/auth_cubit.dart)
+```dart
+if (user.token != null) {
+  SecureStorageService.saveToken(user.token!);
+}
+```
 
-- **Line 28:** `The value of the local variable 'user' isn't used`
+**Problem**: The `SecureStorageService.saveToken()` is called directly without proper error handling. If this operation fails (e.g., device storage issues), the token won't be saved even though login succeeded.
 
-### 2. Unused Local Variable - OTP Page
-
-**File:** [`otp_page.dart`](lib/features/auth/presentaion/view/otp_page.dart)
-
-- **Line 141:** `The value of the local variable 'otp' isn't used`
-
-### 3. Unused Field - User Repository Implementation
-
-**File:** [`user_repo_impl.dart`](lib/features/user/repo/user_repo_impl.dart)
-
-- **Line 12:** `The value of the field '_currentUser' isn't used`
+**Impact**: User won't be able to authenticate future API calls, leading to repeated login failures.
 
 ---
 
-## Information Issues
+### Issue 2: No Error Handling for Token Storage
 
-### 1. Print Statements in Production Code
+**Current Code**: [source_storage_service.dart:11-13](frontend/lib/core/utils/source_storage_service.dart:11)
 
-**Files:**
+```dart
+static Future<void> saveToken(String token) async {
+  await _storage.write(key: _tokenKey, value: token);
+}
+```
 
-- [`api_exceptions.dart`](lib/core/api/api_exceptions.dart): Lines 13, 14
-- [`edite_profile_page.dart`](lib/features/home/presentation/view/edite_profile_page.dart): Lines 35, 36, 37
-
-Using print statements in production code is not recommended as it can impact performance and should be replaced with proper logging.
-
-### 2. Deprecated withOpacity Method
-
-The `withOpacity` method is deprecated and should be replaced with `withValues()` to avoid precision loss. This issue is widespread across the codebase:
-
-**Files:**
-
-- [`auth_background.dart`](lib/core/widgets/auth_background.dart): Lines 54, 55, 82, 111, 135, 140
-- [`archive_card.dart`](lib/features/archives/presentaiton/widgets/archive_card.dart): Line 38
-- [`chat_page.dart`](lib/features/chat/presentation/view/chat_page.dart): Line 93
-- [`chat_empty_state.dart`](lib/features/chat/presentation/widgets/chat_empty_state.dart): Lines 25, 40, 41, 100
-- [`message_bubble.dart`](lib/features/chat/presentation/widgets/message_bubble.dart): Line 73
-- [`message_input.dart`](lib/features/chat/presentation/widgets/message_input.dart): Lines 43, 44
-- [`edite_profile_page.dart`](lib/features/home/presentation/view/edite_profile_page.dart): Lines 93, 103, 138
-- [`card_widget.dart`](lib/features/home/presentation/widgets/card_widget.dart): Lines 22, 36, 37, 71, 82
-- [`home_content.dart`](lib/features/home/presentation/widgets/home_content.dart): Line 275
-- [`picker_bottom_sheet.dart`](lib/features/home/presentation/widgets/picker_bottom_sheet.dart): Line 40
-- [`switch-item.dart`](lib/features/home/presentation/widgets/switch-item.dart): Lines 34, 37
-- [`user_info_card.dart`](lib/features/home/presentation/widgets/user_info_card.dart): Lines 44, 48, 176, 190, 191, 204
-
-### 3. Unnecessary Import
-
-**File:** [`user_info_card.dart`](lib/features/home/presentation/widgets/user_info_card.dart)
-
-- **Line 1:** `The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart'`
-
-### 4. File Naming Convention Violation
-
-**File:** [`switch-item.dart`](lib/features/home/presentation/widgets/switch-item.dart)
-
-- **Line 1:** `The file name 'switch-item.dart' isn't a lower_case_with_underscores identifier`
-
-Flutter file naming convention recommends using snake_case (lower case with underscores) for file names.
-
-### 5. Unnecessary Cascade Expression
-
-**File:** [`edite_profile_page.dart`](lib/features/home/presentation/view/edite_profile_page.dart)
-
-- **Line 33:** `Unnecessary cascade expression`
-
-### 6. Type Parameter Name Conflict
-
-**File:** [`base_usecase.dart`](lib/core/base_usecase/base_usecase.dart)
-
-- **Line 5:** `The type parameter name 'Type' matches a visible type name`
+**Problem**: No try-catch around storage operations. This can cause silent failures when writing/reading tokens.
 
 ---
 
-## Overall Code Quality Issues
+### Issue 3: AuthInterceptor Requires Initialization
 
-### 1. Duplicate ApiService Classes
-
-There are two separate `ApiService` classes in the codebase:
-
-- [`api_service.dart`](lib/core/api/api_service.dart) - Simple CRUD operations with Dio
-- [`api_service.dart`](lib/core/helperfile/api_service.dart) - Generic API service with ResponseModel
-
-This duplication can cause confusion and potential conflicts.
-
-### 2. Inconsistent Folder Naming
-
-**Folder:** [`presentaiton/`](lib/features/archives/presentaiton/) (should be `presentation`)
-
-This is a typo in the folder name.
-
-### 3. Incomplete Implementation in Show Meal Bottom Sheet
-
-**File:** [`show_meal_bottom_sheet.dart`](lib/core/utils/show_meal_bottom_sheet.dart)
-
-- The `onPressed` callback for the submit button is empty (Line 174)
-- No implementation to handle form submission
-
-### 4. Hardcoded Conversation ID in Chat Page
-
-**File:** [`chat_page.dart`](lib/features/chat/presentation/view/chat_page.dart)
-
-- Line 183: Conversation ID is hardcoded to 0
-- This will cause issues when sending messages to different conversations
+**Problem**: The `AuthInterceptor` is defined but it's unclear if it's actually added to the Dio instance in `DioClient`. If not, the token won't be included in subsequent API calls.
 
 ---
 
-## Recommendation
+### Issue 4: No Token Validation on Auto Login
 
-1. **Priority 1 (Errors):** Implement the missing API service methods for chat functionality in [`api_service.dart`](lib/core/helperfile/api_service.dart)
-2. **Priority 2 (Warnings):** Remove unused variables and fields
-3. **Priority 3 (Info Issues):** Fix deprecated method calls, unnecessary imports, and file naming issues
-4. **Priority 4:** Refactor duplicate ApiService classes and fix folder naming typos
+**Current Code**: [auth_repo_impl.dart:63-80](frontend/lib/features/auth/repo/auth_repo_impl.dart:63)
+
+```dart
+Future<Either<Failure, UserModel?>> autoLogin() async {
+  final token = await SecureStorageService.getToken();
+  if (token == null) {
+    _currentUser = null;
+    return const Right(null);
+  }
+  try {
+    final userResult = await userRepository?.getUser();
+    return userResult?.fold((failure) => Left(failure), (user) {
+          _currentUser = user;
+          return Right(user);
+        }) ??
+        const Right(null);
+  } catch (_) {
+    await SecureStorageService.deleteToken();
+    _currentUser = null;
+    return const Right(null);
+  }
+}
+```
+
+**Problem**: The token is retrieved but not validated. The `getUser()` call might fail if the token is expired or invalid.
 
 ---
 
-## Total Issues
+### Issue 5: Navigation After Login
 
-- **Errors:** 5
-- **Warnings:** 3
-- **Information Issues:** 22
-- **Code Quality Issues:** 4
+**Current Code**: [login_page.dart:108-136](frontend/lib/features/auth/presentaion/view/login_page.dart:108)
 
-**Total:** 34 issues
+```dart
+BlocConsumer<AuthCubit, AuthState>(
+  listener: (context, state) {
+    if (state is AuthSuccess) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
+    if (state is AuthError) {
+      // Show error snackbar
+    }
+  },
+```
+
+**Problem**: The navigation happens immediately when `AuthSuccess` is emitted. However, there's no guarantee that the token has been successfully saved to storage yet.
+
+---
+
+### Issue 6: No Loading State for Token Storage
+
+**Current Code**: [auth_cubit.dart:10-28](frontend/lib/features/auth/presentaion/manager/auth_cubit.dart)
+
+```dart
+Future<void> login({required String email, required String password}) async {
+  emit(AuthLoading());
+  try {
+    final result = await authRepository.login(email, password);
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      if (user != null) {
+        emit(AuthSuccess("Login successful"));
+      } else {
+        emit(AuthError("Invalid credentials"));
+      }
+    });
+  } catch (e) {
+    emit(AuthError(errMsg));
+  }
+}
+```
+
+**Problem**: The loading state is only active during API call. If token storage takes time, the UI will show success before the operation is complete.
+
+---
+
+## 4. Other Potential User Flow Issues
+
+### Splash Screen Logic
+
+**Current Code**: [splash_page.dart:95-106](frontend/lib/features/auth/presentaion/view/splash_page.dart:95)
+
+```dart
+void _navigateToNextScreen() {
+  final bool isFirstTime = true;
+  if (isFirstTime) {
+    Navigator.of(context, rootNavigator: true)
+        .pushReplacementNamed(AppRoutes.login);
+  }
+}
+```
+
+**Problem**: `isFirstTime` is hardcoded to `true`. The app will always show the login page instead of checking for existing token.
+
+---
+
+### Dependency Injection
+
+**Current Code**: [injection_container.dart:81-90](frontend/lib/core/injection_container.dart:81)
+
+```dart
+// Cubits - will be added when implemented
+// sl.registerFactory(() => AuthCubit(sl<AuthRepository>()));
+// sl.registerFactory(() => UserCubit(sl<UserRepository>()));
+```
+
+**Problem**: AuthCubit and UserCubit are not registered in dependency injection. Currently, they're instantiated directly in main.dart.
+
+---
+
+## 5. API Response Handling
+
+**Current Code**: [auth_repo_impl.dart:18-41](frontend/lib/features/auth/repo/auth_repo_impl.dart:18)
+
+```dart
+Future<Either<Failure, UserModel?>> login(String email, String password) async {
+  final result = await apiService.login({
+    'username': email,
+    'password': password,
+  });
+
+  return result.fold((failure) => Left(failure), (data) {
+    final responseData = data as Map<String, dynamic>;
+    if (responseData['code'] == 200 && responseData['data'] != null) {
+      final user = UserModel.fromJson(responseData['data']);
+      if (user.token != null) {
+        SecureStorageService.saveToken(user.token!);
+      }
+      _currentUser = user;
+      return Right(user);
+    }
+    return Left(ServerFailure(
+      message: responseData['message'] ?? 'Login failed',
+    ));
+  });
+}
+```
+
+**Problem**: The API response structure is assumed. If the backend changes the response format (e.g., `code` field becomes `status`), the login will fail silently.
+
+---
+
+## 6. Token Management
+
+**Current Code**: [auth_interceptor.dart:10-19](frontend/lib/core/api/auth_interceptor.dart:10)
+
+```dart
+@override
+Future<void> onRequest(
+  RequestOptions options,
+  RequestInterceptorHandler handler,
+) async {
+  final token = await SecureStorageService.getToken();
+  if (token != null && token.isNotEmpty) {
+    options.headers["Authorization"] = "Bearer $token";
+  }
+  handler.next(options);
+}
+```
+
+**Problem**: The interceptor retrieves token from storage on every request, which could impact performance.
+
+---
+
+## Summary of Critical Issues
+
+| Issue                               | Severity | Impact                      | Files Affected                                       |
+| ----------------------------------- | -------- | --------------------------- | ---------------------------------------------------- |
+| No error handling for token storage | High     | Silent login failures       | `auth_repo_impl.dart`, `source_storage_service.dart` |
+| No token validation on auto login   | High     | Expired tokens cause issues | `auth_repo_impl.dart`                                |
+| Hardcoded isFirstTime in splash     | High     | Always shows login screen   | `splash_page.dart`                                   |
+| AuthCubit/UserCubit not in DI       | Medium   | Difficult to test           | `injection_container.dart`                           |
+| Token retrieval on every request    | Medium   | Performance impact          | `auth_interceptor.dart`                              |
+| No loading state for token storage  | Medium   | UX inconsistency            | `auth_cubit.dart`                                    |
+
+---
+
+## Recommended Improvements
+
+1. Add error handling for token storage operations
+2. Implement token validation during auto login
+3. Store and retrieve `isFirstTime` from shared preferences
+4. Register AuthCubit and UserCubit in dependency injection
+5. Cache token in memory for better performance
+6. Extend loading state to include token storage operation
+7. Add more robust API response handling
+8. Implement token refresh mechanism
+
+These improvements will ensure a more reliable and user-friendly login experience.
