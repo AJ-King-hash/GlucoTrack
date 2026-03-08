@@ -9,6 +9,7 @@ import 'package:untitled10/features/home/presentation/view/edite_profile_page.da
 import 'package:untitled10/features/home/presentation/view/home_page.dart';
 import 'package:untitled10/features/home/presentation/widgets/about_app.dart';
 import 'package:untitled10/features/risk/presentation/view/risk_page.dart';
+import 'package:untitled10/features/notification/presentation/view/reminder_settings_page.dart';
 
 class AppRoutes {
   static const login = "/login";
@@ -22,6 +23,7 @@ class AppRoutes {
   static const splashScreen = "/splashScreen";
   static const aboutApp = "/aboutApp";
   static const risk = "/risk";
+  static const notifications = "/notifications";
   static Map<String, WidgetBuilder> routes = {
     login: (context) => LoginPage(),
     register: (context) => RegisterPage(),
@@ -34,5 +36,6 @@ class AppRoutes {
     splashScreen: (context) => SplashScreen(),
     aboutApp: (context) => AboutAppPage(),
     risk: (context) => RiskPage(),
+    notifications: (context) => const ReminderSettingsPage(),
   };
 }

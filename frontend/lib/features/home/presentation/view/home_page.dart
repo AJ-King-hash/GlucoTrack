@@ -14,8 +14,9 @@ import '../widgets/home_content.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final List<Widget> screens = [
-    ChatPage(),
-    const ArchivesPage(archives: []),
+    const HomeContent(),
+    const ChatPage(),
+    const ArchivesPage(),
     const SettingsPage(),
   ];
 
@@ -32,18 +33,10 @@ class HomePage extends StatelessWidget {
 
         body: BlocBuilder<BottomNavCubit, int>(
           builder: (context, index) {
-            switch (index) {
-              case 0:
-                return const HomeContent();
-              case 1:
-                return ChatPage();
-              case 2:
-                return const ArchivesPage(archives: []);
-              case 3:
-                return const SettingsPage();
-              default:
-                return const HomeContent();
+            if (index < 0 || index >= screens.length) {
+              return const HomeContent();
             }
+            return screens[index];
           },
         ),
 

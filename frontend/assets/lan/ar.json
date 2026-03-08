@@ -4,5 +4,10 @@
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
   "forgot_password": "نسيت كلمة المرور؟",
-  "create_account": "إنشاء حساب"
+  "create_account": "إنشاء حساب",
+  "app_title": "GlucoTrack",
+  "risk_management": "إدارة المخاطر",
+  "archives_page_title": "سجلات تحليليي",
+  "archives_error_message": "فشل تحميل السجلات",
+  "archives_empty_message": "لا توجد سجلات تحليلية"
 }

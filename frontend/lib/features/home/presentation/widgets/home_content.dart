@@ -26,7 +26,7 @@ class HomeContent extends StatelessWidget {
           backgroundColor: AppColor.info,
           appBar: AppBar(
             title: Text(
-              'GlucoTrack',
+              locale.translate('app_title'),
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
@@ -38,7 +38,9 @@ class HomeContent extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.notifications);
+                },
               ),
             ],
           ),
@@ -218,7 +220,7 @@ class HomeContent extends StatelessWidget {
                           _buildAnalyzeButton(context, locale),
 
                           SizedBox(height: 20.h),
-                          _buildRiskManagementButton(context),
+                          _buildRiskManagementButton(context, locale),
                         ],
                       ),
                     ),
@@ -261,7 +263,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildRiskManagementButton(BuildContext context) {
+  Widget _buildRiskManagementButton(BuildContext context, LocaleCubit locale) {
     return SizedBox(
       width: double.infinity,
       height: 55.h,
@@ -276,7 +278,7 @@ class HomeContent extends StatelessWidget {
         ),
         icon: const Icon(Icons.warning, color: Colors.white),
         label: Text(
-          'Risk Management',
+          locale.translate('risk_management'),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

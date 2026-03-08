@@ -4,5 +4,10 @@
   "email": "Email",
   "password": "Password",
   "forgot_password": "Forgot Password?",
-  "create_account": "Create Account"
+  "create_account": "Create Account",
+  "app_title": "GlucoTrack",
+  "risk_management": "Risk Management",
+  "archives_page_title": "My Analysis Records",
+  "archives_error_message": "Failed to load archives",
+  "archives_empty_message": "No analysis records found"
 }

@@ -8,13 +8,13 @@ class HomeCubit extends Cubit<HomeState> {
   final GetRiskUsecase _getRiskUsecase;
 
   HomeCubit(this._getRiskUsecase)
-    : super(const HomeState(mealTime: 1, activity: 1, weight: 1, age: 1)) {
+    : super(const HomeState(mealTime: 1, activity: 1, weight: 70, age: 30)) {
     _initializeUserData();
   }
 
   Future<void> _initializeUserData() async {
     try {
-      // Assume user id is 0 - backend actually uses token to identify user
+      // Backend uses authentication token to identify user, so id parameter is ignored
       final result = await _getRiskUsecase(0);
       result.fold(
         (failure) => _handleFailure(failure),
@@ -29,14 +29,14 @@ class HomeCubit extends Cubit<HomeState> {
     // Log failure
     print('Failed to load user data: ${failure.message}');
     // We could emit a failure state if HomeState had one
-    // For now, we'll just leave the initial hardcoded values
+    // For now, we'll just leave the initial reasonable values
   }
 
   void _handleError(dynamic error) {
     // Log error
     print('Error loading user data: $error');
     // We could emit an error state if HomeState had one
-    // For now, we'll just leave the initial hardcoded values
+    // For now, we'll just leave the initial reasonable values
   }
 
   void _updateStateFromRisk(RiskEntity risk) {
