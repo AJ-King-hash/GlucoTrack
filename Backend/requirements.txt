@@ -18,6 +18,8 @@ fastapi-mail[httpx]
 
 numpy
 
+python-dotenv
+
 pandas
 
 openai

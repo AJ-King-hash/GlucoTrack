@@ -1,4 +1,7 @@
 # NOTE: to run the swaggerUI we need to go to the localhost:http://127.0.0.1:8080/docs#/
+from dotenv import load_dotenv
+load_dotenv()
+
 from StartingPackages import *
 from routers import otp,user,auth,meal,analyse,bot,risk,notification
 from fastapi.middleware.cors import CORSMiddleware
