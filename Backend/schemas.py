@@ -194,7 +194,8 @@ class ShowUserToken(BaseModel):
 class ShowUserWithMessageToken(BaseModel):
     message:str
     user:ShowUserToken
-    token:Token
+    access_token: str
+    token_type: str
     class Config():
         from_attributes=True
 
