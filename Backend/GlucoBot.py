@@ -3,13 +3,13 @@ import functools
 from datetime import datetime
 import json
 import re
-API_KEY="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"
+API_KEY="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"
 
 class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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")
+        api_key="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")
 
     def chat(self,message):
         completion = self.client.chat.completions.create(

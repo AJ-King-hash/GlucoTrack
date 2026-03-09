@@ -33,14 +33,14 @@ def create(request,db:Session,current_user):
         description=request.description,
         meal_type=request.meal_type,
         meal_time=request.meal_time,
-        user_id=request.user_id,
+        user_id=current_user.id,
         GL=float(res_dict["gluco_percent"]))
     
     db.add(new_meal)
     db.commit()
     db.refresh(new_meal)
     new_archive=models.PrevAnalyse(
-        user_id=request.user_id,
+        user_id=current_user.id,
         meal_id=new_meal.id,
         gluco_percent=float(res_dict["gluco_percent"]),
         risk_result=res_dict["risk"],
