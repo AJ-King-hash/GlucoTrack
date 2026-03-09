@@ -10,7 +10,7 @@ def get_current_user(token:str=Depends(oauth2_scheme)):
         detail="Not Authorized",
         headers={"WWW-Authenticate": "Bearer"},
     )
-   
+
     return verifyToken(token,credentials_exception)
     
 def get_current_token(token:str=Depends(oauth2_scheme)):

@@ -38,7 +38,7 @@ def show(id:int,db:Session):
     return user
 
 def update(id:int,request,db:Session):
-    user=db.query(models.User).filter(models.User.id==id).first()
+    user=db.query(models.User).filter(models.User.id==id).first() 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
     user.name=request.name
