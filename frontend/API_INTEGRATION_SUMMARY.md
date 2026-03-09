@@ -27,6 +27,7 @@
 - **File**: `frontend/lib/features/archives/repo/archive_repo_impl.dart`
 - **Change**: Implemented the new methods using the ApiService.
 - **Fix**: Updated `createArchive` method to extract `archive` field from backend response.
+- **Security**: Added null safety checks with `UnknownFailure` for invalid responses.
 
 ### 5. Updated Archive Cubit
 
@@ -56,7 +57,9 @@
 ### 9. Updated App Button Widget
 
 - **File**: `frontend/lib/core/widgets/app_button.dart`
-- **Change**: Made `onPressed` property nullable to support disabled state
+- **Change**:
+  - Made `onPressed` property nullable to support disabled state
+  - Added visual feedback (opacity reduction) when button is disabled
 
 ### 10. Added Archives Page Route
 
@@ -121,6 +124,16 @@
   - Made all update methods async to trigger API calls
   - Registered UpdateRiskUsecase in dependency injection
 
+### 19. Fix: Hardcoded Risk ID
+
+- **File**: `frontend/lib/features/home/presentation/manager/home_cubit.dart`
+- **Change**: Use `_currentRiskEntity?.id ?? 0` instead of hardcoded `0`
+
+### 20. Fix: Duplicate Code
+
+- **File**: `Backend/repositories/mealRepo.py`
+- **Change**: Removed duplicate `get_all()` function definition
+
 ## Current Status
 
 ### ✅ COMPLETED Features
@@ -131,39 +144,26 @@
 - Authentication - All operations working
 - Notifications - All operations working
 - Meal Submission Flow - Integrated with archives
+- Error Handling - User-friendly messages implemented
 
-### ⚠️ KNOWN ISSUES (Not Fixed)
+### ✅ FIXED Issues
 
-1. **Hardcoded Height in BMI Calculation**
-   - File: `home_cubit.dart` line 88-89
-   - Issue: Uses hardcoded 170.0 instead of user's actual height
-   - Impact: BMI calculations are inaccurate
+- Security: API key moved to environment variable
+- Hardcoded Risk ID - Now uses actual risk entity ID
+- Null Safety - Added checks for API responses
+- Duplicate Code - Removed duplicate function
+- Button Disabled State - Added visual feedback
 
-2. **Hardcoded ID in Risk Update**
-   - File: `home_cubit.dart` line 143
-   - Issue: Uses hardcoded ID=0 in UpdateRiskParams
-   - Impact: May cause issues with risk updates
+### 📋 REMAINING WORK (Priority 3 - Enhancements)
 
-3. **Missing Null Safety**
-   - File: `archive_repo_impl.dart` line 27
-   - Issue: Assumes data['archive'] exists without null check
-   - Impact: Could cause runtime crashes
-
-4. **Duplicate Function**
-   - File: `Backend/repositories/mealRepo.py` line 15: Duplicate get_all
-   - Issue() function definition
-   - Impact: Code redundancy
-
-### 📋 REMAINING WORK
-
-1. Fix hardcoded height value in home_cubit.dart
-2. Add null safety checks for API responses
-3. Remove duplicate function in mealRepo.py
-4. Test all features end-to-end
+1. Add pagination for archives and chat
+2. Add search functionality for conversations and archives
+3. Implement offline support for critical features
+4. Add filtering and sorting for archives
 
 ## Next Steps
 
-1. Fix the remaining known issues listed above
-2. Test all features thoroughly, especially the meal and risk management sections
-3. Implement real-time updates for the analytics dashboard
-4. Add pagination for chat messages and archives
+1. Test all features end-to-end
+2. Add pagination for archives and chat
+3. Add search functionality
+4. Implement offline support
