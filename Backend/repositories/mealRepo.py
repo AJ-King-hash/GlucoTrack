@@ -22,8 +22,16 @@ def create(request,db:Session):
     if request.meal_type not in ["Fast","Before Meal","After Meal"]:
         raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Meal type Not Found,it can be only: 'Fast','Before Meal', 'After Meal")
     if request.meal_type in ["Fast","Before Meal"]:
-        prev_meal=db.query(models.Meal).all()[db.query(models.Meal).count()-1]
-        res_dict=gluco_bot.chatAsJSON("notice:I am analyse this gl of meal_type of: "+request.meal_type+ "Right Now!, but my last meal was:"+prev_meal.description+"in: "+str(prev_meal.meal_time))
+        # Get the user's last meal, if any
+        prev_meal=db.query(models.Meal).filter(
+            models.Meal.user_id == request.user_id
+        ).order_by(models.Meal.meal_time.desc()).first()
+        
+        if prev_meal:
+            res_dict=gluco_bot.chatAsJSON("notice:I am analyse this gl of meal_type of: "+request.meal_type+ "Right Now!, but my last meal was:"+prev_meal.description+"in: "+str(prev_meal.meal_time))
+        else:
+            # No previous meal - analyze without context
+            res_dict=gluco_bot.chatAsJSON("notice:I am analyse this gl of meal_type of: "+request.meal_type+ "Right Now! This is the user's first meal record.")
     if request.meal_type == "After Meal":
         res_dict=gluco_bot.chatAsJSON(request.description)
     new_meal=models.Meal(
