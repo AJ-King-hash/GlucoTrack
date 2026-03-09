@@ -27,7 +27,7 @@ def login(request:OAuth2PasswordRequestForm=Depends(),db:Session=Depends(get_db)
         data={"sub": user.email,"id":user.id}, expires_delta=access_token_expires
     )
     # return user
-    return {"message":"User Login Successfully!","user":user,"token":schemas.Token(access_token=access_token, token_type="bearer")}
+    return {"message":"User Login Successfully!","user":user,"access_token":access_token,"token_type":"bearer"}
 
 @router.delete("/logout",response_model=schemas.ShowMessage)
 def logout(current_token:schemas.User=Depends(oauth2.get_current_token)):

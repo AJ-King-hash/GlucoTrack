@@ -1,24 +1,19 @@
-import os
 from openai import OpenAI
 import functools
 from datetime import datetime
 import json
 import re
-
-API_KEY=os.environ.get("OPENROUTER_API_KEY", "")
-
-if not API_KEY:
-    raise ValueError("OPENROUTER_API_KEY environment variable is not set")
+API_KEY="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"
 
 class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key=API_KEY)
+        api_key="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")
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
-        model="openrouter/aurora-alpha",
+        model="stepfun/step-3.5-flash:free",
         messages=[
         {
           "role": "user",
@@ -29,7 +24,7 @@ class GlucoBot():
     
     def chatAsNumber(self,message):
         completion = self.client.chat.completions.create(
-        model="openrouter/aurora-alpha",
+        model="stepfun/step-3.5-flash:free",
         messages=[
         {
           "role": "user",
@@ -72,7 +67,7 @@ class GlucoBot():
         """
         
         completion = self.client.chat.completions.create(
-        model="openrouter/aurora-alpha",
+        model="stepfun/step-3.5-flash:free",
         messages=[
         {
           "role": "user",
@@ -115,22 +110,16 @@ class GlucoBot():
                 dictionary.update({key:val})
         for i in pp:
             keyAndVal(i)
-        
-        # Ensure required fields with defaults
-        return {
-            'risk': dictionary.get('risk', 'Medium'),
-            'gluco_percent': float(dictionary.get('gluco_percent', '10.0')),
-            'analysed_at': dictionary.get('analysed_at', current_time),
-            'recommendations': dictionary.get('recommendations', 'Maintain a balanced diet'),
-            'meal_tips': dictionary.get('meal_tips', 'Consider pairing with protein or fiber')
-        }
+        return dictionary
 
 
-# glucoBot=GlucoBot() 
+glucoBot=GlucoBot() 
 # print(glucoBot.chat(
 #     " i need apps in android to edit the video for the background and sounds in videos "
 # ))
 # res=glucoBot.chatAsJSON("tow cup of milks")
+
+
 
 # date_str="2024-03-15T10"
 # print((pd.to_datetime(date_str)))

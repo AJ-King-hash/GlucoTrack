@@ -11,7 +11,7 @@ def get_all(user_id:int,db:Session):
     meals=db.query(models.Meal).where(models.Meal.user_id==user_id).all()
     return meals
 
-def create(request,db:Session):
+def create(request,db:Session,current_user):
     # gluco_bot.chat()
    
     if request.meal_type not in ["Fast","Before Meal","After Meal"]:
@@ -19,7 +19,7 @@ def create(request,db:Session):
     if request.meal_type in ["Fast","Before Meal"]:
         # Get the user's last meal, if any
         prev_meal=db.query(models.Meal).filter(
-            models.Meal.user_id == request.user_id
+            models.Meal.user_id == current_user.id
         ).order_by(models.Meal.meal_time.desc()).first()
         
         if prev_meal:

@@ -20,6 +20,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 def verifyToken(token:str,credentials_exception):
     if token in token_blacklist:
         raise HTTPException(status_code=401, detail="Token Invalidated")
+    print(token)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")

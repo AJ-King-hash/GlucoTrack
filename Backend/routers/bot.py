@@ -14,7 +14,7 @@ router=APIRouter(
 
 @router.post("/conversation")
 def create_conversation(request:schemas.ConversationBase,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
-    return botRepo.create(request,db)
+    return botRepo.create(request,db,current_user)
 
 @router.get("/conversation/{id}",response_model=schemas.ConversationShow)
 def show_conversation(id:int,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
