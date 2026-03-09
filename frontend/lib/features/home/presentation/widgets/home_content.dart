@@ -87,8 +87,10 @@ class HomeContent extends StatelessWidget {
                                 min: 5,
                                 max: 100,
                                 unit: locale.translate('year'),
-                                onSave: (value) {
-                                  context.read<HomeCubit>().updateAge(value);
+                                onSave: (value) async {
+                                  await context.read<HomeCubit>().updateAge(
+                                    value,
+                                  );
                                 },
                               );
                             },
@@ -100,20 +102,23 @@ class HomeContent extends StatelessWidget {
                                 min: 5,
                                 max: 150,
                                 unit: locale.translate('kg'),
-                                onSave: (value) {
-                                  context.read<HomeCubit>().updateWeight(value);
+                                onSave: (value) async {
+                                  await context.read<HomeCubit>().updateWeight(
+                                    value,
+                                  );
                                 },
                               );
                             },
                             onGenderChanged:
-                                (g) =>
-                                    context.read<HomeCubit>().updateGender(g),
+                                (g) async => await context
+                                    .read<HomeCubit>()
+                                    .updateGender(g),
                             onMaritalStatusChanged:
-                                (m) => context
+                                (m) async => await context
                                     .read<HomeCubit>()
                                     .updateMaterialStatus(m),
                             onPregnancyCountChanged:
-                                (c) => context
+                                (c) async => await context
                                     .read<HomeCubit>()
                                     .updatePregnancyCount(c),
                           ),
@@ -128,7 +133,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.nightlight_round,
                                 selected: state.mealTime == 0,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateMealTime(0),
                               ),
@@ -137,7 +142,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 2,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateMealTime(2),
                               ),
@@ -155,7 +160,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.nightlight_round,
                                 selected: state.mealTime == 0,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateMealTime(0),
                               ),
@@ -164,7 +169,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 1,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateMealTime(1),
                               ),
@@ -173,7 +178,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.schedule,
                                 selected: state.mealTime == 2,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateMealTime(2),
                               ),
@@ -191,7 +196,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.bed,
                                 selected: state.activity == 0,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateActivity(0),
                               ),
@@ -200,7 +205,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.directions_walk,
                                 selected: state.activity == 1,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateActivity(1),
                               ),
@@ -209,7 +214,7 @@ class HomeContent extends StatelessWidget {
                                 icon: Icons.directions_run,
                                 selected: state.activity == 2,
                                 onTap:
-                                    () => context
+                                    () async => await context
                                         .read<HomeCubit>()
                                         .updateActivity(2),
                               ),
