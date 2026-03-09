@@ -121,7 +121,51 @@ class _ChatPageState extends State<ChatPage> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (state is BotError) {
-                        return Center(child: Text(state.failure.message));
+                        // Show user-friendly error message
+                        String errorMsg = state.failure.message;
+
+                        // Provide specific feedback based on error type
+                        if (errorMsg.contains('connection') ||
+                            errorMsg.contains('timeout')) {
+                          errorMsg =
+                              'Unable to connect. Please check your internet connection.';
+                        } else if (errorMsg.contains('500') ||
+                            errorMsg.contains('server')) {
+                          errorMsg =
+                              'Server busy. Please try again in a moment.';
+                        } else if (errorMsg.contains('401') ||
+                            errorMsg.contains('unauthorized')) {
+                          errorMsg = 'Session expired. Please login again.';
+                        }
+
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 48,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                errorMsg,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 16),
+                              TextButton.icon(
+                                onPressed: () {
+                                  context
+                                      .read<BotCubit>()
+                                      .getAllConversations();
+                                },
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                       if (state is BotListSuccess) {
                         final messages = state.data;

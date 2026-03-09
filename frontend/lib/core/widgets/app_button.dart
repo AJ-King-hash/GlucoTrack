@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../color/app_color.dart';
 
-
 class AppButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final Color iconColor;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? backgroundColor;
   final Color? textColor;
   final bool loading;
@@ -16,7 +15,7 @@ class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     this.backgroundColor,
     this.textColor,
     this.loading = false,
@@ -39,27 +38,24 @@ class AppButton extends StatelessWidget {
           ),
         ),
         onPressed: loading ? null : onPressed,
-        child: loading
-            ? CircularProgressIndicator(color: Colors.white)
-            : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: iconColor,
-              size: 22,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: fontSize ?? 16,
-                color: textColor ?? Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+        child:
+            loading
+                ? CircularProgressIndicator(color: Colors.white)
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, color: iconColor, size: 22),
+                    const SizedBox(width: 8),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: fontSize ?? 16,
+                        color: textColor ?? Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
       ),
     );
   }

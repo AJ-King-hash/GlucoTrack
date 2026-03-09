@@ -28,20 +28,86 @@ class ApiService {
   Failure _mapError(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
-      return NetworkFailure(message: "Connection timeout. Please try again.");
+      return NetworkFailure(
+        message:
+            "Connection timeout. Please check your internet connection and try again.",
+      );
+    }
+
+    if (e.type == DioExceptionType.connectionError) {
+      return NetworkFailure(
+        message:
+            "Unable to connect to server. Please check your internet connection.",
+      );
     }
 
     final status = e.response?.statusCode;
-    final message = e.response?.data?.toString() ?? "Network error";
+    final dynamic responseData = e.response?.data;
+    String message;
 
-    if (status == 422) return ValidationFailure(message: message, code: status);
-    if (status == 401) {
-      return UnauthorizedFailure(message: message, code: status);
+    // Try to extract meaningful error message from response
+    if (responseData != null) {
+      if (responseData is Map) {
+        message =
+            responseData['detail']?.toString() ??
+            responseData['message']?.toString() ??
+            responseData.toString();
+      } else {
+        message = responseData.toString();
+      }
+    } else {
+      message = "An unexpected error occurred";
     }
-    if (status == 500) return ServerFailure(message: message, code: status);
-    if (status == null) return NetworkFailure(message: "Network error");
+
+    if (status == 422) {
+      return ValidationFailure(
+        message: _formatValidationError(message),
+        code: status,
+      );
+    }
+    if (status == 401) {
+      return UnauthorizedFailure(
+        message: "Session expired. Please login again.",
+        code: status,
+      );
+    }
+    if (status == 403) {
+      return UnauthorizedFailure(
+        message: "You don't have permission to perform this action.",
+        code: status,
+      );
+    }
+    if (status == 404) {
+      return ServerFailure(
+        message: "The requested resource was not found.",
+        code: status,
+      );
+    }
+    if (status == 500) {
+      return ServerFailure(
+        message: "Server error. Please try again later.",
+        code: status,
+      );
+    }
+    if (status == null) {
+      return NetworkFailure(
+        message: "Network error. Please check your connection.",
+      );
+    }
 
     return ServerFailure(message: message, code: status);
+  }
+
+  String _formatValidationError(String message) {
+    // Clean up validation error messages
+    if (message.contains('detail=')) {
+      final regex = RegExp(r'"detail":\s*"([^"]+)"');
+      final match = regex.firstMatch(message);
+      if (match != null) {
+        return match.group(1) ?? message;
+      }
+    }
+    return message;
   }
 
   // ================= AUTH =================
@@ -145,6 +211,14 @@ class ApiService {
 
   Future<Either<Failure, dynamic>> getAllMeals() =>
       _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
+
+  Future<Either<Failure, dynamic>> updateMeal(
+    int id,
+    Map<String, dynamic> body,
+  ) => _handleRequest(
+    _dio.put(ApiEndpoints.mealById(id), data: body),
+    (data) => data,
+  );
 
   // ================= ANALYSIS =================
   /// Note: Analysis endpoints use current authenticated user from token.
