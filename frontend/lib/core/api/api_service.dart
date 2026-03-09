@@ -162,8 +162,26 @@ class ApiService {
     (data) => data,
   );
 
-  Future<Either<Failure, dynamic>> getAllConversations() =>
-      _handleRequest(_dio.get(ApiEndpoints.allConversations), (data) => data);
+  /// Get all conversations with pagination and search
+  Future<Either<Failure, dynamic>> getAllConversations({
+    int page = 1,
+    int limit = 10,
+    String? search,
+  }) {
+    final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+    if (search != null && search.isNotEmpty) {
+      queryParams['search'] = search;
+    }
+
+    return _handleRequest(
+      _dio.get(ApiEndpoints.allConversations, queryParameters: queryParams),
+      (data) => data,
+    );
+  }
+
+  /// Get total count of conversations for pagination
+  Future<Either<Failure, dynamic>> getConversationCount() =>
+      _handleRequest(_dio.get(ApiEndpoints.conversationCount), (data) => data);
 
   Future<Either<Failure, dynamic>> deleteConversation(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.conversationById(id)),
@@ -178,9 +196,23 @@ class ApiService {
         (data) => data,
       );
 
-  Future<Either<Failure, dynamic>> getMessages(int conversationId) =>
+  /// Get messages with pagination
+  Future<Either<Failure, dynamic>> getMessages(
+    int conversationId, {
+    int page = 1,
+    int limit = 50,
+  }) => _handleRequest(
+    _dio.get(
+      ApiEndpoints.allMessages(conversationId),
+      queryParameters: {'page': page, 'limit': limit},
+    ),
+    (data) => data,
+  );
+
+  /// Get total count of messages for pagination
+  Future<Either<Failure, dynamic>> getMessageCount(int conversationId) =>
       _handleRequest(
-        _dio.get(ApiEndpoints.allMessages(conversationId)),
+        _dio.get(ApiEndpoints.messageCount(conversationId)),
         (data) => data,
       );
 
@@ -224,8 +256,37 @@ class ApiService {
   /// Note: Analysis endpoints use current authenticated user from token.
   /// The user ID is extracted from the JWT token on the backend.
 
-  Future<Either<Failure, dynamic>> getAllAnalysis() =>
-      _handleRequest(_dio.get(ApiEndpoints.allAnalysis), (data) => data);
+  /// Get all analysis with pagination, search, and filtering
+  Future<Either<Failure, dynamic>> getAllAnalysis({
+    int page = 1,
+    int limit = 10,
+    String? search,
+    String? sortBy,
+    String sortOrder = 'desc',
+    String? riskFilter,
+  }) {
+    final queryParams = <String, dynamic>{
+      'page': page,
+      'limit': limit,
+      'sort_by': sortBy ?? 'analysed_at',
+      'sort_order': sortOrder,
+    };
+    if (search != null && search.isNotEmpty) {
+      queryParams['search'] = search;
+    }
+    if (riskFilter != null && riskFilter.isNotEmpty) {
+      queryParams['risk_filter'] = riskFilter;
+    }
+
+    return _handleRequest(
+      _dio.get(ApiEndpoints.allAnalysis, queryParameters: queryParams),
+      (data) => data,
+    );
+  }
+
+  /// Get total count of analysis for pagination
+  Future<Either<Failure, dynamic>> getAnalysisCount() =>
+      _handleRequest(_dio.get(ApiEndpoints.analysisCount), (data) => data);
 
   Future<Either<Failure, dynamic>> deleteAnalysis(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.deleteAnalysis(id)),

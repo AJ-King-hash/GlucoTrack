@@ -21,10 +21,12 @@ class ApiEndpoints {
   static const String conversation = "/bot/conversation";
   static String conversationById(int id) => "/bot/conversation/$id";
   static const String allConversations = "/bot/conversation/all/";
+  static const String conversationCount = "/bot/conversation/count/";
 
   // ==================== BOT - MESSAGE ====================
   static const String message = "/bot/message";
   static String allMessages(int convId) => "/bot/message/all/$convId";
+  static String messageCount(int convId) => "/bot/message/count/$convId";
 
   // ==================== RISK ====================
   /// Note: Risk endpoints use current authenticated user
@@ -39,6 +41,7 @@ class ApiEndpoints {
   // ==================== ANALYSIS ====================
   static const String allAnalysis = "/analyse/all/";
   static String deleteAnalysis(int id) => "/analyse/$id";
+  static const String analysisCount = "/analyse/count/";
 
   // ==================== OTP ====================
   static const String otpCheck = "/otp/check";
@@ -47,7 +50,7 @@ class ApiEndpoints {
   static const String otpResetPassword = "/otp/reset-password";
 
   // ==================== NOTIFICATIONS ====================
-  /// Update user reminder times (medicine_time, gluco_time)
+  /// Update reminder times for the authenticated user
   static const String updateReminders = "/notification/reminders";
 
   /// Update FCM token for push notifications

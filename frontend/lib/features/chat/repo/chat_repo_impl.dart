@@ -36,9 +36,16 @@ class BotRepositoryImpl implements BotRepository {
   }
 
   @override
-  Future<Either<Failure, List<ConversationEntity>>>
-  getAllConversations() async {
-    final result = await apiService.getAllConversations();
+  Future<Either<Failure, List<ConversationEntity>>> getAllConversations({
+    int page = 1,
+    int limit = 10,
+    String? search,
+  }) async {
+    final result = await apiService.getAllConversations(
+      page: page,
+      limit: limit,
+      search: search,
+    );
 
     return result.fold(
       (failure) => Left(failure),
@@ -46,6 +53,18 @@ class BotRepositoryImpl implements BotRepository {
         (data as List).map((e) => ConversationModel.fromJson(e)).toList(),
       ),
     );
+  }
+
+  @override
+  Future<Either<Failure, int>> getConversationCount() async {
+    final result = await apiService.getConversationCount();
+
+    return result.fold((failure) => Left(failure), (data) {
+      if (data is Map && data['total'] != null) {
+        return Right(data['total'] as int);
+      }
+      return const Right(0);
+    });
   }
 
   @override
@@ -77,14 +96,32 @@ class BotRepositoryImpl implements BotRepository {
 
   @override
   Future<Either<Failure, List<MessageEntity>>> getAllMessages(
-    int conversationId,
-  ) async {
-    final result = await apiService.getMessages(conversationId);
+    int conversationId, {
+    int page = 1,
+    int limit = 50,
+  }) async {
+    final result = await apiService.getMessages(
+      conversationId,
+      page: page,
+      limit: limit,
+    );
 
     return result.fold(
       (failure) => Left(failure),
       (data) =>
           Right((data as List).map((e) => MessageModel.fromJson(e)).toList()),
     );
+  }
+
+  @override
+  Future<Either<Failure, int>> getMessageCount(int conversationId) async {
+    final result = await apiService.getMessageCount(conversationId);
+
+    return result.fold((failure) => Left(failure), (data) {
+      if (data is Map && data['total'] != null) {
+        return Right(data['total'] as int);
+      }
+      return const Right(0);
+    });
   }
 }
