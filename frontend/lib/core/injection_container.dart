@@ -77,7 +77,9 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => HomeCubit(sl<GetRiskUsecase>()));
+  sl.registerFactory(
+    () => HomeCubit(sl<GetRiskUsecase>(), sl<UpdateRiskUsecase>()),
+  );
 
   // Chat Use Cases
   sl.registerLazySingleton(
