@@ -3,16 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/core/color/app_color.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/api/api_service.dart';
+import 'package:untitled10/core/injection_container.dart';
 import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
-import 'package:untitled10/features/chat/domain/usecase/create_conversation_usecase.dart';
-import 'package:untitled10/features/chat/domain/usecase/delete_conversation_usecase.dart';
-import 'package:untitled10/features/chat/domain/usecase/get_allconversation_usecase.dart';
-import 'package:untitled10/features/chat/domain/usecase/get_allmessage_usecase.dart';
-import 'package:untitled10/features/chat/domain/usecase/get_conversation_usecase.dart';
-import 'package:untitled10/features/chat/domain/usecase/send_message_usecase.dart';
 import 'package:untitled10/features/chat/presentation/widgets/chat_empty_state.dart';
-import 'package:untitled10/features/chat/repo/chat_repo_impl.dart';
 
 import '../manager/chat_cubit.dart';
 import '../manager/chat_state.dart';
@@ -51,27 +44,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (_) => BotCubit(
-            createConversationUseCase: CreateConversationUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-            getConversationUseCase: GetConversationUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-            getAllConversationsUseCase: GetAllConversationUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-            deleteConversationUseCase: DeleteConversationUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-            sendMessageUseCase: SendMessageUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-            getAllMessagesUseCase: GetAllMessageUseCase(
-              BotRepositoryImpl(ApiService()),
-            ),
-          ),
+      create: (_) => sl<BotCubit>()..getAllConversations(),
       child: Scaffold(
         backgroundColor: AppColor.backgroundNeutral,
         resizeToAvoidBottomInset: true,
@@ -131,7 +104,10 @@ class _ChatPageState extends State<ChatPage> {
         ),
         body: SafeArea(
           child: BlocListener<BotCubit, BotState>(
-            listenWhen: (previous, current) => false, // customize as needed
+            listenWhen:
+                (previous, current) =>
+                    previous is! BotSuccess && current is BotSuccess ||
+                    previous is! BotListSuccess && current is BotListSuccess,
             listener: (context, state) {
               _scrollToBottom();
             },

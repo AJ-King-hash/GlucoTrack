@@ -51,5 +51,6 @@
   "bmi": "BMI",
   "yes": "Yes",
   "no": "No",
-  "are_you_sure_logout": "Are you sure you want to logout?"
+  "are_you_sure_logout": "Are you sure you want to logout?",
+  "high_activity": "High Activity"
 }
