@@ -25,6 +25,18 @@ class ArchiveModel {
     );
   }
 
+  /// Factory method to create a pending archive from meal data.
+  /// The actual analysis values will be populated from the API response.
+  factory ArchiveModel.fromMeal(MealModel meal) {
+    return ArchiveModel(
+      id: 0, // Will be assigned by backend
+      glucoPercent: 0.0, // Will be populated from API analysis
+      analysedAt: DateTime.now(), // Will be populated from API analysis
+      riskResult: '', // Will be populated from API analysis
+      meal: meal,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

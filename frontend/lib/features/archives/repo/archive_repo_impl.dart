@@ -22,6 +22,31 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   }
 
   @override
+  Future<Either<Failure, ArchiveModel>> createArchive(
+    ArchiveModel archive,
+  ) async {
+    final result = await apiService.createMeal(archive.meal.toJson());
+
+    return result.fold(
+      (failure) => Left(failure),
+      (data) => Right(ArchiveModel.fromJson(data['archive'])),
+    );
+  }
+
+  @override
+  Future<Either<Failure, ArchiveModel>> updateArchive(
+    int id,
+    ArchiveModel archive,
+  ) async {
+    final result = await apiService.updateMeal(id, archive.meal.toJson());
+
+    return result.fold(
+      (failure) => Left(failure),
+      (data) => Right(ArchiveModel.fromJson(data)),
+    );
+  }
+
+  @override
   Future<Either<Failure, void>> deleteArchive(int archiveId) async {
     final result = await apiService.deleteAnalysis(archiveId);
 
