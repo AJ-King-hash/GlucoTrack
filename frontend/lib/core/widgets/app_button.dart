@@ -27,30 +27,43 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDisabled = loading || onPressed == null;
+
     return SizedBox(
       width: double.infinity,
       height: height ?? 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColor.positive,
+          backgroundColor:
+              isDisabled
+                  ? (backgroundColor ?? AppColor.positive).withOpacity(0.5)
+                  : backgroundColor ?? AppColor.positive,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: loading ? null : onPressed,
+        onPressed: isDisabled ? null : onPressed,
         child:
             loading
                 ? CircularProgressIndicator(color: Colors.white)
                 : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(icon, color: iconColor, size: 22),
+                    Icon(
+                      icon,
+                      color:
+                          isDisabled ? iconColor.withOpacity(0.5) : iconColor,
+                      size: 22,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       text,
                       style: TextStyle(
                         fontSize: fontSize ?? 16,
-                        color: textColor ?? Colors.white,
+                        color:
+                            isDisabled
+                                ? (textColor ?? Colors.white).withOpacity(0.5)
+                                : textColor ?? Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
