@@ -1,5 +1,51 @@
 # GlucoTrack Frontend Codebase Analysis Report
 
+## Commit Message
+
+fix: add translation keys and fix duplicate height key in locale cubit
+
+## Summary
+
+- Updated `locale_cubit.dart` with new translation keys for English and Arabic
+- Fixed duplicate "weight" key in Arabic section
+- Fixed import error in `settings_page.dart` by changing from hyphen to underscore
+- Added translation for "are_you_sure_logout"
+- Renamed "height" activity level key to "high_activity" to avoid conflict
+
+## Changes Made
+
+1. Updated `locale_cubit.dart` with new translation keys
+2. Fixed duplicate "weight" key in Arabic section
+3. Changed import from switch-item.dart to switch_item.dart in settings_page.dart
+4. Added "high_activity" translation key to replace "height" for activity level
+
+## Next Steps (System Prompt)
+
+**Goal**: Continue improving the GlucoTrack frontend codebase by addressing remaining issues and implementing new features.
+
+### High Priority Tasks:
+
+1. **Complete Risk Management Features**: Implement missing CRUD operations for risk assessment
+2. **Chat Functionality**: Fix message sending and conversation management
+3. **Home Content Page**: Localize remaining hardcoded text and implement notifications
+4. **API Integration**: Connect all features to backend APIs for real data management
+
+### Technical Debt:
+
+1. **Deprecation Warnings**: Replace `withOpacity` with `withValues()`
+2. **Dependency Injection**: Implement proper DI for repository instantiation
+3. **Error Handling**: Improve error recovery and user feedback
+4. **State Management**: Complete settings persistence and risk state management
+
+### Future Features:
+
+1. **Biometric Authentication**: Implement biometric login functionality
+2. **Push Notifications**: Add push notification integration
+3. **Dark Mode**: Implement dark/light theme toggle
+4. **Analytics**: Add user engagement and usage analytics
+
+---
+
 ## 1. Current Project Structure
 
 The GlucoTrack application is a Flutter-based diabetes management app with a clear architectural separation:
@@ -276,7 +322,7 @@ class SettingsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'GlucoTrack',
+            context.read<LocaleCubit>().translate('app_title'),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
@@ -287,20 +333,21 @@ class SettingsPage extends StatelessWidget {
           backgroundColor: AppColor.backgroundNeutral,
           actions: [
             IconButton(
-              icon: const Icon(CupertinoIcons.bell,color: AppColor.info,),
-              onPressed: () {},
+              icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.notifications);
+              },
             ),
           ],
-        ),
 ```
 
-**Issues**:
+**Status**: Fixed
 
-1. **Hardcoded App Title**: 'GlucoTrack' is hardcoded instead of using localization
-2. **Empty Bell Icon Action**: Same issue as HomeContent - empty `onPressed` function
-3. **No Bloc State Management**: SettingsCubit is created but not used for any API calls or data persistence
-4. **Static Reminder Toggles**: Switch items toggle local state but don't persist to backend
-5. **Empty Logout Function**: Logout button has an empty `onPressed` function
+1. **Localization Implemented**: AppBar title now uses `app_title` translation key
+2. **Bell Icon Action**: Now navigates to notifications page using `AppRoutes.notifications`
+3. **Logout Functionality**: Added logout button with confirmation dialog using `AuthCubit.logout()`
+4. **Translated UI**: All text elements now use localization keys
+5. **Formatted Code**: Improved code readability with proper indentation
 
 ---
 
