@@ -134,6 +134,55 @@
 - **File**: `Backend/repositories/mealRepo.py`
 - **Change**: Removed duplicate `get_all()` function definition
 
+### 21. Backend: Added Pagination & Search Support for Archives
+
+- **Files**: `Backend/routers/analyse.py`, `Backend/repositories/AnalyseRepo.py`
+- **Changes**:
+  - Added pagination parameters (page, limit) to `/analyse/all/` endpoint
+  - Added search functionality (search by meal name or description)
+  - Added sorting (sort_by, sort_order)
+  - Added risk filtering (risk_filter)
+  - Added `/analyse/count/` endpoint for pagination info
+
+### 22. Backend: Added Pagination & Search Support for Conversations
+
+- **Files**: `Backend/routers/bot.py`, `Backend/repositories/botRepo.py`
+- **Changes**:
+  - Added pagination parameters to `/bot/conversation/all/` endpoint
+  - Added search functionality (search by conversation title)
+  - Added `/bot/conversation/count/` endpoint for pagination info
+
+### 23. Backend: Added Pagination Support for Messages
+
+- **File**: `Backend/routers/bot.py`
+- **Changes**:
+  - Added pagination parameters to `/bot/message/all/{conv_id}` endpoint
+  - Added `/bot/message/count/{conv_id}` endpoint for pagination info
+
+### 24. Frontend: Enhanced ApiService with Pagination
+
+- **File**: `frontend/lib/core/api/api_service.dart`
+- **Changes**:
+  - Added pagination parameters to `getAllAnalysis()`
+  - Added pagination parameters to `getAllConversations()`
+  - Added pagination parameters to `getMessages()`
+  - Added `getAnalysisCount()`, `getConversationCount()`, `getMessageCount()`
+
+### 25. Frontend: Enhanced Repositories
+
+- **Files**: `frontend/lib/features/archives/repo/`, `frontend/lib/features/chat/repo/`
+- **Changes**:
+  - Updated repositories to support pagination, search, and filtering
+  - Added count methods for pagination info
+
+### 26. Frontend: Created Reusable Widgets
+
+- **Files**: `frontend/lib/core/widgets/pagination_widget.dart`, `frontend/lib/core/widgets/search_bar_widget.dart`, `frontend/lib/core/widgets/filter_widget.dart`
+- **Changes**:
+  - Created reusable PaginationWidget for load-more functionality
+  - Created SearchBarWidget for search input
+  - Created FilterChipWidget and FilterBottomSheet for filtering
+
 ## Current Status
 
 ### ✅ COMPLETED Features
@@ -145,6 +194,13 @@
 - Notifications - All operations working
 - Meal Submission Flow - Integrated with archives
 - Error Handling - User-friendly messages implemented
+- **Pagination for Archives** - Implemented with backend and frontend
+- **Pagination for Chat Conversations** - Implemented with backend and frontend
+- **Pagination for Messages** - Implemented with backend and frontend
+- **Search for Archives** - Implemented (search by meal name/description)
+- **Search for Conversations** - Implemented (search by title)
+- **Filter for Archives** - Implemented (filter by risk level: Low, Medium, High)
+- **Sorting for Archives** - Implemented (sort by analysed_at, gluco_percent, risk_result)
 
 ### ✅ FIXED Issues
 
@@ -156,14 +212,13 @@
 
 ### 📋 REMAINING WORK (Priority 3 - Enhancements)
 
-1. Add pagination for archives and chat
-2. Add search functionality for conversations and archives
-3. Implement offline support for critical features
-4. Add filtering and sorting for archives
+1. ~~Add pagination for archives and chat~~ - COMPLETED
+2. ~~Add search functionality for conversations and archives~~ - COMPLETED
+3. ~~Add filtering and sorting for archives~~ - COMPLETED
+4. Implement offline support for critical features - PENDING
 
 ## Next Steps
 
 1. Test all features end-to-end
-2. Add pagination for archives and chat
-3. Add search functionality
-4. Implement offline support
+2. Implement offline support for critical features
+3. Add unit and widget tests

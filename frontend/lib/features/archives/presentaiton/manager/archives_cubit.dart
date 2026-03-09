@@ -8,10 +8,43 @@ class ArchiveCubit extends Cubit<ArchiveState> {
 
   ArchiveCubit({required this.repository}) : super(const ArchiveState());
 
-  Future<void> fetchArchives() async {
-    emit(state.copyWith(status: ArchiveStatus.loading));
+  /// Fetch archives with optional pagination, search, and filtering
+  Future<void> fetchArchives({
+    int? page,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
+    String? riskFilter,
+    bool refresh = false,
+  }) async {
+    // If not refreshing and already loading, don't fetch again
+    if (!refresh && state.status == ArchiveStatus.loading) return;
 
-    final result = await repository.getUserArchives();
+    final currentPage = page ?? 1;
+
+    emit(
+      state.copyWith(
+        status: ArchiveStatus.loading,
+        currentPage: currentPage,
+        searchQuery: search ?? state.searchQuery,
+        sortBy: sortBy ?? state.sortBy,
+        sortOrder: sortOrder ?? state.sortOrder,
+        riskFilter: riskFilter ?? state.riskFilter,
+      ),
+    );
+
+    final result = await repository.getUserArchives(
+      page: currentPage,
+      limit: state.limit,
+      search: search ?? state.searchQuery,
+      sortBy: sortBy ?? state.sortBy,
+      sortOrder: sortOrder ?? state.sortOrder,
+      riskFilter: riskFilter ?? state.riskFilter,
+    );
+
+    // Also fetch total count for pagination
+    final countResult = await repository.getArchiveCount();
+    final totalCount = countResult.fold((_) => 0, (count) => count);
 
     result.fold(
       (failure) => emit(
@@ -21,9 +54,71 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         ),
       ),
       (archives) => emit(
-        state.copyWith(status: ArchiveStatus.success, archives: archives),
+        state.copyWith(
+          status: ArchiveStatus.success,
+          archives: archives,
+          totalCount: totalCount,
+          hasMore: archives.length >= state.limit,
+        ),
       ),
     );
+  }
+
+  /// Load more archives (pagination)
+  Future<void> loadMore() async {
+    if (!state.hasMore || state.status == ArchiveStatus.loading) return;
+
+    final nextPage = state.currentPage + 1;
+    emit(state.copyWith(status: ArchiveStatus.loading));
+
+    final result = await repository.getUserArchives(
+      page: nextPage,
+      limit: state.limit,
+      search: state.searchQuery,
+      sortBy: state.sortBy,
+      sortOrder: state.sortOrder,
+      riskFilter: state.riskFilter,
+    );
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: ArchiveStatus.error,
+          errorMessage: failure.message,
+        ),
+      ),
+      (newArchives) {
+        final allArchives = [...state.archives, ...newArchives];
+        emit(
+          state.copyWith(
+            status: ArchiveStatus.success,
+            archives: allArchives,
+            currentPage: nextPage,
+            hasMore: newArchives.length >= state.limit,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Search archives
+  Future<void> searchArchives(String query) async {
+    await fetchArchives(search: query.isEmpty ? null : query, refresh: true);
+  }
+
+  /// Filter archives by risk level
+  Future<void> filterByRisk(String? riskFilter) async {
+    await fetchArchives(riskFilter: riskFilter, refresh: true);
+  }
+
+  /// Sort archives
+  Future<void> sortArchives({String? sortBy, String? sortOrder}) async {
+    await fetchArchives(sortBy: sortBy, sortOrder: sortOrder, refresh: true);
+  }
+
+  /// Refresh archives
+  Future<void> refreshArchives() async {
+    await fetchArchives(refresh: true);
   }
 
   Future<void> createArchive(ArchiveModel archive) async {
@@ -41,7 +136,11 @@ class ArchiveCubit extends Cubit<ArchiveState> {
       (newArchive) {
         final updatedList = [...state.archives, newArchive];
         emit(
-          state.copyWith(status: ArchiveStatus.success, archives: updatedList),
+          state.copyWith(
+            status: ArchiveStatus.success,
+            archives: updatedList,
+            totalCount: state.totalCount + 1,
+          ),
         );
       },
     );
@@ -83,7 +182,12 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         final updatedList =
             state.archives.where((archive) => archive.id != archiveId).toList();
 
-        emit(state.copyWith(archives: updatedList));
+        emit(
+          state.copyWith(
+            archives: updatedList,
+            totalCount: state.totalCount - 1,
+          ),
+        );
       },
     );
   }

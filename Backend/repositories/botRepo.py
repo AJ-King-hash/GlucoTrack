@@ -9,10 +9,31 @@ from hashing import Hash
 from datetime import datetime,timezone
 from GlucoBot import GlucoBot
 import pandas as pd
+from typing import Optional
 gluco_bot=GlucoBot()
 
-def get_all(user_id:int,db:Session):
-    conversations=db.query(models.Conversation).where(models.Conversation.user_id==user_id).all()
+def get_all(
+    user_id:int, 
+    db:Session,
+    page: int = 1,
+    limit: int = 10,
+    search: Optional[str] = None
+):
+    """Get all conversations with pagination and search support."""
+    query = db.query(models.Conversation).where(models.Conversation.user_id == user_id)
+    
+    # Apply search filter (search in conversation title)
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(models.Conversation.title.ilike(search_term))
+    
+    # Apply sorting (newest first by created_at)
+    query = query.order_by(models.Conversation.created_at.desc())
+    
+    # Apply pagination
+    offset = (page - 1) * limit
+    conversations = query.offset(offset).limit(limit).all()
+    
     return conversations
 
 def create(request,db:Session):
@@ -47,8 +68,17 @@ def delete(id:int,db:Session):
 ################## Messages ##################
 
 
-def get_messages(conv_id:int,db:Session):
-    messages=db.query(models.Message).where(models.Message.conversation_id==conv_id).all()
+def get_messages(conv_id:int, db:Session, page: int = 1, limit: int = 50):
+    """Get messages with pagination support."""
+    query = db.query(models.Message).where(models.Message.conversation_id==conv_id)
+    
+    # Apply sorting (oldest first for chat)
+    query = query.order_by(models.Message.created_at.asc())
+    
+    # Apply pagination
+    offset = (page - 1) * limit
+    messages = query.offset(offset).limit(limit).all()
+    
     return messages
 
 def _get_user_profile_context(user, risks):
