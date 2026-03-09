@@ -14,7 +14,7 @@ python-multipart
 
 jinja2
 
-fastapi-mail[httpx]
+# fastapi-mail[httpx]
 
 numpy
 

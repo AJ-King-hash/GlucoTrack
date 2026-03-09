@@ -7,7 +7,7 @@ class User(BaseModel):
     email:str
     password:str
     # created_at:datetime
-    # updated_at:datetime|None
+    # updated_at:Optional[datetime] = None
 
 class AnalyseBase(BaseModel):
     gluco_percent:float
@@ -36,7 +36,7 @@ class RiskShow(RiskBase):
     diabetes_type:str
     medicine_type:str
     created_at:datetime
-    updated_at:datetime|None    
+    updated_at:Optional[datetime] = None   
     class Config():
         from_attributes=True
 class ShowRiskFactorWithMessage(BaseModel):
@@ -56,7 +56,7 @@ class MealAll(MealBase):
     user_id:int
     title:str
     created_at:datetime
-    updated_at:datetime | None
+    updated_at:Optional[datetime] = None
     class Config():
         from_attributes=True
 
@@ -119,8 +119,8 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    id:int | None=None
-    email: str | None = None
+    id:Optional[int] = None
+    email:Optional[str] = None
 
 
 
@@ -139,14 +139,14 @@ class ResetPasswordRequest(BaseModel):
 class MessageBase(BaseModel):
     conversation_id:int
     sender_type:str
-    message:str | None
+    message:Optional[str] = None
 class MessageShow(MessageBase):
     id:int
     conversation_id:int
     sender_type:str
     message:str
     created_at:datetime
-    updated_at:datetime | None
+    updated_at:Optional[datetime] = None
     class Config():
         from_attributes=True
 class ConversationBase(BaseModel):
@@ -158,7 +158,7 @@ class ConversationAll(ConversationBase):
     user_id:int
     title:str
     created_at:datetime
-    updated_at:datetime | None
+    updated_at:Optional[datetime] = None
     class Config():
         from_attributes=True
 class ConversationShow(ConversationBase):
@@ -166,7 +166,7 @@ class ConversationShow(ConversationBase):
     user_id:int
     title:str
     created_at:datetime
-    updated_at:datetime | None
+    updated_at:Optional[datetime] = None
     messages:List[MessageBase]=[]
     class Config():
         from_attributes=True
