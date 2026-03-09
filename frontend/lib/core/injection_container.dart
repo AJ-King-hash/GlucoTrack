@@ -27,6 +27,7 @@ import 'package:untitled10/features/risk/domain/usecase/delete_risk_usecase.dart
 import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
 import 'package:untitled10/features/home/presentation/manager/home_cubit.dart';
 import 'package:untitled10/features/archives/presentaiton/manager/archives_cubit.dart';
+import 'package:untitled10/features/notification/presentation/manager/notification_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -106,4 +107,5 @@ Future<void> init() async {
     ),
   );
   sl.registerFactory(() => ArchiveCubit(repository: sl<ArchiveRepository>()));
+  sl.registerFactory(() => NotificationCubit(sl<NotificationService>()));
 }
