@@ -10,6 +10,7 @@ import 'package:untitled10/features/home/presentation/view/home_page.dart';
 import 'package:untitled10/features/home/presentation/widgets/about_app.dart';
 import 'package:untitled10/features/risk/presentation/view/risk_page.dart';
 import 'package:untitled10/features/notification/presentation/view/reminder_settings_page.dart';
+import 'package:untitled10/features/archives/presentaiton/view/archive_page.dart';
 
 class AppRoutes {
   static const login = "/login";
@@ -24,6 +25,7 @@ class AppRoutes {
   static const aboutApp = "/aboutApp";
   static const risk = "/risk";
   static const notifications = "/notifications";
+  static const archives = "/archives";
   static Map<String, WidgetBuilder> routes = {
     login: (context) => LoginPage(),
     register: (context) => RegisterPage(),
@@ -37,5 +39,6 @@ class AppRoutes {
     aboutApp: (context) => AboutAppPage(),
     risk: (context) => RiskPage(),
     notifications: (context) => const ReminderSettingsPage(),
+    archives: (context) => const ArchivesPage(),
   };
 }
