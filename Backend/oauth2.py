@@ -5,6 +5,7 @@ oauth2_scheme=OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_current_user(token:str=Depends(oauth2_scheme)):
+    # print(f"token is: {token}")
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Not Authorized",

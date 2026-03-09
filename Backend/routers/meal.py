@@ -12,10 +12,9 @@ router=APIRouter(
 
 @router.post("/")
 def create_meal(request:schemas.MealBase,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
+    # print(current_user)
     # Create a new request object with the authenticated user's ID from JWT
-    updated_request = request.model_copy(update={'user_id': current_user.id})
-    return mealRepo.create(updated_request,db,current_user)
-
+    return mealRepo.create(request,db,current_user)
 @router.get("/{id}",response_model=schemas.MealBase)
 def show_meal(id:int,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return mealRepo.show(id,db)
