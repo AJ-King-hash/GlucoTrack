@@ -16,7 +16,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"message": "User Created successfully ", "user": user,"token":schemas.Token(access_token=access_token,token_type="bearer")}   
+    return {"message":"User Login Successfully!","user":user,"access_token":access_token,"token_type":"bearer"}  
 
 @router.get("/{id}",response_model=schemas.ShowUserWithMessage)
 def get_user(id:int,db:Session=Depends(get_db)):
