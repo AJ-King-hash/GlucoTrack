@@ -150,8 +150,10 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> _updateRisk(RiskEntity riskEntity) async {
     try {
+      // Use existing risk ID if available, otherwise use 0 (backend uses JWT anyway)
+      final riskId = _currentRiskEntity?.id ?? 0;
       final result = await _updateRiskUsecase(
-        UpdateRiskParams(id: 0, risk: riskEntity),
+        UpdateRiskParams(id: riskId, risk: riskEntity),
       );
       result.fold(
         (failure) => _handleFailure(failure),

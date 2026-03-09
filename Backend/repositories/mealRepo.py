@@ -11,11 +11,6 @@ def get_all(user_id:int,db:Session):
     meals=db.query(models.Meal).where(models.Meal.user_id==user_id).all()
     return meals
 
-
-def get_all(user_id:int,db:Session):
-    meals=db.query(models.Meal).where(models.Meal.user_id==user_id).all()
-    return meals
-
 def create(request,db:Session):
     # gluco_bot.chat()
    

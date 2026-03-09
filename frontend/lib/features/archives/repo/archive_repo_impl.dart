@@ -27,10 +27,16 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   ) async {
     final result = await apiService.createMeal(archive.meal.toJson());
 
-    return result.fold(
-      (failure) => Left(failure),
-      (data) => Right(ArchiveModel.fromJson(data['archive'])),
-    );
+    return result.fold((failure) => Left(failure), (data) {
+      // Check if archive data exists in response
+      final archiveData = data['archive'];
+      if (archiveData == null) {
+        return Left(
+          UnknownFailure(message: 'Invalid response: archive data not found'),
+        );
+      }
+      return Right(ArchiveModel.fromJson(archiveData));
+    });
   }
 
   @override
@@ -40,10 +46,15 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   ) async {
     final result = await apiService.updateMeal(id, archive.meal.toJson());
 
-    return result.fold(
-      (failure) => Left(failure),
-      (data) => Right(ArchiveModel.fromJson(data)),
-    );
+    return result.fold((failure) => Left(failure), (data) {
+      // Check if data is valid
+      if (data == null) {
+        return Left(
+          UnknownFailure(message: 'Invalid response: no data returned'),
+        );
+      }
+      return Right(ArchiveModel.fromJson(data));
+    });
   }
 
   @override
