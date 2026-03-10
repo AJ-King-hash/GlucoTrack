@@ -639,125 +639,6 @@ class RiskDetailsView extends StatelessWidget {
     ),
   );
 
-  Widget _buildBmiGaugeCard(BuildContext context) {
-    final bmi = risk.bmi;
-    final bmiCategory = _getBmiCategory(context, bmi);
-    final bmiColor = _getBmiColor(bmi);
-    return Card(
-      elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.monitor_heart,
-                    color: Colors.blue,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.read<LocaleCubit>().translate('bmi'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Text(
-                        bmiCategory,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: bmiColor.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    bmi.toStringAsFixed(1),
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: bmiColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(
-              value: (bmi / 40).clamp(0, 1),
-              backgroundColor: Colors.grey.withValues(alpha: 0.2),
-              valueColor: AlwaysStoppedAnimation<Color>(bmiColor),
-              minHeight: 8,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '18.5 - 24.9',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.green.withValues(alpha: 0.8),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  'Normal Range',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBmiLegend(String label, String range, Color color) => Column(
-    children: [
-      Container(
-        width: 12,
-        height: 12,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      ),
-      const SizedBox(height: 4),
-      Text(label, style: const TextStyle(fontSize: 10)),
-      Text(range, style: const TextStyle(fontSize: 8, color: Colors.grey)),
-    ],
-  );
-
   Widget _buildMetricCard(
     BuildContext context, {
     required IconData icon,
@@ -816,8 +697,6 @@ class RiskDetailsView extends StatelessWidget {
     required bool value,
     String? customValue,
   }) {
-    final isPositive = customValue != null ? customValue.isNotEmpty : value;
-    final color = isPositive ? Colors.orange : Colors.green;
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withValues(alpha: 0.1),

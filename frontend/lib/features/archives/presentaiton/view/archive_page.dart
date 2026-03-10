@@ -443,7 +443,7 @@ class ArchivesPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Container(
+              SizedBox(
                 width: 250,
                 child: Text(
                   state.errorMessage ??

@@ -80,7 +80,7 @@ class ArchiveCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "${archive.glucoPercent.toStringAsFixed(0)}",
+                      archive.glucoPercent.toStringAsFixed(0),
                       style: TextStyle(
                         color: _getRiskColor(),
                         fontWeight: FontWeight.bold,
