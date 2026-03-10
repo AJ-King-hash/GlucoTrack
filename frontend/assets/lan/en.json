@@ -57,5 +57,18 @@
   "risk_factors": "Risk Factors",
   "medical_info": "Medical Information",
   "delete_risk": "Delete Risk",
-  "delete_risk_confirm": "Are you sure you want to delete this risk record?"
+  "delete_risk_confirm": "Are you sure you want to delete this risk record?",
+  "notfound": "No data found",
+  "search": "Search",
+  "refresh": "Refresh",
+  "filter_by_risk": "Filter by Risk",
+  "sort_by": "Sort by",
+  "all": "All",
+  "low_risk": "Low Risk",
+  "medium_risk": "Medium Risk",
+  "high_risk": "High Risk",
+  "date_newest": "Newest First",
+  "date_oldest": "Oldest First",
+  "gluco_high": "Highest Sugar",
+  "gluco_low": "Lowest Sugar"
 }

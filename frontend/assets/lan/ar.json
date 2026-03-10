@@ -57,5 +57,18 @@
   "risk_factors": "عوامل الخطر",
   "medical_info": "المعلومات الطبية",
   "delete_risk": "حذف المخاطر",
-  "delete_risk_confirm": "هل أنت متأكد من حذف سجل المخاطر هذا؟"
+  "delete_risk_confirm": "هل أنت متأكد من حذف سجل المخاطر هذا؟",
+  "notfound": "لا توجد بيانات",
+  "search": "بحث",
+  "refresh": "تحديث",
+  "filter_by_risk": "تصفية حسب المخاطر",
+  "sort_by": "ترتيب حسب",
+  "all": "الكل",
+  "low_risk": "مخاطر منخفضة",
+  "medium_risk": "مخاطر متوسطة",
+  "high_risk": "مخاطر عالية",
+  "date_newest": "الأحدث أولاً",
+  "date_oldest": "الأقدم أولاً",
+  "gluco_high": "أعلى سكر",
+  "gluco_low": "أقل سكر"
 }
