@@ -3,7 +3,7 @@ import models
 from fastapi import HTTPException,status
 from datetime import datetime,timezone
 import numpy as np
-def create(request,db:Session):
+def create(user_id,request,db:Session):
 
     if request.diabetes_type not in ["d1","d2"]:
         raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Diabetes type Not Found,it can be only: 'd1' or 'd2")
@@ -16,7 +16,7 @@ def create(request,db:Session):
     if request.weight <=0:
         raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"weight cannot be zero or lower,must be a positive number")
     new_risks=models.RiskFactor(
-        user_id=request.user_id,
+        user_id=user_id,
         age=request.age,
         weight=float(request.weight),
         height=float(request.height),
