@@ -26,16 +26,15 @@ class AuthRepoImpl extends AuthRepository {
 
     return await result.fold((failure) async => Left(failure), (data) async {
       final responseData = data as Map<String, dynamic>;
-      if (responseData['user'] != null && responseData['token'] != null) {
+      if (responseData['user'] != null &&
+          responseData['access_token'] != null) {
         // Create UserModel from the response data
         final userData = responseData['user'] as Map<String, dynamic>;
-        final tokenData = responseData['token'] as Map<String, dynamic>;
 
-        // Combine user and token data
+        // Combine user and token data - backend returns access_token at top level
         final combinedData = {
           ...userData,
-          'token':
-              tokenData['access_token'], // Assuming UserModel expects 'token' field
+          'token': responseData['access_token'],
         };
 
         final user = UserModel.fromJson(combinedData);
