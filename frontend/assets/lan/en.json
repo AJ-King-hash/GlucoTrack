@@ -43,6 +43,8 @@
   "please_enter_physical_activity": "Please enter physical activity",
   "please_enter_diabetes_type": "Please enter diabetes type",
   "please_enter_medicine_type": "Please enter medicine type",
+  "please_select_diabetes_type": "Please select diabetes type",
+  "please_select_medicine_type": "Please select medicine type",
   "risk_created_successfully": "Risk created successfully",
   "risk_updated_successfully": "Risk updated successfully",
   "risk_deleted_successfully": "Risk deleted successfully",
@@ -82,5 +84,14 @@
   "old_password": "Old Password",
   "new_password": "New Password",
   "confirm_password": "Confirm Password",
-  "save_changes": "Save Changes"
+  "save_changes": "Save Changes",
+  "analysis_details": "Analysis Details",
+  "gluco_percentage": "Gluco Percentage",
+  "risk_result": "Risk Result",
+  "meal_type": "Meal Type",
+  "meal_description": "Meal Description",
+  "analysed_at": "Analysed At",
+  "try_again": "Try Again",
+  "error_occurred": "An error occurred",
+  "loading": "Loading..."
 }

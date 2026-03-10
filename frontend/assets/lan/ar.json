@@ -43,6 +43,8 @@
   "please_enter_physical_activity": "الرجاء إدخال النشاط البدني",
   "please_enter_diabetes_type": "الرجاء إدخال نوع السكري",
   "please_enter_medicine_type": "الرجاء إدخال نوع الدواء",
+  "please_select_diabetes_type": "الرجاء اختيار نوع السكري",
+  "please_select_medicine_type": "الرجاء اختيار نوع الدواء",
   "risk_created_successfully": "تم إنشاء المخاطر بنجاح",
   "risk_updated_successfully": "تم تحديث المخاطر بنجاح",
   "risk_deleted_successfully": "تم حذف المخاطر بنجاح",
@@ -82,5 +84,14 @@
   "old_password": "كلمة المرور القديمة",
   "new_password": "كلمة المرور الجديدة",
   "confirm_password": "تأكيد كلمة المرور",
-  "save_changes": "حفظ التغييرات"
+  "save_changes": "حفظ التغييرات",
+  "analysis_details": "تفاصيل التحليل",
+  "gluco_percentage": "نسبة الجلوكو",
+  "risk_result": "نتيجة الخطر",
+  "meal_type": "نوع الوجبة",
+  "meal_description": "وصف الوجبة",
+  "analysed_at": "تم التحليل في",
+  "try_again": "إعادة المحاولة",
+  "error_occurred": "حدث خطأ",
+  "loading": "جاري التحميل..."
 }
