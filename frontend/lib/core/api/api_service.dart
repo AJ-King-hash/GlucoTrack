@@ -126,7 +126,7 @@ class ApiService {
   }
 
   Future<Either<Failure, dynamic>> logout() =>
-      _handleRequest(_dio.post(ApiEndpoints.logout, data: {}), (data) => data);
+      _handleRequest(_dio.delete(ApiEndpoints.logout), (data) => data);
 
   // ================= USER =================
 

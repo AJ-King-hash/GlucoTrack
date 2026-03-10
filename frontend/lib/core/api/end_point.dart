@@ -2,7 +2,7 @@
 
 /// Backend API Endpoints Configuration
 ///
-/// Base URL: http://192.168.251.59:8000
+/// Base URL: http://10.248.171.223:8000
 /// All endpoints are prefixed with the base URL
 class ApiEndpoints {
   ApiEndpoints._();
