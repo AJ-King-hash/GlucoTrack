@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../data/model/archives_model.dart';
@@ -113,7 +114,9 @@ class ArchiveCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      archive.analysedAt.toLocal().toString(),
+                      DateFormat(
+                        'yyyy-MM-dd HH:mm',
+                      ).format(archive.analysedAt.toLocal()),
                       style: const TextStyle(
                         fontSize: 13,
                         color: Colors.grey,

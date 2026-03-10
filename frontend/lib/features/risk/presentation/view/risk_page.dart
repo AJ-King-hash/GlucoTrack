@@ -395,7 +395,7 @@ class RiskDetailsView extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                _getBmiCategory(risk.bmi),
+                                _getBmiCategory(context, risk.bmi),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: _getBmiColor(
@@ -641,7 +641,7 @@ class RiskDetailsView extends StatelessWidget {
 
   Widget _buildBmiGaugeCard(BuildContext context) {
     final bmi = risk.bmi;
-    final bmiCategory = _getBmiCategory(bmi);
+    final bmiCategory = _getBmiCategory(context, bmi);
     final bmiColor = _getBmiColor(bmi);
     return Card(
       elevation: 8,
@@ -947,11 +947,12 @@ class RiskDetailsView extends StatelessWidget {
     );
   }
 
-  String _getBmiCategory(double bmi) {
-    if (bmi < 18.5) return 'Underweight';
-    if (bmi < 25) return 'Normal';
-    if (bmi < 30) return 'Overweight';
-    return 'Obese';
+  String _getBmiCategory(BuildContext context, double bmi) {
+    final locale = context.read<LocaleCubit>();
+    if (bmi < 18.5) return locale.translate('bmi_underweight');
+    if (bmi < 25) return locale.translate('bmi_normal');
+    if (bmi < 30) return locale.translate('bmi_overweight');
+    return locale.translate('bmi_obese');
   }
 
   Color _getBmiColor(double bmi) {
