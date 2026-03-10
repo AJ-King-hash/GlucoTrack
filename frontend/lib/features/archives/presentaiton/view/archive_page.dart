@@ -6,7 +6,6 @@ import 'package:untitled10/core/localization/locale_cubit.dart';
 import '../manager/archives_cubit.dart';
 import '../manager/archives_state.dart';
 import '../widgets/archive_card.dart';
-import '../widgets/empty_state.dart';
 import 'archive_details_page.dart';
 
 class ArchivesPage extends StatelessWidget {
@@ -33,12 +32,51 @@ class ArchivesPage extends StatelessWidget {
           final cubit = context.read<ArchiveCubit>();
           return Scaffold(
             appBar: AppBar(
-              title: Text(locale.translate('archives_page_title')),
+              title: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  locale.translate('archives_page_title'),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              centerTitle: true,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.filter_list),
-                  onPressed:
-                      () => _showFilterSheet(context, state, cubit, locale),
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: ElevatedButton.icon(
+                    onPressed:
+                        () => _showFilterSheet(context, state, cubit, locale),
+                    icon: const Icon(Icons.filter_list, size: 18),
+                    label: Text(
+                      locale.translate('filter'),
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.withValues(alpha: 0.1),
+                      foregroundColor: Colors.blue,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -58,25 +96,39 @@ class ArchivesPage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (bottomSheetContext) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
+        return Container(
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                locale.translate('filter_by_risk'),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              // Filter by Risk
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  locale.translate('filter_by_risk'),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Wrap(
-                spacing: 8,
+                spacing: 12,
+                runSpacing: 12,
                 children: [
                   FilterChip(
                     label: Text(locale.translate('all')),
@@ -85,6 +137,25 @@ class ArchivesPage extends StatelessWidget {
                       cubit.filterByRisk(null);
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            state.riskFilter == null
+                                ? Colors.blue
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          state.riskFilter == null
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('low_risk')),
@@ -93,6 +164,25 @@ class ArchivesPage extends StatelessWidget {
                       cubit.filterByRisk('Low');
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.green,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            state.riskFilter == _lowRisk
+                                ? Colors.green
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          state.riskFilter == _lowRisk
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('medium_risk')),
@@ -101,6 +191,25 @@ class ArchivesPage extends StatelessWidget {
                       cubit.filterByRisk('Medium');
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.orange,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            state.riskFilter == _mediumRisk
+                                ? Colors.orange
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          state.riskFilter == _mediumRisk
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('high_risk')),
@@ -109,20 +218,53 @@ class ArchivesPage extends StatelessWidget {
                       cubit.filterByRisk('High');
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.red,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            state.riskFilter == _highRisk
+                                ? Colors.red
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          state.riskFilter == _highRisk
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                locale.translate('sort_by'),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 24),
+              // Sort by
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  locale.translate('sort_by'),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Wrap(
-                spacing: 8,
+                spacing: 12,
+                runSpacing: 12,
                 children: [
                   FilterChip(
                     label: Text(locale.translate('date_newest')),
@@ -136,6 +278,27 @@ class ArchivesPage extends StatelessWidget {
                       );
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            (state.sortBy == _sortByDate &&
+                                    state.sortOrder == _sortOrderDesc)
+                                ? Colors.blue
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          (state.sortBy == _sortByDate &&
+                                  state.sortOrder == _sortOrderDesc)
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('date_oldest')),
@@ -149,6 +312,27 @@ class ArchivesPage extends StatelessWidget {
                       );
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            (state.sortBy == 'analysed_at' &&
+                                    state.sortOrder == _sortOrderAsc)
+                                ? Colors.blue
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          (state.sortBy == 'analysed_at' &&
+                                  state.sortOrder == _sortOrderAsc)
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('gluco_high')),
@@ -162,6 +346,27 @@ class ArchivesPage extends StatelessWidget {
                       );
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            (state.sortBy == _sortByGluco &&
+                                    state.sortOrder == 'desc')
+                                ? Colors.blue
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          (state.sortBy == _sortByGluco &&
+                                  state.sortOrder == 'desc')
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   FilterChip(
                     label: Text(locale.translate('gluco_low')),
@@ -175,6 +380,27 @@ class ArchivesPage extends StatelessWidget {
                       );
                       Navigator.pop(bottomSheetContext);
                     },
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.grey.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color:
+                            (state.sortBy == 'gluco_percent' &&
+                                    state.sortOrder == 'asc')
+                                ? Colors.blue
+                                : Colors.grey.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          (state.sortBy == 'gluco_percent' &&
+                                  state.sortOrder == 'asc')
+                              ? Colors.white
+                              : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -193,30 +419,102 @@ class ArchivesPage extends StatelessWidget {
   ) {
     switch (state.status) {
       case ArchiveStatus.loading:
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+        );
       case ArchiveStatus.error:
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                state.errorMessage ??
-                    locale.translate('archives_error_message'),
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 40,
+                ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
+              Container(
+                width: 250,
+                child: Text(
+                  state.errorMessage ??
+                      locale.translate('archives_error_message'),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
                 onPressed: () => cubit.refreshArchives(),
-                child: Text(locale.translate('refresh')),
+                icon: const Icon(Icons.refresh),
+                label: Text(locale.translate('refresh')),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 24,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                ),
               ),
             ],
           ),
         );
       case ArchiveStatus.success:
         if (state.archives.isEmpty) {
-          return const EmptyState();
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.archive,
+                    color: Colors.grey,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  locale.translate('archives_empty_message'),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
         return RefreshIndicator(
           onRefresh: () => cubit.refreshArchives(),
+          color: Colors.blue,
+          backgroundColor: Colors.white,
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: state.archives.length,
@@ -237,7 +535,11 @@ class ArchivesPage extends StatelessWidget {
           ),
         );
       default:
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+        );
     }
   }
 }
