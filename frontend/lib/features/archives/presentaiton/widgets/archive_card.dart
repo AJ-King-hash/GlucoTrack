@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled10/core/localization/locale_cubit.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../data/model/archives_model.dart';
+import '../../presentaiton/manager/archives_cubit.dart';
 
 class ArchiveCard extends StatelessWidget {
   final ArchiveModel archive;
@@ -18,6 +21,32 @@ class ArchiveCard extends StatelessWidget {
       default:
         return AppColor.positive;
     }
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    final locale = context.read<LocaleCubit>();
+    showDialog(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text(locale.translate('delete')),
+            content: Text(locale.translate('delete_risk_confirm')),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(locale.translate('cancel')),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                  context.read<ArchiveCubit>().deleteArchive(archive.id);
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: Text(locale.translate('delete')),
+              ),
+            ],
+          ),
+    );
   }
 
   @override
@@ -40,9 +69,21 @@ class ArchiveCard extends StatelessWidget {
         ),
         title: Text(archive.meal.mealType),
         subtitle: Text(archive.analysedAt.toLocal().toString()),
-        trailing: Text(
-          archive.riskResult,
-          style: TextStyle(color: _getRiskColor(), fontWeight: FontWeight.bold),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              archive.riskResult,
+              style: TextStyle(
+                color: _getRiskColor(),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () => _showDeleteConfirmation(context),
+            ),
+          ],
         ),
       ),
     );

@@ -169,6 +169,8 @@ class ArchiveCubit extends Cubit<ArchiveState> {
   }
 
   Future<void> deleteArchive(int archiveId) async {
+    emit(state.copyWith(status: ArchiveStatus.loading));
+
     final result = await repository.deleteArchive(archiveId);
 
     result.fold(
@@ -184,6 +186,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
 
         emit(
           state.copyWith(
+            status: ArchiveStatus.success,
             archives: updatedList,
             totalCount: state.totalCount - 1,
           ),

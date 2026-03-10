@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
+import 'package:untitled10/features/home/presentation/widgets/dropdown.dart';
 import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
 import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
 import 'package:untitled10/features/risk/presentation/manager/risk_state.dart';
@@ -77,6 +78,26 @@ class _RiskPageState extends State<RiskPage> {
             return RiskDetailsView(risk: state.risk);
           } else if (state is RiskUpdated) {
             return RiskDetailsView(risk: state.risk);
+          } else if (state is RiskFailure) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, color: Colors.red),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<RiskCubit>().getRisk(0),
+                    child: Text(
+                      context.read<LocaleCubit>().translate('try_again'),
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else {
             return Center(
               child: Text(
@@ -221,33 +242,42 @@ class _RiskPageState extends State<RiskPage> {
                                       )
                                       : null,
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: context.read<LocaleCubit>().translate(
-                              'diabetes_type',
-                            ),
+                        Dropdown(
+                          label: context.read<LocaleCubit>().translate(
+                            'diabetes_type',
                           ),
-                          onSaved: (value) => diabetesType = value!,
+                          items: ['d1', 'd2'],
+                          initialValue:
+                              diabetesType.isNotEmpty ? diabetesType : null,
+                          onChanged:
+                              (value) => setDialogState(
+                                () => diabetesType = value ?? '',
+                              ),
                           validator:
                               (value) =>
-                                  value!.isEmpty
+                                  value == null || value.isEmpty
                                       ? context.read<LocaleCubit>().translate(
-                                        'please_enter_diabetes_type',
+                                        'please_select_diabetes_type',
                                       )
                                       : null,
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: context.read<LocaleCubit>().translate(
-                              'medicine_type',
-                            ),
+                        const SizedBox(height: 16),
+                        Dropdown(
+                          label: context.read<LocaleCubit>().translate(
+                            'medicine_type',
                           ),
-                          onSaved: (value) => medicineType = value!,
+                          items: ['Insuline', 'MouthSugarLower'],
+                          initialValue:
+                              medicineType.isNotEmpty ? medicineType : null,
+                          onChanged:
+                              (value) => setDialogState(
+                                () => medicineType = value ?? '',
+                              ),
                           validator:
                               (value) =>
-                                  value!.isEmpty
+                                  value == null || value.isEmpty
                                       ? context.read<LocaleCubit>().translate(
-                                        'please_enter_medicine_type',
+                                        'please_select_medicine_type',
                                       )
                                       : null,
                         ),
@@ -811,35 +841,42 @@ class RiskDetailsView extends StatelessWidget {
                                       )
                                       : null,
                         ),
-                        TextFormField(
-                          initialValue: diabetesType,
-                          decoration: InputDecoration(
-                            labelText: context.read<LocaleCubit>().translate(
-                              'diabetes_type',
-                            ),
+                        Dropdown(
+                          label: context.read<LocaleCubit>().translate(
+                            'diabetes_type',
                           ),
-                          onSaved: (value) => diabetesType = value!,
+                          items: ['d1', 'd2'],
+                          initialValue:
+                              diabetesType.isNotEmpty ? diabetesType : null,
+                          onChanged:
+                              (value) => setDialogState(
+                                () => diabetesType = value ?? '',
+                              ),
                           validator:
                               (value) =>
-                                  value!.isEmpty
+                                  value == null || value.isEmpty
                                       ? context.read<LocaleCubit>().translate(
-                                        'please_enter_diabetes_type',
+                                        'please_select_diabetes_type',
                                       )
                                       : null,
                         ),
-                        TextFormField(
-                          initialValue: medicineType,
-                          decoration: InputDecoration(
-                            labelText: context.read<LocaleCubit>().translate(
-                              'medicine_type',
-                            ),
+                        const SizedBox(height: 16),
+                        Dropdown(
+                          label: context.read<LocaleCubit>().translate(
+                            'medicine_type',
                           ),
-                          onSaved: (value) => medicineType = value!,
+                          items: ['Insuline', 'MouthSugarLower'],
+                          initialValue:
+                              medicineType.isNotEmpty ? medicineType : null,
+                          onChanged:
+                              (value) => setDialogState(
+                                () => medicineType = value ?? '',
+                              ),
                           validator:
                               (value) =>
-                                  value!.isEmpty
+                                  value == null || value.isEmpty
                                       ? context.read<LocaleCubit>().translate(
-                                        'please_enter_medicine_type',
+                                        'please_select_medicine_type',
                                       )
                                       : null,
                         ),

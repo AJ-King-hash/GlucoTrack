@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/color/app_color.dart';
+import 'package:untitled10/core/localization/locale_cubit.dart';
 
 import '../../data/model/archives_model.dart';
 
 class ArchiveDetailsPage extends StatelessWidget {
   final ArchiveModel archive;
 
-  const ArchiveDetailsPage({
-    super.key,
-    required this.archive,
-  });
+  const ArchiveDetailsPage({super.key, required this.archive});
 
   Color _getRiskColor() {
     switch (archive.riskResult.toLowerCase()) {
@@ -26,7 +25,7 @@ class ArchiveDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Analysis Details"),
+        title: Text(context.read<LocaleCubit>().translate('analysis_details')),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -41,7 +40,7 @@ class ArchiveDetailsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Gluco Percentage",
+                  context.read<LocaleCubit>().translate('gluco_percentage'),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
@@ -54,13 +53,21 @@ class ArchiveDetailsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                Text("Risk Result: ${archive.riskResult}"),
+                Text(
+                  "${context.read<LocaleCubit>().translate('risk_result')}: ${archive.riskResult}",
+                ),
                 SizedBox(height: 10),
-                Text("Meal Type: ${archive.meal.mealType}"),
+                Text(
+                  "${context.read<LocaleCubit>().translate('meal_type')}: ${archive.meal.mealType}",
+                ),
                 SizedBox(height: 10),
-                Text("Meal Description: ${archive.meal.description}"),
+                Text(
+                  "${context.read<LocaleCubit>().translate('meal_description')}: ${archive.meal.description}",
+                ),
                 SizedBox(height: 10),
-                Text("Analysed At: ${archive.analysedAt.toLocal()}"),
+                Text(
+                  "${context.read<LocaleCubit>().translate('analysed_at')}: ${archive.analysedAt.toLocal()}",
+                ),
               ],
             ),
           ),
