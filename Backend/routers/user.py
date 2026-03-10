@@ -15,7 +15,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
     user=userRepo.create(request,db)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.email,"id":user.id}, expires_delta=access_token_expires
     )
     return {"message": "User Created successfully ", "user": ShowUserToken.model_validate(user), "access_token": access_token, "token_type": "bearer"}   
 
