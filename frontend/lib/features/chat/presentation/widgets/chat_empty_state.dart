@@ -5,7 +5,9 @@ import 'package:untitled10/core/color/app_color.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
 
 class ChatEmptyState extends StatelessWidget {
-  const ChatEmptyState({super.key});
+  final Function(String)? onSuggestionTap;
+
+  const ChatEmptyState({super.key, this.onSuggestionTap});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,7 @@ class ChatEmptyState extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 28.w),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 24.w,
-            vertical: 28.h,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24.r),
@@ -54,10 +53,7 @@ class ChatEmptyState extends StatelessWidget {
               SizedBox(height: 22.h),
               Text(
                 context.read<LocaleCubit>().translate('tit'),
-                style: TextStyle(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8.h),
               Text(
@@ -76,9 +72,18 @@ class ChatEmptyState extends StatelessWidget {
                 runSpacing: 8.h,
                 alignment: WrapAlignment.center,
                 children: [
-                  _suggestionChip(context.read<LocaleCubit>().translate('sug_type1'),),
-                  _suggestionChip(context.read<LocaleCubit>().translate('sug_low'),),
-                  _suggestionChip(context.read<LocaleCubit>().translate('sug_moni'),),
+                  _suggestionChip(
+                    context.read<LocaleCubit>().translate('sug_type1'),
+                    onSuggestionTap,
+                  ),
+                  _suggestionChip(
+                    context.read<LocaleCubit>().translate('sug_low'),
+                    onSuggestionTap,
+                  ),
+                  _suggestionChip(
+                    context.read<LocaleCubit>().translate('sug_moni'),
+                    onSuggestionTap,
+                  ),
                 ],
               ),
             ],
@@ -87,25 +92,24 @@ class ChatEmptyState extends StatelessWidget {
       ),
     );
   }
-  Widget _suggestionChip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 8,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColor.positive.withOpacity(0.2),
+
+  Widget _suggestionChip(String text, Function(String)? onTap) {
+    return GestureDetector(
+      onTap: onTap != null ? () => onTap(text) : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColor.positive.withOpacity(0.2)),
         ),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          color:AppColor.positive,
-          fontWeight: FontWeight.w500,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColor.positive,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

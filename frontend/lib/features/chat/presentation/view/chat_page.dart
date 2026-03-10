@@ -22,6 +22,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -33,6 +34,16 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     });
+  }
+
+  void _handleNewChat() {
+    // Clear the current conversation and start fresh
+    context.read<BotCubit>().getAllConversations();
+  }
+
+  void _handleSuggestionTap(String suggestion) {
+    // Set the suggestion text in the message input
+    _messageController.text = suggestion;
   }
 
   @override
@@ -48,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         backgroundColor: AppColor.backgroundNeutral,
         resizeToAvoidBottomInset: true,
-        drawer: const ChatDrawer(),
+        drawer: ChatDrawer(onNewChat: _handleNewChat),
         appBar: AppBar(
           backgroundColor: AppColor.backgroundNeutral,
           elevation: 0,
@@ -170,7 +181,9 @@ class _ChatPageState extends State<ChatPage> {
                       if (state is BotListSuccess) {
                         final messages = state.data;
                         if (messages.isEmpty) {
-                          return const ChatEmptyState();
+                          return ChatEmptyState(
+                            onSuggestionTap: _handleSuggestionTap,
+                          );
                         }
                         return ListView.builder(
                           controller: _scrollController,
@@ -187,7 +200,9 @@ class _ChatPageState extends State<ChatPage> {
                           },
                         );
                       }
-                      return const ChatEmptyState();
+                      return ChatEmptyState(
+                        onSuggestionTap: _handleSuggestionTap,
+                      );
                     },
                   ),
                 ),
@@ -196,6 +211,7 @@ class _ChatPageState extends State<ChatPage> {
                     // Enable input unless loading
                     final enabled = state is! BotLoading;
                     return MessageInput(
+                      controller: _messageController,
                       enabled: enabled,
                       onSend: (text) {
                         final message = MessageEntity(
