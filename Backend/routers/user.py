@@ -4,7 +4,6 @@ from StartingPackages import *
 from repositories import userRepo
 from JwtToken import timedelta,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
 import oauth2
-from schemas import ShowUserToken, ShowUser
 router=APIRouter(
 prefix="/user",
 tags=["Users"],
@@ -17,20 +16,20 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": user.email,"id":user.id}, expires_delta=access_token_expires
     )
-    return {"message": "User Created successfully ", "user": ShowUserToken.model_validate(user), "access_token": access_token, "token_type": "bearer"}   
+    return {"message":"User Login Successfully!","user":user,"access_token":access_token,"token_type":"bearer"}  
 
 @router.get("/{id}",response_model=schemas.ShowUserWithMessage)
 def get_user(id:int,db:Session=Depends(get_db)):
-    return {"message": "User has successfully Found!", "user": ShowUser.model_validate(userRepo.show(id,db))}
+    return {"message": "User has successfully Found!", "user": userRepo.show(id,db)}
 
 @router.put("/",response_model=schemas.ShowUserWithMessage)
 def update_user(request:schemas.User,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
 
-    return {"message": "User updated successfully", "user": ShowUser.model_validate(userRepo.update(current_user.id,request,db))}
+    return {"message": "User updated successfully", "user": userRepo.update(current_user.id,request,db)}
 
 
 @router.delete("/")
 def delete_user(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     userRepo.delete(current_user.id,db)
-    return {"message": f"User {current_user.id} deleted successfully!"}
+    return {"message": f"User {id} deleted successfully!"}
 

@@ -21,7 +21,7 @@ class ChatEmptyState extends StatelessWidget {
             borderRadius: BorderRadius.circular(24.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 30,
                 offset: const Offset(0, 12),
               ),
@@ -36,8 +36,8 @@ class ChatEmptyState extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      AppColor.positive.withOpacity(0.15),
-                      AppColor.positive.withOpacity(0.05),
+                      AppColor.positive.withValues(alpha: 0.15),
+                      AppColor.positive.withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -101,7 +101,7 @@ class ChatEmptyState extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFFF1F5F9),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColor.positive.withOpacity(0.2)),
+          border: Border.all(color: AppColor.positive.withValues(alpha: 0.2)),
         ),
         child: Text(
           text,

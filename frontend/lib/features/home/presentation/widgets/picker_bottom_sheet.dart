@@ -26,9 +26,7 @@ Future<void> showNumberPickerBottomSheet({
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: AppColor.backgroundNeutral,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(28.r),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         ),
         child: Column(
           children: [
@@ -37,7 +35,7 @@ Future<void> showNumberPickerBottomSheet({
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: AppColor.textNeutral.withOpacity(0.3),
+                color: AppColor.textNeutral.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -65,7 +63,7 @@ Future<void> showNumberPickerBottomSheet({
                 },
                 children: List.generate(
                   max - min + 1,
-                      (index) => Center(
+                  (index) => Center(
                     child: Text(
                       '${min + index} $unit',
                       style: TextStyle(

@@ -7,11 +7,7 @@ class ArchiveCard extends StatelessWidget {
   final ArchiveModel archive;
   final VoidCallback onTap;
 
-  const ArchiveCard({
-    super.key,
-    required this.archive,
-    required this.onTap,
-  });
+  const ArchiveCard({super.key, required this.archive, required this.onTap});
 
   Color _getRiskColor() {
     switch (archive.riskResult.toLowerCase()) {
@@ -29,13 +25,11 @@ class ArchiveCard extends StatelessWidget {
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
-          backgroundColor: _getRiskColor().withOpacity(0.15),
+          backgroundColor: _getRiskColor().withValues(alpha: 0.15),
           child: Text(
             "${archive.glucoPercent.toStringAsFixed(0)}%",
             style: TextStyle(
@@ -45,15 +39,10 @@ class ArchiveCard extends StatelessWidget {
           ),
         ),
         title: Text(archive.meal.mealType),
-        subtitle: Text(
-          archive.analysedAt.toLocal().toString(),
-        ),
+        subtitle: Text(archive.analysedAt.toLocal().toString()),
         trailing: Text(
           archive.riskResult,
-          style: TextStyle(
-            color: _getRiskColor(),
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: _getRiskColor(), fontWeight: FontWeight.bold),
         ),
       ),
     );

@@ -74,7 +74,7 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       CircleAvatar(
                         radius: 18,
-                        backgroundColor: AppColor.info.withOpacity(0.1),
+                        backgroundColor: AppColor.info.withValues(alpha: 0.1),
                         child: const Icon(
                           Icons.medical_services_outlined,
                           size: 18,

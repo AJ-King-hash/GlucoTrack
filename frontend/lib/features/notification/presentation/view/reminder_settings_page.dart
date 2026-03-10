@@ -186,7 +186,7 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: DropdownButtonFormField<String>(
-          value: _selectedTimezone,
+          initialValue: _selectedTimezone,
           decoration: const InputDecoration(
             border: InputBorder.none,
             prefixIcon: Icon(Icons.public, color: AppColor.positive),

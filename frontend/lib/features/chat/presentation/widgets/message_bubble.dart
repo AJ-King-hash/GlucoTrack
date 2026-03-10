@@ -4,15 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/utils/time_formater.dart';
 import '../../data/message_model.dart';
 import 'avatar_icon.dart';
+
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isUser;
 
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.isUser,
-  });
+  const MessageBubble({super.key, required this.message, required this.isUser});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +17,10 @@ class MessageBubble extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
       child: Row(
         mainAxisAlignment:
-        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-
           if (!isUser) AvatarIcon(isUser: false),
-
 
           Flexible(
             child: Container(
@@ -37,14 +32,18 @@ class MessageBubble extends StatelessWidget {
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
                   bottomLeft:
-                  isUser ? const Radius.circular(16) : const Radius.circular(4),
+                      isUser
+                          ? const Radius.circular(16)
+                          : const Radius.circular(4),
                   bottomRight:
-                  isUser ? const Radius.circular(4) : const Radius.circular(16),
+                      isUser
+                          ? const Radius.circular(4)
+                          : const Radius.circular(16),
                 ),
               ),
               child: Column(
                 crossAxisAlignment:
-                isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Text(
                     message.content,
@@ -69,16 +68,16 @@ class MessageBubble extends StatelessWidget {
                     })(),
                     style: TextStyle(
                       fontSize: 10.sp,
-                      color: isUser
-                          ? Colors.white.withOpacity(0.7)
-                          : Colors.black54,
+                      color:
+                          isUser
+                              ? Colors.white.withValues(alpha: 0.7)
+                              : Colors.black54,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-
 
           if (isUser) AvatarIcon(isUser: true),
         ],

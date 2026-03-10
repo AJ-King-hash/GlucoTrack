@@ -5,8 +5,16 @@ from datetime import datetime,timezone
 import numpy as np
 def create(request,db:Session):
 
-    # if request.medicine not in ["Fast","Before Meal","After Meal"]:
-        # raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Meal type Not Found,it can be only: 'Fast','Before Meal', 'After Meal")
+    if request.diabetes_type not in ["d1","d2"]:
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Diabetes type Not Found,it can be only: 'd1' or 'd2")
+    if request.medicine_type not in ["Insuline","MouthSugarLower"]:
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Medicine type Not Found,it can be only: 'Insuline' or 'MouthSugarLower'")
+    if request.age <5:
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"age Must be at least >=5")
+    if request.height <=0:
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"height cannot be zero or lower,must be a positive number")
+    if request.weight <=0:
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"weight cannot be zero or lower,must be a positive number")
     new_risks=models.RiskFactor(
         user_id=request.user_id,
         age=request.age,

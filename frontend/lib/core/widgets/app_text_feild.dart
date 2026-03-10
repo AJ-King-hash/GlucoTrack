@@ -16,21 +16,24 @@ class AppTextField extends StatelessWidget {
   final Color? iconColor;
   final Color? hintColor;
   final String? hintText;
+  final bool enabled;
+
   const AppTextField({
     super.key,
     required this.controller,
     required this.label,
     required this.icon,
     this.suffixIcon,
-    this.isPasswordHidden=true,
+    this.isPasswordHidden = true,
     this.obscure = false,
     this.validator,
-     this.keyboardType = TextInputType.text,
+    this.keyboardType = TextInputType.text,
     this.borderColor,
     this.labelColor,
     this.hintColor,
     this.hintText,
     this.iconColor,
+    this.enabled = true,
   });
 
   @override
@@ -40,6 +43,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscure,
       keyboardType: keyboardType,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
@@ -52,10 +56,7 @@ class AppTextField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: color,
-            width: 1.5,
-          ),
+          borderSide: BorderSide(color: color, width: 1.5),
         ),
       ),
     );

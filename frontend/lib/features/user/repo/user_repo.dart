@@ -12,6 +12,7 @@ abstract class UserRepository {
   Future<Either<Failure, UserModel?>> updateUser(
     String name,
     String email,
-    String password,
-  );
+    String password, {
+    String? oldPassword,
+  });
 }
