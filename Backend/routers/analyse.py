@@ -1,10 +1,10 @@
-from fastapi import APIRouter,Depends,HTTPException,status,Query
+from fastapi import APIRouter,Depends,HTTPException,status
 import schemas
 from sqlalchemy.orm import Session
 from database import get_db
 import models
 import oauth2
-from typing import List, Optional
+from typing import List
 from repositories import AnalyseRepo
 # has diabete:
 #1- random sugar after 2h if more than 200mg/dl has diabete (max:600)
@@ -34,27 +34,8 @@ router=APIRouter(
 
 
 @router.get("/all/",response_model=List[schemas.AnalyseShow])
-def get_all_analysis(
-    db:Session=Depends(get_db),
-    current_user:schemas.User=Depends(oauth2.get_current_user),
-    page: int = Query(1, ge=1, description="Page number"),
-    limit: int = Query(10, ge=1, le=100, description="Items per page"),
-    search: Optional[str] = Query(None, description="Search by meal name or description"),
-    sort_by: Optional[str] = Query("analysed_at", description="Sort field: analysed_at, gluco_percent, risk_result"),
-    sort_order: str = Query("desc", regex="^(asc|desc)$", description="Sort order: asc or desc"),
-    risk_filter: Optional[str] = Query(None, description="Filter by risk result: Low, Medium, High")
-):
-    """Get all analysis with pagination, search, and filtering support."""
-    return AnalyseRepo.get_all(
-        current_user.id, 
-        db, 
-        page=page, 
-        limit=limit,
-        search=search,
-        sort_by=sort_by,
-        sort_order=sort_order,
-        risk_filter=risk_filter
-    )
+def get_all_analysis(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
+    return AnalyseRepo.get_all(current_user.id,db)
 
 
 @router.delete("/{id}")
@@ -63,11 +44,3 @@ def delete_analyse(id:int,db:Session=Depends(get_db)):
     return {"message": f"Analyse {id} deleted successfully!"}
 
 
-@router.get("/count/")
-def get_analysis_count(
-    db:Session=Depends(get_db),
-    current_user:schemas.User=Depends(oauth2.get_current_user)
-):
-    """Get total count of analysis for pagination info."""
-    count = db.query(models.PrevAnalyse).filter(models.PrevAnalyse.user_id == current_user.id).count()
-    return {"total": count}
