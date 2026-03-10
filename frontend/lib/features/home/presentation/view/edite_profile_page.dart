@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/features/auth/data/models/user_model.dart';
 import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
+import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
@@ -24,23 +26,99 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   String? selectedDiabetesType;
-  late String originalName;
-  late String originalEmail;
-  late String originalPassword;
-  String originalDiabetesType = "سكري نوع 1";
+  StreamSubscription? _userSubscription;
+
   @override
   void initState() {
-    context.read<UserCubit>()
-      ..getUser().then((v) {
-        originalName = widget.userModel?.name ?? "your name";
-        originalEmail = widget.userModel?.email ?? "xxxxx@gmail.com";
-        originalPassword = widget.userModel?.password ?? "***********";
-        nameController.text = originalName;
-        emailController.text = originalEmail;
-        passwordController.text = originalPassword;
-      });
-
     super.initState();
+    if (widget.userModel != null) {
+      nameController.text = widget.userModel!.name;
+      emailController.text = widget.userModel!.email;
+      passwordController.text = widget.userModel!.password ?? '';
+    } else {
+      context.read<UserCubit>().getUser();
+      _userSubscription = context.read<UserCubit>().stream.listen((state) {
+        if (state is UserLoaded) {
+          final user = state.userModel;
+          nameController.text = user.name;
+          emailController.text = user.email;
+          passwordController.text = user.password ?? '';
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _userSubscription?.cancel();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  bool _validateForm() {
+    if (nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Name cannot be empty'),
+          backgroundColor: AppColor.negative,
+        ),
+      );
+      return false;
+    }
+
+    if (emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Email cannot be empty'),
+          backgroundColor: AppColor.negative,
+        ),
+      );
+      return false;
+    }
+
+    if (passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password cannot be empty'),
+          backgroundColor: AppColor.negative,
+        ),
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> _updateProfile() async {
+    if (!_validateForm()) return;
+
+    try {
+      await context.read<UserCubit>().updateUser(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: AppColor.positive,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update profile'),
+            backgroundColor: AppColor.negative,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -87,7 +165,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 24.h),
                   decoration: BoxDecoration(
-                    color: AppColor.info.withOpacity(0.05),
+                    color: AppColor.info.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Column(
@@ -97,7 +175,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
                         height: 90.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColor.info.withOpacity(0.1),
+                          color: AppColor.info.withValues(alpha: 0.1),
                         ),
                         child: Icon(
                           Icons.person_outline,
@@ -132,7 +210,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
                     borderRadius: BorderRadius.circular(18.r),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 25,
                         offset: const Offset(0, 10),
                       ),
@@ -197,43 +275,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
                     iconColor: AppColor.info,
                     backgroundColor: AppColor.positive,
                     onPressed: () {
-                      final hasChanges =
-                          nameController.text.trim() != originalName ||
-                          emailController.text.trim() != originalEmail ||
-                          selectedDiabetesType != originalDiabetesType;
-                      if (hasChanges) {
-                        originalName = nameController.text.trim();
-                        originalEmail = emailController.text.trim();
-                        originalPassword = passwordController.text.trim();
-                        originalDiabetesType = selectedDiabetesType ?? "";
-                        context.read<UserCubit>().updateUser(
-                          name: originalName,
-                          email: originalEmail,
-                          password: originalPassword,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('profile updated successfully'),
-                            backgroundColor: AppColor.positive,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                        );
-                        //update values after save changes
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text("Everything is up to date"),
-                            backgroundColor: AppColor.negative,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      }
+                      _updateProfile();
                     },
                   ),
                 ),

@@ -7,7 +7,7 @@ class MessageInput extends StatefulWidget {
   final bool enabled;
   final TextEditingController? controller;
 
-  MessageInput({
+  const MessageInput({
     super.key,
     required this.onSend,
     this.enabled = true,
@@ -62,8 +62,8 @@ class _MessageInputState extends State<MessageInput> {
                   border: Border.all(
                     color:
                         widget.enabled
-                            ? Colors.blue.withOpacity(0.15)
-                            : Colors.grey.withOpacity(0.2),
+                            ? Colors.blue.withValues(alpha: 0.15)
+                            : Colors.grey.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(

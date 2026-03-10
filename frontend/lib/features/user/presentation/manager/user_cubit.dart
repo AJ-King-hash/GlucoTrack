@@ -45,11 +45,11 @@ class UserCubit extends Cubit<UserState> {
         }
       });
     } catch (e) {
-      String errorMsg = "Error in Profile";
+      String errMsg = "Error in Profile";
       if (e is ApiError) {
-        errorMsg = e.message;
+        errMsg = e.message;
       }
-      emit(UserError(errorMsg));
+      emit(UserError(errMsg));
     }
   }
 
@@ -58,10 +58,16 @@ class UserCubit extends Cubit<UserState> {
     required String name,
     required String email,
     required String password,
+    String? oldPassword,
   }) async {
     emit(UserLoading());
     try {
-      final result = await userRepository.updateUser(name, email, password);
+      final result = await userRepository.updateUser(
+        name,
+        email,
+        password,
+        oldPassword: oldPassword,
+      );
       result.fold((failure) => emit(UserError(failure.message)), (user) {
         if (user != null) {
           emit(UserLoaded(user));
@@ -69,8 +75,6 @@ class UserCubit extends Cubit<UserState> {
           emit(UserError("Failed to update profile"));
         }
       });
-      await getUser();
-      emit(UserSuccess("Profile updated successfully"));
     } catch (e) {
       String errorMsg = "Error in Update Profile";
       if (e is ApiError) {

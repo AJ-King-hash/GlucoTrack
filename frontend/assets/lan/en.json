@@ -70,5 +70,17 @@
   "date_newest": "Newest First",
   "date_oldest": "Oldest First",
   "gluco_high": "Highest Sugar",
-  "gluco_low": "Lowest Sugar"
+  "gluco_low": "Lowest Sugar",
+  "please_enter_old_password": "Please enter old password",
+  "please_enter_new_password": "Please enter new password",
+  "password_too_short": "Password must be at least 6 characters",
+  "please_confirm_password": "Please confirm password",
+  "passwords_do_not_match": "Passwords do not match",
+  "new_password_same": "New password cannot be the same as old password",
+  "password_changed_successfully": "Password changed successfully",
+  "password_change_failed": "Password change failed",
+  "old_password": "Old Password",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "save_changes": "Save Changes"
 }

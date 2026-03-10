@@ -19,7 +19,7 @@ class MedicalHeaderCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: AppColor.backgroundNeutral.withOpacity(0.6),
+          color: AppColor.backgroundNeutral.withValues(alpha: 0.6),
         ),
       ),
       child: Row(
@@ -33,8 +33,8 @@ class MedicalHeaderCard extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColor.info.withOpacity(0.9),
-                  AppColor.info.withOpacity(0.6),
+                  AppColor.info.withValues(alpha: 0.9),
+                  AppColor.info.withValues(alpha: 0.6),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -68,7 +68,7 @@ class MedicalHeaderCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.sp,
                     height: 1.4,
-                    color: AppColor.textNeutral.withOpacity(0.65),
+                    color: AppColor.textNeutral.withValues(alpha: 0.65),
                   ),
                 ),
               ],
@@ -79,7 +79,7 @@ class MedicalHeaderCard extends StatelessWidget {
           Icon(
             Icons.arrow_forward_ios_rounded,
             size: 16.sp,
-            color: AppColor.textNeutral.withOpacity(0.4),
+            color: AppColor.textNeutral.withValues(alpha: 0.4),
           ),
         ],
       ),

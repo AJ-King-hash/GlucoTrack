@@ -39,11 +39,11 @@ class UserInfoCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColor.info.withOpacity(0.08),
+        color: AppColor.info.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12.withOpacity(0.05),
+            color: Colors.black12.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -171,7 +171,7 @@ class UserInfoCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
-                color: AppColor.info.withOpacity(0.15),
+                color: AppColor.info.withValues(alpha: 0.15),
                 blurRadius: 6,
                 offset: Offset(0, 3),
               ),
@@ -185,8 +185,8 @@ class UserInfoCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      AppColor.info.withOpacity(0.4),
-                      AppColor.info.withOpacity(0.1),
+                      AppColor.info.withValues(alpha: 0.4),
+                      AppColor.info.withValues(alpha: 0.1),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -199,7 +199,7 @@ class UserInfoCard extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: AppColor.textNeutral.withOpacity(0.7),
+                  color: AppColor.textNeutral.withValues(alpha: 0.7),
                 ),
               ),
               SizedBox(height: 6.h),

@@ -56,13 +56,14 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<Failure, UserModel?>> updateUser(
     String name,
     String email,
-    String password,
-  ) async {
-    final result = await apiService.updateUser({
-      "name": name,
-      "email": email,
-      "password": password,
-    });
+    String password, {
+    String? oldPassword,
+  }) async {
+    final data = {"name": name, "email": email, "password": password};
+    if (oldPassword != null) {
+      data["old_password"] = oldPassword;
+    }
+    final result = await apiService.updateUser(data);
 
     return result.fold((failure) => Left(failure), (data) {
       final responseData = data as Map<String, dynamic>;

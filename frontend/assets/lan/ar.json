@@ -70,5 +70,17 @@
   "date_newest": "الأحدث أولاً",
   "date_oldest": "الأقدم أولاً",
   "gluco_high": "أعلى سكر",
-  "gluco_low": "أقل سكر"
+  "gluco_low": "أقل سكر",
+  "please_enter_old_password": "الرجاء إدخال كلمة المرور القديمة",
+  "please_enter_new_password": "الرجاء إدخال كلمة المرور الجديدة",
+  "password_too_short": "كلمة المرور يجب أن تكون على الأقل 6 أحرف",
+  "please_confirm_password": "الرجاء تأكيد كلمة المرور",
+  "passwords_do_not_match": "كلمات المرور غير متطابقة",
+  "new_password_same": "كلمة المرور الجديدة لا يمكن أن تكون نفس كلمة المرور القديمة",
+  "password_changed_successfully": "تم تغيير كلمة المرور بنجاح",
+  "password_change_failed": "فشل تغيير كلمة المرور",
+  "old_password": "كلمة المرور القديمة",
+  "new_password": "كلمة المرور الجديدة",
+  "confirm_password": "تأكيد كلمة المرور",
+  "save_changes": "حفظ التغييرات"
 }

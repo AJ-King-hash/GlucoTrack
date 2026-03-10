@@ -4,10 +4,7 @@ import '../color/app_color.dart';
 class AuthBackground extends StatelessWidget {
   final Widget child;
 
-  const AuthBackground({
-    super.key,
-    required this.child,
-  });
+  const AuthBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +48,8 @@ class _BaseGradient extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColor.positive.withOpacity(0.9),
-            AppColor.positive.withOpacity(0.6),
+            AppColor.positive.withValues(alpha: 0.9),
+            AppColor.positive.withValues(alpha: 0.6),
             Colors.white,
           ],
         ),
@@ -78,10 +75,7 @@ class _TopGlowOverlay extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [
-              Colors.white.withOpacity(0.25),
-              Colors.transparent,
-            ],
+            colors: [Colors.white.withValues(alpha: 0.25), Colors.transparent],
             radius: 0.8,
           ),
         ),
@@ -108,7 +102,7 @@ class _BottomGlowOverlay extends StatelessWidget {
           shape: BoxShape.circle,
           gradient: RadialGradient(
             colors: [
-              AppColor.positive.withOpacity(0.15),
+              AppColor.positive.withValues(alpha: 0.15),
               Colors.transparent,
             ],
             radius: 0.7,
@@ -132,12 +126,20 @@ class _FloatingIcons extends StatelessWidget {
         Positioned(
           top: 50,
           right: 30,
-          child: Icon(Icons.local_hospital, color: Colors.white.withOpacity(0.1), size: 60),
+          child: Icon(
+            Icons.local_hospital,
+            color: Colors.white.withValues(alpha: 0.1),
+            size: 60,
+          ),
         ),
         Positioned(
           bottom: 100,
           left: 40,
-          child: Icon(Icons.medical_services, color: Colors.white.withOpacity(0.08), size: 50),
+          child: Icon(
+            Icons.medical_services,
+            color: Colors.white.withValues(alpha: 0.08),
+            size: 50,
+          ),
         ),
       ],
     );
