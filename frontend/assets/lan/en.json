@@ -52,5 +52,10 @@
   "yes": "Yes",
   "no": "No",
   "are_you_sure_logout": "Are you sure you want to logout?",
-  "high_activity": "High Activity"
+  "high_activity": "High Activity",
+  "health_metrics": "Health Metrics",
+  "risk_factors": "Risk Factors",
+  "medical_info": "Medical Information",
+  "delete_risk": "Delete Risk",
+  "delete_risk_confirm": "Are you sure you want to delete this risk record?"
 }

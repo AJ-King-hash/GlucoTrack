@@ -52,5 +52,10 @@
   "yes": "نعم",
   "no": "لا",
   "are_you_sure_logout": "هل أنت متأكد من تسجيل الخروج؟",
-  "high_activity": "نشاط عالي"
+  "high_activity": "نشاط عالي",
+  "health_metrics": "المقاييس الصحية",
+  "risk_factors": "عوامل الخطر",
+  "medical_info": "المعلومات الطبية",
+  "delete_risk": "حذف المخاطر",
+  "delete_risk_confirm": "هل أنت متأكد من حذف سجل المخاطر هذا؟"
 }
