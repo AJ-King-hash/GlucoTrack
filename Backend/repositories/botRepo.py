@@ -21,6 +21,7 @@ def create(request,db:Session,current_user):
         user_id=current_user.id,
         title=request.title,
     )
+    
     db.add(new_conversation)
     db.commit()
     db.refresh(new_conversation)

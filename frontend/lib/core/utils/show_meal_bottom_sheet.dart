@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/widgets/app_button.dart';
-import 'package:untitled10/core/widgets/app_text_feild.dart';
-import 'package:untitled10/features/archives/presentaiton/manager/archives_cubit.dart';
-import 'package:untitled10/features/archives/presentaiton/manager/archives_state.dart';
-import 'package:untitled10/features/archives/data/model/archives_model.dart';
-import 'package:untitled10/features/archives/data/model/meal_model.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/features/meal/repo/meal_repository.dart';
+import '../../../../core/color/app_color.dart';
+import '../../../../core/localization/locale_cubit.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_text_feild.dart';
+import '../../../../features/archives/presentaiton/manager/archives_cubit.dart';
+import '../../../../features/archives/presentaiton/manager/archives_state.dart';
+import '../../../../features/archives/data/model/archives_model.dart';
+import '../../../../features/archives/data/model/meal_model.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/injection_container.dart';
+import '../../../../features/meal/repo/meal_repository.dart';
 
 /// Maps backend meal type to frontend string value
 String _mapBackendMealTypeToString(String mealType) {
@@ -27,182 +27,173 @@ String _mapBackendMealTypeToString(String mealType) {
   }
 }
 
+/// Maps frontend string value to backend meal type
+String _mapMealTypeToBackend(String mealType) {
+  switch (mealType) {
+    case 'fasting':
+      return 'Fast';
+    case 'before':
+      return 'Before Meal';
+    case 'after':
+      return 'After Meal';
+    default:
+      return 'Fast';
+  }
+}
+
 void showMealBottomSheet(BuildContext context) async {
-  // Fetch last meal from backend to pre-select the dropdown
   String selectedMealType = 'fasting';
 
+  // 1. Fetch last meal pre-selection logic
   try {
     final mealRepo = sl<MealRepository>();
     final result = await mealRepo.getLastMeal();
 
-    // Check if context is still valid (not disposed)
     if (!context.mounted) return;
 
-    result.fold(
-      (failure) {
-        // Use default 'fasting' on failure
-      },
-      (lastMeal) {
-        if (lastMeal != null) {
-          selectedMealType = _mapBackendMealTypeToString(lastMeal.mealType);
-        }
-      },
-    );
+    result.fold((failure) {}, (lastMeal) {
+      if (lastMeal != null) {
+        selectedMealType = _mapBackendMealTypeToString(lastMeal.mealType);
+      }
+    });
   } catch (e) {
-    // Use default 'fasting' on error
+    debugPrint("Error fetching last meal: $e");
   }
 
-  // Check again after await
   if (!context.mounted) return;
 
+  // 2. Local variables for the sheet
   final TextEditingController mealDescription = TextEditingController();
   TimeOfDay? selectedMealTime;
+
+  // Helper translations
   String getMealDescription(String mealType, BuildContext context) {
     final cubit = context.read<LocaleCubit>();
-    switch (mealType) {
-      case 'fasting':
-        return cubit.translate('fasting_desc');
-      case 'before':
-        return cubit.translate('before_desc');
-      case 'after':
-        return cubit.translate('after_desc');
-      default:
-        return '';
-    }
+    return cubit.translate('${mealType}_desc');
   }
 
-  String getMealTimeLabel(BuildContext context, String mealType) {
+  String getMealTimeLabel(String mealType, BuildContext context) {
     final cubit = context.read<LocaleCubit>();
-
-    switch (mealType) {
-      case 'before':
-        return cubit.translate('before_time');
-      case 'after':
-        return cubit.translate('after_time');
-      case 'fasting':
-      default:
-        return cubit.translate('fasting_time');
-    }
+    return cubit.translate('${mealType}_time');
   }
 
-  Future<void> pickMealTime(
-    BuildContext context,
-    Function(TimeOfDay) onPicked,
-  ) async {
-    final TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (time != null) {
-      onPicked(time);
-    }
-  }
-
+  // 3. Show the Bottom Sheet
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    backgroundColor: AppColor.backgroundNeutral,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
     ),
-    builder: (context) {
+    builder: (sheetContext) {
+      // Provide ArchiveCubit to the sheet context
       return BlocProvider(
         create: (context) => sl<ArchiveCubit>(),
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 20,
-          ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
+                left: 20.w,
+                right: 20.w,
+                top: 20.h,
+              ),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Center(
+                    child: Container(
+                      width: 50.w,
+                      height: 5.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
                   Text(
                     context.read<LocaleCubit>().translate('mealInfo'),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColor.textNeutral,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(height: 20.h),
 
-                  SizedBox(height: 16.h),
+                  // Dropdown for Meal Type
                   DropdownButtonFormField<String>(
-                    initialValue: selectedMealType,
+                    value: selectedMealType,
+                    style: TextStyle(
+                      color: AppColor.textNeutral,
+                      fontSize: 14.sp,
+                    ),
                     decoration: InputDecoration(
                       labelText: context.read<LocaleCubit>().translate(
                         'mealType',
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.restaurant_menu,
+                        color: AppColor.info,
                       ),
                     ),
-                    items: [
-                      DropdownMenuItem(
-                        value: 'fasting',
-                        child: Text(
-                          context.read<LocaleCubit>().translate('fasting'),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'before',
-                        child: Text(
-                          context.read<LocaleCubit>().translate('before'),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: 'after',
-                        child: Text(
-                          context.read<LocaleCubit>().translate('after'),
-                        ),
-                      ),
-                    ],
+                    items:
+                        ['fasting', 'before', 'after'].map((String type) {
+                          return DropdownMenuItem(
+                            value: type,
+                            child: Text(
+                              context.read<LocaleCubit>().translate(type),
+                            ),
+                          );
+                        }).toList(),
                     onChanged: (value) {
                       setState(() {
                         selectedMealType = value!;
-                        mealDescription.text = getMealDescription(
-                          selectedMealType,
-                          context,
-                        );
-                        selectedMealTime = null;
+                        selectedMealTime = null; // Reset time if type changes
                       });
                     },
                   ),
                   SizedBox(height: 16.h),
 
+                  // Time Picker Trigger
                   InkWell(
-                    onTap: () {
-                      pickMealTime(context, (time) {
-                        setState(() {
-                          selectedMealTime = time;
-                        });
-                      });
+                    onTap: () async {
+                      final TimeOfDay? time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (time != null) {
+                        setState(() => selectedMealTime = time);
+                      }
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 12,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 15.h,
+                        horizontal: 12.w,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[400]!),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.access_time),
-                          const SizedBox(width: 12),
+                          const Icon(Icons.access_time, color: AppColor.info),
+                          SizedBox(width: 12.w),
                           Text(
                             selectedMealTime == null
-                                ? getMealTimeLabel(context, selectedMealType)
+                                ? getMealTimeLabel(selectedMealType, context)
                                 : selectedMealTime!.format(context),
                             style: TextStyle(
                               color:
                                   selectedMealTime == null
                                       ? Colors.grey
-                                      : Colors.black,
+                                      : AppColor.textNeutral,
+                              fontSize: 14.sp,
                             ),
                           ),
                         ],
@@ -211,51 +202,24 @@ void showMealBottomSheet(BuildContext context) async {
                   ),
                   SizedBox(height: 16.h),
 
+                  // Description Field
                   AppTextField(
                     controller: mealDescription,
                     label: getMealDescription(selectedMealType, context),
-                    icon: Icons.food_bank_outlined,
+                    icon: Icons.notes,
                   ),
-                  SizedBox(height: 10.h),
-                  //submit Button
+                  SizedBox(height: 24.h),
+
+                  // Submit logic with BlocConsumer
                   BlocConsumer<ArchiveCubit, ArchiveState>(
                     listener: (context, state) {
                       if (state.status == ArchiveStatus.success) {
-                        // Show success message before navigating
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              context.read<LocaleCubit>().translate(
-                                'analysis_complete',
-                              ),
-                            ),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        Navigator.pop(context);
+                        Navigator.pop(context); // Close bottom sheet
                         Navigator.pushNamed(context, AppRoutes.archives);
                       } else if (state.status == ArchiveStatus.error) {
-                        // Show user-friendly error message
-                        String errorMsg =
-                            state.errorMessage ?? 'An error occurred';
-
-                        // Provide specific feedback based on error type
-                        if (errorMsg.contains('connection') ||
-                            errorMsg.contains('timeout')) {
-                          errorMsg =
-                              'Unable to connect. Please check your internet connection.';
-                        } else if (errorMsg.contains('500') ||
-                            errorMsg.contains('server')) {
-                          errorMsg = 'Server error. Please try again later.';
-                        } else if (errorMsg.contains('422') ||
-                            errorMsg.contains('validation')) {
-                          errorMsg =
-                              'Invalid input. Please check your meal details.';
-                        }
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(errorMsg),
+                            content: Text(state.errorMessage ?? "Error"),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -301,13 +265,13 @@ void showMealBottomSheet(BuildContext context) async {
 
                                   final mealModel = MealModel(
                                     description: mealDescription.text,
-                                    mealType: _mapMealType(selectedMealType),
+                                    mealType: _mapMealTypeToBackend(
+                                      selectedMealType,
+                                    ),
                                     mealTime: mealTime,
-                                    userId: 0, // Will be set by backend
+                                    userId: 0,
                                   );
 
-                                  // Use factory method to create pending archive
-                                  // Actual analysis values will be populated from API response
                                   final archiveModel = ArchiveModel.fromMeal(
                                     mealModel,
                                   );
@@ -316,31 +280,18 @@ void showMealBottomSheet(BuildContext context) async {
                                     archiveModel,
                                   );
                                 },
-                        icon: isLoading ? Icons.hourglass_empty : Icons.send,
-                        iconColor: AppColor.info,
+                        icon:
+                            isLoading ? Icons.hourglass_empty : Icons.analytics,
+                        iconColor: Colors.white,
                       );
                     },
                   ),
-                  SizedBox(height: 8.h),
                 ],
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       );
     },
   );
-}
-
-String _mapMealType(String mealType) {
-  switch (mealType) {
-    case 'fasting':
-      return 'Fast';
-    case 'before':
-      return 'Before Meal';
-    case 'after':
-      return 'After Meal';
-    default:
-      return 'Fast';
-  }
 }

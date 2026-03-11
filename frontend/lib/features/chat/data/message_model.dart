@@ -5,7 +5,6 @@ class MessageModel extends MessageEntity {
     required super.id,
     required super.conversationId,
     required super.content,
-    required super.role,
     required super.createdAt,
     required super.senderType,
   });
@@ -15,7 +14,6 @@ class MessageModel extends MessageEntity {
       id: json['id'] ?? 0,
       conversationId: json['conversation_id'] ?? 0,
       content: json['content'] ?? '',
-      role: json['role'] ?? '',
       createdAt: json['created_at']?.toString() ?? '',
       senderType: json['sender_type'] ?? 'user',
     );
@@ -26,7 +24,6 @@ class MessageModel extends MessageEntity {
       'id': id,
       'conversation_id': conversationId,
       'content': content,
-      'role': role,
       'created_at': createdAt,
       'sender_type': senderType,
     };

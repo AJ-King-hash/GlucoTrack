@@ -74,6 +74,27 @@ class BotCubit extends Cubit<BotState> {
     );
   }
 
+  /// Send a bot response message for the given conversation
+  /// This is called automatically after user sends a message
+  Future<void> sendBotResponse(int conversationId, String userMessage) async {
+    emit(const BotLoading());
+
+    // Create bot message with senderType = 'bot'
+    final botMessage = MessageEntity(
+      id: DateTime.now().millisecondsSinceEpoch,
+      conversationId: conversationId,
+      content: '', // Backend will populate this with the bot's response
+      createdAt: DateTime.now().toIso8601String(),
+      senderType: 'bot',
+    );
+
+    final result = await sendMessageUseCase(botMessage);
+    result.fold(
+      (failure) => emit(BotError(failure)),
+      (data) => emit(BotSuccess(data)),
+    );
+  }
+
   Future<void> getAllMessages(int conversationId) async {
     emit(const BotLoading());
     final result = await getAllMessagesUseCase(conversationId);

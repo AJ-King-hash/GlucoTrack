@@ -7,8 +7,9 @@ import 'archived_chat_item.dart';
 
 class ChatDrawer extends StatefulWidget {
   final VoidCallback? onNewChat;
+  final Function(int conversationId)? onConversationSelected;
 
-  const ChatDrawer({super.key, this.onNewChat});
+  const ChatDrawer({super.key, this.onNewChat, this.onConversationSelected});
 
   @override
   State<ChatDrawer> createState() => _ChatDrawerState();
@@ -91,6 +92,12 @@ class _ChatDrawerState extends State<ChatDrawer> {
                               conversation.title.isNotEmpty
                                   ? conversation.title
                                   : 'Chat ${conversation.id}',
+                          onTap: () {
+                            Navigator.pop(context);
+                            widget.onConversationSelected?.call(
+                              conversation.id,
+                            );
+                          },
                           onDelete: () {
                             context.read<BotCubit>().deleteConversation(
                               conversation.id,

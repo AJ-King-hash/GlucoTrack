@@ -33,7 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
       final result = await authRepository.logout();
       result.fold(
         (failure) => emit(AuthError(failure.message)),
-        (_) => emit(AuthSuccess("Logout Successfully")),
+        (_) => emit(AuthInitial()), // Reset to initial state after logout
       );
     } catch (e) {
       String errMsg = "Error in Logout";

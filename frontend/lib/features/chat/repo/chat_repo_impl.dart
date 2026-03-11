@@ -83,7 +83,6 @@ class BotRepositoryImpl implements BotRepository {
         id: message.id,
         conversationId: message.conversationId,
         content: message.content,
-        role: message.role,
         createdAt: message.createdAt,
         senderType: message.senderType,
       ).toJson(),
