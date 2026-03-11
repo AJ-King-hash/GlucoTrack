@@ -15,13 +15,13 @@ def get_all(user_id:int,db:Session):
     conversations=db.query(models.Conversation).where(models.Conversation.user_id==user_id).all()
     return conversations
 
-def create(request,db:Session,current_user):
         
+def create(request,db:Session,current_user):
     new_conversation=models.Conversation(
         user_id=current_user.id,
         title=request.title,
     )
-    
+
     db.add(new_conversation)
     db.commit()
     db.refresh(new_conversation)
