@@ -119,6 +119,10 @@ class LocaleCubit extends Cubit<LocaleState> {
       "married": "Married",
       "pregnancy_count": "Pregnancy Count",
       "account_information": "Account Information",
+      "sugar_reminder_time": "Blood Sugar Check Time",
+      "medicine_reminder_time": "Medicine Time",
+      "set_time": "Set Time",
+      "select_time": "Select Time",
       "dont_have_account": "Dont have an account? ",
       "tit": "Gluco AI Assistant",
       "subt":
@@ -350,6 +354,10 @@ class LocaleCubit extends Cubit<LocaleState> {
       "single": "أعزب / عزباء",
       "married": "متزوج / متزوجة",
       "pregnancy_count": "عدد مرات الحمل",
+      "sugar_reminder_time": "وقت فحص السكر",
+      "medicine_reminder_time": "وقت الدواء",
+      "set_time": "ضبط الوقت",
+      "select_time": "اختيار الوقت",
     },
   };
 

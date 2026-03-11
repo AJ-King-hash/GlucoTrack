@@ -100,5 +100,10 @@
   "analysed_at": "Analysed At",
   "try_again": "Try Again",
   "error_occurred": "An error occurred",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "sugar_reminder_time": "Blood Sugar Check Time",
+  "medicine_reminder_time": "Medicine Time",
+  "set_time": "Set Time",
+  "select_time": "Select Time",
+  "save": "Save"
 }

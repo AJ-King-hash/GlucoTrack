@@ -100,5 +100,10 @@
   "analysed_at": "تم التحليل في",
   "try_again": "إعادة المحاولة",
   "error_occurred": "حدث خطأ",
-  "loading": "جاري التحميل..."
+  "loading": "جاري التحميل...",
+  "sugar_reminder_time": "وقت فحص السكر",
+  "medicine_reminder_time": "وقت الدواء",
+  "set_time": "ضبط الوقت",
+  "select_time": "اختيار الوقت",
+  "save": "حفظ"
 }

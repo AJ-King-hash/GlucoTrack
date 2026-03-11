@@ -11,7 +11,7 @@ import 'package:untitled10/features/home/presentation/manager/settings_cubit.dar
 import 'package:untitled10/features/home/presentation/manager/settings_state.dart';
 import 'package:untitled10/features/home/presentation/widgets/change_password_bottom_sheet.dart';
 import 'package:untitled10/features/home/presentation/widgets/settings_item.dart';
-import 'package:untitled10/features/home/presentation/widgets/switch_item.dart';
+import 'package:untitled10/features/home/presentation/widgets/time_picker_item.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -73,33 +73,41 @@ class SettingsPage extends StatelessWidget {
                       _sectionTitle(
                         context.read<LocaleCubit>().translate('reminders'),
                       ),
-                      SwitchItem(
+                      TimePickerItem(
                         icon: Icons.monitor_heart,
                         iconColor: AppColor.info,
                         title: context.read<LocaleCubit>().translate(
-                          'sugar_reminder',
+                          'sugar_reminder_time',
                         ),
                         titleColor: AppColor.textNeutral,
-                        value: state.sugarReminder,
-                        onChanged:
+                        selectedTime: state.glucoTime,
+                        isEnabled: state.sugarReminder,
+                        onToggle:
                             (v) => context
                                 .read<SettingsCubit>()
                                 .toggleSugarReminder(v),
-                        isDisabled: true, // Disable while in failure state
+                        onTimeSelected:
+                            (time) => context
+                                .read<SettingsCubit>()
+                                .updateGlucoTime(time),
                       ),
-                      SwitchItem(
+                      TimePickerItem(
                         icon: Icons.medication,
                         iconColor: AppColor.info,
                         title: context.read<LocaleCubit>().translate(
-                          'medicine_reminder',
+                          'medicine_reminder_time',
                         ),
                         titleColor: AppColor.textNeutral,
-                        value: state.medicineReminder,
-                        onChanged:
+                        selectedTime: state.medicineTime,
+                        isEnabled: state.medicineReminder,
+                        onToggle:
                             (v) => context
                                 .read<SettingsCubit>()
                                 .toggleMedicineReminder(v),
-                        isDisabled: true, // Disable while in failure state
+                        onTimeSelected:
+                            (time) => context
+                                .read<SettingsCubit>()
+                                .updateMedicineTime(time),
                       ),
                       _sectionTitle(
                         context.read<LocaleCubit>().translate('security'),
@@ -179,8 +187,11 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      context.read<AuthCubit>().logout();
+                                      context
+                                          .read<AuthCubit>()
+                                          .logout(); // NOT awaited
                                       Navigator.pushNamedAndRemoveUntil(
+                                        // runs immediately
                                         context,
                                         AppRoutes.login,
                                         (route) => false,
@@ -297,32 +308,39 @@ class SettingsPage extends StatelessWidget {
                 _sectionTitle(
                   context.read<LocaleCubit>().translate('reminders'),
                 ),
-                SwitchItem(
+                TimePickerItem(
                   icon: Icons.monitor_heart,
                   iconColor: AppColor.info,
                   title: context.read<LocaleCubit>().translate(
-                    'sugar_reminder',
+                    'sugar_reminder_time',
                   ),
                   titleColor: AppColor.textNeutral,
-                  value: state.sugarReminder,
-                  onChanged:
+                  selectedTime: state.glucoTime,
+                  isEnabled: state.sugarReminder,
+                  onToggle:
                       (v) =>
                           context.read<SettingsCubit>().toggleSugarReminder(v),
-                  isDisabled: state is SettingsLoading,
+                  onTimeSelected:
+                      (time) =>
+                          context.read<SettingsCubit>().updateGlucoTime(time),
                 ),
-                SwitchItem(
+                TimePickerItem(
                   icon: Icons.medication,
                   iconColor: AppColor.info,
                   title: context.read<LocaleCubit>().translate(
-                    'medicine_reminder',
+                    'medicine_reminder_time',
                   ),
                   titleColor: AppColor.textNeutral,
-                  value: state.medicineReminder,
-                  onChanged:
+                  selectedTime: state.medicineTime,
+                  isEnabled: state.medicineReminder,
+                  onToggle:
                       (v) => context
                           .read<SettingsCubit>()
                           .toggleMedicineReminder(v),
-                  isDisabled: state is SettingsLoading,
+                  onTimeSelected:
+                      (time) => context
+                          .read<SettingsCubit>()
+                          .updateMedicineTime(time),
                 ),
 
                 _sectionTitle(
