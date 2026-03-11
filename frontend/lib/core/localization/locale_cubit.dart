@@ -138,7 +138,6 @@ class LocaleCubit extends Cubit<LocaleState> {
       "change_password": "Change Password",
       "please_enter_old_password": "Please enter old password",
       "please_enter_new_password": "Please enter new password",
-      "password_too_short": "Password must be at least 6 characters",
       "please_confirm_password": "Please confirm password",
       "passwords_do_not_match": "Passwords do not match",
       "new_password_same": "New password cannot be the same as old password",
@@ -269,7 +268,6 @@ class LocaleCubit extends Cubit<LocaleState> {
       "change_password": "تغيير كلمة المرور",
       "please_enter_old_password": "الرجاء إدخال كلمة المرور القديمة",
       "please_enter_new_password": "الرجاء إدخال كلمة المرور الجديدة",
-      "password_too_short": "كلمة المرور يجب أن تكون على الأقل 6 أحرف",
       "please_confirm_password": "الرجاء تأكيد كلمة المرور",
       "passwords_do_not_match": "كلمات المرور غير متطابقة",
       "new_password_same":

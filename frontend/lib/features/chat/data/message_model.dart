@@ -17,11 +17,10 @@ class MessageModel extends MessageEntity {
       content: json['content'] ?? '',
       role: json['role'] ?? '',
       createdAt: json['created_at']?.toString() ?? '',
-      senderType: json['sender_type'] ?? '',
+      senderType: json['sender_type'] ?? 'user',
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,

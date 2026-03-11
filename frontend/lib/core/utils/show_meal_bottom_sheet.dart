@@ -11,10 +11,51 @@ import 'package:untitled10/features/archives/data/model/archives_model.dart';
 import 'package:untitled10/features/archives/data/model/meal_model.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
 import 'package:untitled10/core/injection_container.dart';
+import 'package:untitled10/features/meal/repo/meal_repository.dart';
 
-void showMealBottomSheet(BuildContext context) {
-  final TextEditingController mealDescription = TextEditingController();
+/// Maps backend meal type to frontend string value
+String _mapBackendMealTypeToString(String mealType) {
+  switch (mealType) {
+    case 'Fast':
+      return 'fasting';
+    case 'Before Meal':
+      return 'before';
+    case 'After Meal':
+      return 'after';
+    default:
+      return 'fasting';
+  }
+}
+
+void showMealBottomSheet(BuildContext context) async {
+  // Fetch last meal from backend to pre-select the dropdown
   String selectedMealType = 'fasting';
+
+  try {
+    final mealRepo = sl<MealRepository>();
+    final result = await mealRepo.getLastMeal();
+
+    // Check if context is still valid (not disposed)
+    if (!context.mounted) return;
+
+    result.fold(
+      (failure) {
+        // Use default 'fasting' on failure
+      },
+      (lastMeal) {
+        if (lastMeal != null) {
+          selectedMealType = _mapBackendMealTypeToString(lastMeal.mealType);
+        }
+      },
+    );
+  } catch (e) {
+    // Use default 'fasting' on error
+  }
+
+  // Check again after await
+  if (!context.mounted) return;
+
+  final TextEditingController mealDescription = TextEditingController();
   TimeOfDay? selectedMealTime;
   String getMealDescription(String mealType, BuildContext context) {
     final cubit = context.read<LocaleCubit>();

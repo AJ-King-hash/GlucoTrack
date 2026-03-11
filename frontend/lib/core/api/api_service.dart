@@ -249,6 +249,22 @@ class ApiService {
   Future<Either<Failure, dynamic>> getAllMeals() =>
       _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
 
+  /// Get the most recent meal for the authenticated user
+  /// Returns the first meal from the list (most recent) or null if no meals
+  Future<Either<Failure, dynamic>> getLastMeal() async {
+    final result = await _handleRequest(
+      _dio.get(ApiEndpoints.allMeals),
+      (data) => data,
+    );
+
+    // Return first meal if available
+    return result.fold((failure) => Left(failure), (data) {
+      final meals = data as List<dynamic>;
+      if (meals.isEmpty) return const Right(null);
+      return Right(meals.first); // Most recent (first in ordered list)
+    });
+  }
+
   Future<Either<Failure, dynamic>> updateMeal(
     int id,
     Map<String, dynamic> body,
