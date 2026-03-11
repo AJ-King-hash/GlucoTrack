@@ -21,10 +21,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       );
       emit(updated);
 
-      // Call API to update sugar reminder
-      final result = await apiService.updateReminders(
-        glucoTime: value ? (currentState.glucoTime ?? '08:00') : null,
-      );
+      // Call API to update sugar reminder via user endpoint
+      final result = await apiService.updateUser({
+        'gluco_time': value ? (currentState.glucoTime ?? '08:00') : '',
+      });
 
       result.fold(
         (failure) {
@@ -72,10 +72,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       );
       emit(updated);
 
-      // Call API to update medicine reminder
-      final result = await apiService.updateReminders(
-        medicineTime: value ? (currentState.medicineTime ?? '20:00') : null,
-      );
+      // Call API to update medicine reminder via user endpoint
+      final result = await apiService.updateUser({
+        'medicine_time': value ? (currentState.medicineTime ?? '20:00') : '',
+      });
 
       result.fold(
         (failure) {
@@ -122,7 +122,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       final updated = currentState.copyWith(glucoTime: timeString);
       emit(updated);
 
-      final result = await apiService.updateReminders(glucoTime: timeString);
+      final result = await apiService.updateUser({'gluco_time': timeString});
 
       result.fold((failure) {
         emit(
@@ -163,7 +163,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       final updated = currentState.copyWith(medicineTime: timeString);
       emit(updated);
 
-      final result = await apiService.updateReminders(medicineTime: timeString);
+      final result = await apiService.updateUser({'medicine_time': timeString});
 
       result.fold((failure) {
         emit(

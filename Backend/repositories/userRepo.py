@@ -53,10 +53,41 @@ def update(id:int,request,db:Session):
     user.name=request.name
     user.email=request.email
     user.updated_at=datetime.now(timezone.utc)
-    user.password=Hash.bcrypt(request.password)
+    
+    # Update password only if provided
+    if request.password:
+        user.password=Hash.bcrypt(request.password)
+    
+    # Update reminder times if provided
+    if request.gluco_time:
+        user.gluco_reminder = parse_time_to_datetime(request.gluco_time)
+    elif request.gluco_time is None and hasattr(request, 'gluco_time'):
+        # Allow clearing the reminder
+        user.gluco_reminder = None
+    
+    if request.medicine_time:
+        user.medicine_reminder = parse_time_to_datetime(request.medicine_time)
+    elif request.medicine_time is None and hasattr(request, 'medicine_time'):
+        user.medicine_reminder = None
+    
+    # Update FCM token if provided
+    if request.fcm_token:
+        user.fcm_token = request.fcm_token
+    
     db.commit()
     db.refresh(user)
     return user
+
+def parse_time_to_datetime(time_str: str) -> datetime:
+    """Convert HH:MM time string to datetime for today (or next occurrence)"""
+    from datetime import datetime, timedelta
+    now = datetime.now()
+    hour, minute = map(int, time_str.split(':'))
+    scheduled_time = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    # If the time has passed today, schedule for tomorrow
+    if scheduled_time < now:
+        scheduled_time += timedelta(days=1)
+    return scheduled_time
 
 def delete(id:int,db:Session):
     user=db.query(models.User).filter(models.User.id==id).first()
