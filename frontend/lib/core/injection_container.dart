@@ -28,6 +28,7 @@ import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
 import 'package:untitled10/features/home/presentation/manager/home_cubit.dart';
 import 'package:untitled10/features/archives/presentaiton/manager/archives_cubit.dart';
 import 'package:untitled10/features/notification/presentation/manager/notification_cubit.dart';
+import 'package:untitled10/features/meal/repo/meal_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -59,6 +60,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RiskRepository>(
     () => RiskRepoImpl(apiService: sl<ApiService>()),
+  );
+
+  sl.registerLazySingleton<MealRepository>(
+    () => MealRepositoryImpl(sl<ApiService>()),
   );
 
   // Use Cases
