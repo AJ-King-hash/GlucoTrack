@@ -284,10 +284,6 @@ class ApiService {
     );
   }
 
-  /// Get total count of analysis for pagination
-  Future<Either<Failure, dynamic>> getAnalysisCount() =>
-      _handleRequest(_dio.get(ApiEndpoints.analysisCount), (data) => data);
-
   Future<Either<Failure, dynamic>> deleteAnalysis(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.deleteAnalysis(id)),
     (data) => data,

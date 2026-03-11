@@ -1,4 +1,3 @@
-
 import '../domain/entity/message_entity.dart';
 
 class MessageModel extends MessageEntity {
@@ -8,6 +7,7 @@ class MessageModel extends MessageEntity {
     required super.content,
     required super.role,
     required super.createdAt,
+    required super.senderType,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -17,9 +17,11 @@ class MessageModel extends MessageEntity {
       content: json['content'] ?? '',
       role: json['role'] ?? '',
       createdAt: json['created_at']?.toString() ?? '',
+      senderType: json['sender_type'] ?? '',
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -27,6 +29,7 @@ class MessageModel extends MessageEntity {
       'content': content,
       'role': role,
       'created_at': createdAt,
+      'sender_type': senderType,
     };
   }
 }

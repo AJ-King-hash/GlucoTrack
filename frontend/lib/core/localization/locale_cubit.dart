@@ -163,6 +163,9 @@ class LocaleCubit extends Cubit<LocaleState> {
       "risk_created_successfully": "Risk created successfully",
       "risk_updated_successfully": "Risk updated successfully",
       "risk_deleted_successfully": "Risk deleted successfully",
+      "delete_risk": "Delete Risk",
+      "delete_risk_confirm":
+          "Are you sure you want to delete this risk record?",
       "select_risk_or_create": "Select a risk to view or create a new one",
       "id": "ID",
       "bmi": "BMI",
@@ -279,6 +282,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "risk_created_successfully": "تم إنشاء المخاطر بنجاح",
       "risk_updated_successfully": "تم تحديث المخاطر بنجاح",
       "risk_deleted_successfully": "تم حذف المخاطر بنجاح",
+      "delete_risk": "حذف المخاطر",
+      "delete_risk_confirm": "هل أنت متأكد من حذف سجل المخاطر هذا؟",
       "select_risk_or_create": "اختر مخاطر لعرضها أو أنشئ واحدة جديدة",
       "id": "المعرف",
       "bmi": "مؤشر كتلة الجسم",

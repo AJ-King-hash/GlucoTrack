@@ -7,41 +7,42 @@ class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit(this.apiService) : super(SettingsInitial.initial());
 
   Future<void> toggleSugarReminder(bool value) async {
+    // Save the current state before emitting loading
+    final currentState = state;
+    if (currentState is! SettingsInitial) return;
+
     emit(SettingsLoading());
     try {
-      if (state is SettingsInitial) {
-        final current = state as SettingsInitial;
-        final updated = current.copyWith(sugarReminder: value);
-        emit(updated);
+      final updated = currentState.copyWith(sugarReminder: value);
+      emit(updated);
 
-        // Call API to update sugar reminder
-        final result = await apiService.updateReminders(
-          glucoTime: value ? "08:00" : null,
-        );
+      // Call API to update sugar reminder
+      final result = await apiService.updateReminders(
+        glucoTime: value ? "08:00" : null,
+      );
 
-        result.fold(
-          (failure) {
-            // Revert state on failure directly to failure state
-            emit(
-              SettingsFailure(
-                message: failure.message,
-                sugarReminder: current.sugarReminder,
-                medicineReminder: current.medicineReminder,
-                failedSetting: FailedSetting.sugarReminder,
-              ),
-            );
-          },
-          (_) {
-            // Success - state already updated above
-          },
-        );
-      }
+      result.fold(
+        (failure) {
+          // Revert state on failure directly to failure state
+          emit(
+            SettingsFailure(
+              message: failure.message,
+              sugarReminder: currentState.sugarReminder,
+              medicineReminder: currentState.medicineReminder,
+              failedSetting: FailedSetting.sugarReminder,
+            ),
+          );
+        },
+        (_) {
+          // Success - state already updated above
+        },
+      );
     } catch (e) {
       emit(
         SettingsFailure(
           message: e.toString(),
-          sugarReminder: (state as SettingsInitial).sugarReminder,
-          medicineReminder: (state as SettingsInitial).medicineReminder,
+          sugarReminder: currentState.sugarReminder,
+          medicineReminder: currentState.medicineReminder,
           failedSetting: FailedSetting.sugarReminder,
         ),
       );
@@ -49,41 +50,42 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> toggleMedicineReminder(bool value) async {
+    // Save the current state before emitting loading
+    final currentState = state;
+    if (currentState is! SettingsInitial) return;
+
     emit(SettingsLoading());
     try {
-      if (state is SettingsInitial) {
-        final current = state as SettingsInitial;
-        final updated = current.copyWith(medicineReminder: value);
-        emit(updated);
+      final updated = currentState.copyWith(medicineReminder: value);
+      emit(updated);
 
-        // Call API to update medicine reminder
-        final result = await apiService.updateReminders(
-          medicineTime: value ? "20:00" : null,
-        );
+      // Call API to update medicine reminder
+      final result = await apiService.updateReminders(
+        medicineTime: value ? "20:00" : null,
+      );
 
-        result.fold(
-          (failure) {
-            // Revert state on failure directly to failure state
-            emit(
-              SettingsFailure(
-                message: failure.message,
-                sugarReminder: current.sugarReminder,
-                medicineReminder: current.medicineReminder,
-                failedSetting: FailedSetting.medicineReminder,
-              ),
-            );
-          },
-          (_) {
-            // Success - state already updated above
-          },
-        );
-      }
+      result.fold(
+        (failure) {
+          // Revert state on failure directly to failure state
+          emit(
+            SettingsFailure(
+              message: failure.message,
+              sugarReminder: currentState.sugarReminder,
+              medicineReminder: currentState.medicineReminder,
+              failedSetting: FailedSetting.medicineReminder,
+            ),
+          );
+        },
+        (_) {
+          // Success - state already updated above
+        },
+      );
     } catch (e) {
       emit(
         SettingsFailure(
           message: e.toString(),
-          sugarReminder: (state as SettingsInitial).sugarReminder,
-          medicineReminder: (state as SettingsInitial).medicineReminder,
+          sugarReminder: currentState.sugarReminder,
+          medicineReminder: currentState.medicineReminder,
           failedSetting: FailedSetting.medicineReminder,
         ),
       );

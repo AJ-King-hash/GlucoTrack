@@ -6,6 +6,7 @@ class MessageEntity extends Equatable {
   final String content;
   final String role;
   final String createdAt;
+  final String senderType;
 
   const MessageEntity({
     required this.id,
@@ -13,8 +14,16 @@ class MessageEntity extends Equatable {
     required this.content,
     required this.role,
     required this.createdAt,
+    required this.senderType,
   });
 
   @override
-  List<Object?> get props => [id, conversationId, content, role,createdAt];
+  List<Object?> get props => [
+    id,
+    conversationId,
+    content,
+    role,
+    createdAt,
+    senderType,
+  ];
 }

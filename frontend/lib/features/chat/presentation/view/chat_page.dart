@@ -220,6 +220,7 @@ class _ChatPageState extends State<ChatPage> {
                           content: text,
                           role: 'user',
                           createdAt: DateTime.now().toIso8601String(),
+                          senderType: 'user',
                         );
                         context.read<BotCubit>().sendMessage(message);
                       },
