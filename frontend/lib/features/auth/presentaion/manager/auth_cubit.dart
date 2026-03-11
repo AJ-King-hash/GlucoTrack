@@ -13,7 +13,7 @@ class AuthCubit extends Cubit<AuthState> {
       final result = await authRepository.login(email, password);
       result.fold((failure) => emit(AuthError(failure.message)), (user) {
         if (user != null) {
-          emit(AuthSuccess("Login successful"));
+          emit(AuthSuccess("Login successful", user: user));
         } else {
           emit(AuthError("Invalid credentials"));
         }

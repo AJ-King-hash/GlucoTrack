@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:untitled10/features/auth/data/models/user_model.dart';
 
 abstract class AuthState extends Equatable {
   @override
@@ -11,9 +12,10 @@ class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final String message;
-  AuthSuccess(this.message);
+  final UserModel? user;
+  AuthSuccess(this.message, {this.user});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, user];
 }
 
 class AuthError extends AuthState {
