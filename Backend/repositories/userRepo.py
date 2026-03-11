@@ -41,6 +41,15 @@ def update(id:int,request,db:Session):
     user=db.query(models.User).filter(models.User.id==id).first() 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
+    
+    # If old_password is provided, verify it before allowing password change
+    if request.old_password:
+        if not Hash.verify(request.old_password, user.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect old password"
+            )
+    
     user.name=request.name
     user.email=request.email
     user.updated_at=datetime.now(timezone.utc)
@@ -48,6 +57,7 @@ def update(id:int,request,db:Session):
     db.commit()
     db.refresh(user)
     return user
+
 def delete(id:int,db:Session):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:

@@ -6,6 +6,7 @@ class User(BaseModel):
     name:str
     email:str
     password:str
+    old_password: Optional[str] = None
     # created_at:datetime
     # updated_at:Optional[datetime] = None
 

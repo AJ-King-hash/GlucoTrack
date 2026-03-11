@@ -66,8 +66,13 @@ class ApiService {
       );
     }
     if (status == 401) {
+      // Preserve specific error message if available (e.g., "Incorrect old password")
+      // Otherwise use generic message
       return UnauthorizedFailure(
-        message: "Session expired. Please login again.",
+        message:
+            message != "An unexpected error occurred"
+                ? message
+                : "Session expired. Please login again.",
         code: status,
       );
     }
