@@ -16,6 +16,11 @@ class LocaleCubit extends Cubit<LocaleState> {
 
   Locale get currentLocale => _currentLocale;
 
+  String getLocalizedValue(String key) {
+    final langCode = _currentLocale.languageCode;
+    return _localizedValues[langCode]?[key] ?? key;
+  }
+
   final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'login': 'Login',
@@ -136,6 +141,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "medical_info": "Medical Information",
       "health_metrics": "Health Metrics",
       "archives_page_title": "My Analysis Records",
+      "analysis_details": "Analysis Details",
+      "new_conversation": "New Conversation",
       "archives_error_message": "Failed to load archives",
       "archives_empty_message": "No analysis records found",
       "reminders": "Reminders",
@@ -269,6 +276,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "health_metrics": "المقاييس الصحية",
       "medical_info": "المعلومات الطبية",
       "archives_page_title": "سجلات تحليليي",
+      "analysis_details": "تفاصيل التحليل",
+      "new_conversation": "محادثة جديدة",
       "archives_error_message": "فشل تحميل السجلات",
       "archives_empty_message": "لا توجد سجلات تحليلية",
       "reminders": "التذكيرات",

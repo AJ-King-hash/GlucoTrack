@@ -27,9 +27,9 @@ class BotCubit extends Cubit<BotState> {
     required this.getAllMessagesUseCase,
   }) : super(const BotInitial());
 
-  Future<void> createConversation(int userId) async {
+  Future<void> createConversation(String title) async {
     emit(const BotLoading());
-    final result = await createConversationUseCase(userId);
+    final result = await createConversationUseCase((title));
     result.fold(
       (failure) => emit(BotError(failure)),
       (data) => emit(BotSuccess(data)),

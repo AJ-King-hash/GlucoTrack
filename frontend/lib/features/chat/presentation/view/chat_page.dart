@@ -174,12 +174,11 @@ class _ChatPageState extends State<ChatPage> {
                           if (text.trim().isEmpty) return;
 
                           // Create new conversation if this is a new chat
-                          // Note: userId is obtained from auth token on backend
                           if (_isNewConversation) {
                             final cubit = context.read<BotCubit>();
                             await cubit.createConversation(
-                              1, // Backend gets user from auth token
-                            );
+                              text,
+                            ); // TODO: Get actual user ID
                             // The conversation ID will be set in the listener
                           }
 

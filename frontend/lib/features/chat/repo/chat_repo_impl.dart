@@ -15,9 +15,9 @@ class BotRepositoryImpl implements BotRepository {
 
   @override
   Future<Either<Failure, ConversationEntity>> createConversation(
-    int userId,
+    String title,
   ) async {
-    final result = await apiService.createConversation({'user_id': userId});
+    final result = await apiService.createConversation({'title': title});
 
     return result.fold(
       (failure) => Left(failure),
