@@ -11,6 +11,8 @@ class ChatEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.read<LocaleCubit>();
+
     return Center(
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -39,12 +41,12 @@ class ChatEmptyState extends StatelessWidget {
 
             SizedBox(height: 22.h),
             Text(
-              context.read<LocaleCubit>().translate('tit'),
+              locale.translate('tit'),
               style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 8.h),
             Text(
-              context.read<LocaleCubit>().translate('subt'),
+              locale.translate('subt'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
@@ -59,18 +61,9 @@ class ChatEmptyState extends StatelessWidget {
               runSpacing: 8.h,
               alignment: WrapAlignment.center,
               children: [
-                _suggestionChip(
-                  context.read<LocaleCubit>().translate('sug_type1'),
-                  onSuggestionTap,
-                ),
-                _suggestionChip(
-                  context.read<LocaleCubit>().translate('sug_low'),
-                  onSuggestionTap,
-                ),
-                _suggestionChip(
-                  context.read<LocaleCubit>().translate('sug_moni'),
-                  onSuggestionTap,
-                ),
+                _suggestionChip(locale.translate('sug_type1'), onSuggestionTap),
+                _suggestionChip(locale.translate('sug_low'), onSuggestionTap),
+                _suggestionChip(locale.translate('sug_moni'), onSuggestionTap),
               ],
             ),
           ],

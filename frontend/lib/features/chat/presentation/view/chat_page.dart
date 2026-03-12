@@ -39,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        0.0, // 0.0 is the bottom because ListView is reversed
+        0.0,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -86,7 +86,7 @@ class _ChatPageState extends State<ChatPage> {
               // Load selected conversation
               _isNewConversation = false;
               _currentConversationId = conversationId;
-              context.read<BotCubit>().getAllMessages(conversationId);
+              context.read<BotCubit>().getAllMessages(_currentConversationId);
             },
           ),
           appBar: _buildAppBar(context),
@@ -126,8 +126,9 @@ class _ChatPageState extends State<ChatPage> {
                           return _buildErrorState(context, state);
                         }
 
-                        if (state is BotListSuccess) {
+                        if (state is BotListSuccess<MessageEntity>) {
                           final messages = state.data;
+
                           if (messages.isEmpty) {
                             return ChatEmptyState(
                               onSuggestionTap: _handleSuggestionTap,
@@ -182,11 +183,6 @@ class _ChatPageState extends State<ChatPage> {
                             await Future.delayed(
                               const Duration(milliseconds: 100),
                             );
-                          }
-
-                          // Now _currentConversationId should be set
-                          if (_currentConversationId == null) {
-                            return; // Safety check
                           }
 
                           final message = MessageEntity(
