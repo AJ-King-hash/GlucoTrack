@@ -193,17 +193,11 @@ class ApiService {
       );
 
   /// Get messages with pagination
-  Future<Either<Failure, dynamic>> getMessages(
-    int conversationId, {
-    int page = 1,
-    int limit = 50,
-  }) => _handleRequest(
-    _dio.get(
-      ApiEndpoints.allMessages(conversationId),
-      queryParameters: {'page': page, 'limit': limit},
-    ),
-    (data) => data,
-  );
+  Future<Either<Failure, dynamic>> getMessages(int conversationId) =>
+      _handleRequest(
+        _dio.get(ApiEndpoints.allMessages(conversationId)),
+        (data) => data,
+      );
 
   /// Get total count of messages for pagination
   Future<Either<Failure, dynamic>> getMessageCount(int conversationId) =>

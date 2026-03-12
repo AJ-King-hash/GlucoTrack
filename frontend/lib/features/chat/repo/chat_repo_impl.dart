@@ -93,11 +93,7 @@ class BotRepositoryImpl implements BotRepository {
     int page = 1,
     int limit = 50,
   }) async {
-    final result = await apiService.getMessages(
-      conversationId,
-      page: page,
-      limit: limit,
-    );
+    final result = await apiService.getMessages(conversationId);
 
     return result.fold(
       (failure) => Left(failure),

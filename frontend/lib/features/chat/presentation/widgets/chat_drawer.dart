@@ -97,10 +97,6 @@ class _ChatDrawerState extends State<ChatDrawer> {
                                   : 'Chat ${conversation.id}',
                           onTap: () {
                             Navigator.pop(context);
-                            print(
-                              "selected conversatoin id: " +
-                                  conversation.id.toString(),
-                            );
                             widget.onConversationSelected?.call(
                               conversation.id,
                             );
