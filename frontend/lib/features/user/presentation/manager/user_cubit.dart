@@ -1,11 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/api/api_error.dart';
+import 'package:untitled10/features/auth/data/models/user_model.dart';
 import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 import 'package:untitled10/features/user/repo/user_repo.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
   UserCubit(this.userRepository) : super(UserInitial());
+
+  /// Set user data directly (e.g., from login response) without API call
+  void setUser(UserModel user) {
+    emit(UserLoaded(user));
+  }
 
   //function for create user
   Future<void> createUser({

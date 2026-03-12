@@ -13,9 +13,6 @@ abstract class ArchiveRepository {
     String? riskFilter,
   });
 
-  /// Get total count of archives for pagination
-  Future<Either<Failure, int>> getArchiveCount();
-
   Future<Either<Failure, ArchiveModel>> createArchive(ArchiveModel archive);
   Future<Either<Failure, ArchiveModel>> updateArchive(
     int id,

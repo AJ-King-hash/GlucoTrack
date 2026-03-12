@@ -140,6 +140,21 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
         oldPassword: _oldPasswordController.text.trim(),
       );
 
+      // Check the state after the update (captured after await)
+      if (!mounted) return;
+      final newState = context.read<UserCubit>().state;
+
+      if (newState is UserError) {
+        // Show the error message from the API (e.g., "Incorrect old password")
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(newState.message),
+            backgroundColor: AppColor.negative,
+          ),
+        );
+        return;
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

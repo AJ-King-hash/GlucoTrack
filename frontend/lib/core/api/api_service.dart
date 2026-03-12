@@ -66,8 +66,13 @@ class ApiService {
       );
     }
     if (status == 401) {
+      // Preserve specific error message if available (e.g., "Incorrect old password")
+      // Otherwise use generic message
       return UnauthorizedFailure(
-        message: "Session expired. Please login again.",
+        message:
+            message != "An unexpected error occurred"
+                ? message
+                : "Session expired. Please login again.",
         code: status,
       );
     }
@@ -163,18 +168,9 @@ class ApiService {
   );
 
   /// Get all conversations with pagination and search
-  Future<Either<Failure, dynamic>> getAllConversations({
-    int page = 1,
-    int limit = 10,
-    String? search,
-  }) {
-    final queryParams = <String, dynamic>{'page': page, 'limit': limit};
-    if (search != null && search.isNotEmpty) {
-      queryParams['search'] = search;
-    }
-
+  Future<Either<Failure, dynamic>> getAllConversations() {
     return _handleRequest(
-      _dio.get(ApiEndpoints.allConversations, queryParameters: queryParams),
+      _dio.get(ApiEndpoints.allConversations),
       (data) => data,
     );
   }
@@ -197,17 +193,11 @@ class ApiService {
       );
 
   /// Get messages with pagination
-  Future<Either<Failure, dynamic>> getMessages(
-    int conversationId, {
-    int page = 1,
-    int limit = 50,
-  }) => _handleRequest(
-    _dio.get(
-      ApiEndpoints.allMessages(conversationId),
-      queryParameters: {'page': page, 'limit': limit},
-    ),
-    (data) => data,
-  );
+  Future<Either<Failure, dynamic>> getMessages(int conversationId) =>
+      _handleRequest(
+        _dio.get(ApiEndpoints.allMessages(conversationId)),
+        (data) => data,
+      );
 
   /// Get total count of messages for pagination
   Future<Either<Failure, dynamic>> getMessageCount(int conversationId) =>
@@ -243,6 +233,22 @@ class ApiService {
 
   Future<Either<Failure, dynamic>> getAllMeals() =>
       _handleRequest(_dio.get(ApiEndpoints.allMeals), (data) => data);
+
+  /// Get the most recent meal for the authenticated user
+  /// Returns the first meal from the list (most recent) or null if no meals
+  Future<Either<Failure, dynamic>> getLastMeal() async {
+    final result = await _handleRequest(
+      _dio.get(ApiEndpoints.allMeals),
+      (data) => data,
+    );
+
+    // Return first meal if available
+    return result.fold((failure) => Left(failure), (data) {
+      final meals = data as List<dynamic>;
+      if (meals.isEmpty) return const Right(null);
+      return Right(meals.first); // Most recent (first in ordered list)
+    });
+  }
 
   Future<Either<Failure, dynamic>> updateMeal(
     int id,
@@ -283,10 +289,6 @@ class ApiService {
       (data) => data,
     );
   }
-
-  /// Get total count of analysis for pagination
-  Future<Either<Failure, dynamic>> getAnalysisCount() =>
-      _handleRequest(_dio.get(ApiEndpoints.analysisCount), (data) => data);
 
   Future<Either<Failure, dynamic>> deleteAnalysis(int id) => _handleRequest(
     _dio.delete(ApiEndpoints.deleteAnalysis(id)),

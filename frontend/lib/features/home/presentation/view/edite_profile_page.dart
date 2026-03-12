@@ -11,7 +11,6 @@ import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
-import '../widgets/dropdown.dart';
 
 class EditeProfilePage extends StatefulWidget {
   final UserModel? userModel;
@@ -24,8 +23,6 @@ class EditeProfilePage extends StatefulWidget {
 class _EditeProfilePageState extends State<EditeProfilePage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  String? selectedDiabetesType;
   StreamSubscription? _userSubscription;
 
   @override
@@ -34,7 +31,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
     if (widget.userModel != null) {
       nameController.text = widget.userModel!.name;
       emailController.text = widget.userModel!.email;
-      passwordController.text = widget.userModel!.password ?? '';
     } else {
       context.read<UserCubit>().getUser();
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
@@ -42,7 +38,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
           final user = state.userModel;
           nameController.text = user.name;
           emailController.text = user.email;
-          passwordController.text = user.password ?? '';
         }
       });
     }
@@ -53,7 +48,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
     _userSubscription?.cancel();
     nameController.dispose();
     emailController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 
@@ -78,16 +72,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
       return false;
     }
 
-    if (passwordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Password cannot be empty'),
-          backgroundColor: AppColor.negative,
-        ),
-      );
-      return false;
-    }
-
     return true;
   }
 
@@ -98,7 +82,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
       await context.read<UserCubit>().updateUser(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+        password: '',
       );
 
       if (mounted) {
@@ -239,27 +223,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
                         labelColor: AppColor.textNeutral,
                       ),
                       SizedBox(height: 18.h),
-                      //password
-                      AppTextField(
-                        controller: passwordController,
-                        label: context.read<LocaleCubit>().translate(
-                          'password',
-                        ),
-                        icon: Icons.lock_reset,
-                        iconColor: AppColor.info,
-                        labelColor: AppColor.textNeutral,
-                        keyboardType: TextInputType.number,
-                      ),
-                      SizedBox(height: 18.h),
-
-                      /// Diabetes Type
-                      Dropdown(
-                        label: context.read<LocaleCubit>().translate('types'),
-                        items: [
-                          context.read<LocaleCubit>().translate('type1'),
-                          context.read<LocaleCubit>().translate('type2'),
-                        ],
-                      ),
                     ],
                   ),
                 ),

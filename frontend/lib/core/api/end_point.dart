@@ -41,7 +41,6 @@ class ApiEndpoints {
   // ==================== ANALYSIS ====================
   static const String allAnalysis = "/analyse/all/";
   static String deleteAnalysis(int id) => "/analyse/$id";
-  static const String analysisCount = "/analyse/count/";
 
   // ==================== OTP ====================
   static const String otpCheck = "/otp/check";
@@ -51,11 +50,11 @@ class ApiEndpoints {
 
   // ==================== NOTIFICATIONS ====================
   /// Update reminder times for the authenticated user
-  static const String updateReminders = "/notification/reminders";
+  static const String updateReminders = "/user";
 
   /// Update FCM token for push notifications
-  static const String updateFcmToken = "/notification/fcm-token";
+  static const String updateFcmToken = "/user";
 
   /// Trigger reminders manually (for testing)
-  static const String triggerReminders = "/notification/trigger-reminders";
+  static const String triggerReminders = "/user";
 }

@@ -27,9 +27,9 @@ class BotCubit extends Cubit<BotState> {
     required this.getAllMessagesUseCase,
   }) : super(const BotInitial());
 
-  Future<void> createConversation(int userId) async {
+  Future<void> createConversation(String title) async {
     emit(const BotLoading());
-    final result = await createConversationUseCase(userId);
+    final result = await createConversationUseCase((title));
     result.fold(
       (failure) => emit(BotError(failure)),
       (data) => emit(BotSuccess(data)),
@@ -68,6 +68,27 @@ class BotCubit extends Cubit<BotState> {
   Future<void> sendMessage(MessageEntity message) async {
     emit(const BotLoading());
     final result = await sendMessageUseCase(message);
+    result.fold(
+      (failure) => emit(BotError(failure)),
+      (data) => emit(BotSuccess(data)),
+    );
+  }
+
+  /// Send a bot response message for the given conversation
+  /// This is called automatically after user sends a message
+  Future<void> sendBotResponse(int conversationId, String userMessage) async {
+    emit(const BotLoading());
+
+    // Create bot message with senderType = 'bot'
+    final botMessage = MessageEntity(
+      id: DateTime.now().millisecondsSinceEpoch,
+      conversationId: conversationId,
+      content: '', // Backend will populate this with the bot's response
+      createdAt: DateTime.now().toIso8601String(),
+      senderType: 'bot',
+    );
+
+    final result = await sendMessageUseCase(botMessage);
     result.fold(
       (failure) => emit(BotError(failure)),
       (data) => emit(BotSuccess(data)),

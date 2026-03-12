@@ -42,10 +42,6 @@ class ArchiveCubit extends Cubit<ArchiveState> {
       riskFilter: riskFilter ?? state.riskFilter,
     );
 
-    // Also fetch total count for pagination
-    final countResult = await repository.getArchiveCount();
-    final totalCount = countResult.fold((_) => 0, (count) => count);
-
     result.fold(
       (failure) => emit(
         state.copyWith(
@@ -57,7 +53,8 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         state.copyWith(
           status: ArchiveStatus.success,
           archives: archives,
-          totalCount: totalCount,
+          totalCount:
+              archives.length, // Estimate: backend doesn't provide count
           hasMore: archives.length >= state.limit,
         ),
       ),
