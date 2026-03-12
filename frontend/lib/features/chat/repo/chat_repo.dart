@@ -7,12 +7,8 @@ abstract class BotRepository {
   Future<Either<Failure, ConversationEntity>> createConversation(String title);
   Future<Either<Failure, ConversationEntity>> getConversation(int id);
 
-  /// Get all conversations with pagination and search
-  Future<Either<Failure, List<ConversationEntity>>> getAllConversations({
-    int page = 1,
-    int limit = 10,
-    String? search,
-  });
+  /// Get all conversations
+  Future<Either<Failure, List<ConversationEntity>>> getAllConversations();
 
   /// Get total count of conversations for pagination
   Future<Either<Failure, int>> getConversationCount();
@@ -22,10 +18,8 @@ abstract class BotRepository {
 
   /// Get all messages with pagination
   Future<Either<Failure, List<MessageEntity>>> getAllMessages(
-    int conversationId, {
-    int page = 1,
-    int limit = 50,
-  });
+    int conversationId,
+  );
 
   /// Get total count of messages for pagination
   Future<Either<Failure, int>> getMessageCount(int conversationId);

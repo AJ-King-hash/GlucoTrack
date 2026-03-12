@@ -6,6 +6,7 @@ import 'package:untitled10/features/home/presentation/manager/bottom_nav_cubit.d
 import 'package:untitled10/features/home/presentation/manager/home_cubit.dart';
 import 'package:untitled10/features/archives/presentaiton/view/archive_page.dart';
 import 'package:untitled10/features/chat/presentation/view/chat_page.dart';
+import 'package:untitled10/features/chat/presentation/manager/chat_cubit.dart';
 import 'package:untitled10/features/home/presentation/view/settings_page.dart';
 import 'package:untitled10/features/home/presentation/widgets/custom_bottom_nav.dart';
 
@@ -26,6 +27,7 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => sl<HomeCubit>()),
         BlocProvider(create: (_) => BottomNavCubit()),
+        BlocProvider(create: (_) => sl<BotCubit>()),
       ],
 
       child: Scaffold(

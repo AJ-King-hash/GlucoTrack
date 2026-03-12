@@ -168,18 +168,9 @@ class ApiService {
   );
 
   /// Get all conversations with pagination and search
-  Future<Either<Failure, dynamic>> getAllConversations({
-    int page = 1,
-    int limit = 10,
-    String? search,
-  }) {
-    final queryParams = <String, dynamic>{'page': page, 'limit': limit};
-    if (search != null && search.isNotEmpty) {
-      queryParams['search'] = search;
-    }
-
+  Future<Either<Failure, dynamic>> getAllConversations() {
     return _handleRequest(
-      _dio.get(ApiEndpoints.allConversations, queryParameters: queryParams),
+      _dio.get(ApiEndpoints.allConversations),
       (data) => data,
     );
   }
