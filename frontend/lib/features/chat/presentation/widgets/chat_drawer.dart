@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/features/chat/presentation/manager/chat_cubit.dart';
 import 'package:untitled10/features/chat/presentation/manager/chat_state.dart';
 import 'package:untitled10/features/chat/presentation/widgets/section_item.dart';
@@ -27,6 +28,8 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.read<LocaleCubit>();
+
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -43,14 +46,14 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   widget.onNewChat?.call();
                 },
                 icon: const Icon(Icons.add),
-                label: const Text('New Chat'),
+                label: Text(locale.translate('new_chat')),
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 48),
                 ),
               ),
             ),
 
-            const SectionTitle(title: 'Recent Chats'),
+            SectionTitle(title: locale.translate("recent_chats")),
 
             Expanded(
               child: BlocBuilder<BotCubit, BotState>(
@@ -69,7 +72,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
                             onPressed: () {
                               context.read<BotCubit>().getAllConversations();
                             },
-                            child: const Text('Retry'),
+                            child: Text(locale.translate('try_again')),
                           ),
                         ],
                       ),
@@ -94,6 +97,10 @@ class _ChatDrawerState extends State<ChatDrawer> {
                                   : 'Chat ${conversation.id}',
                           onTap: () {
                             Navigator.pop(context);
+                            print(
+                              "selected conversatoin id: " +
+                                  conversation.id.toString(),
+                            );
                             widget.onConversationSelected?.call(
                               conversation.id,
                             );
