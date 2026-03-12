@@ -16,11 +16,6 @@ class LocaleCubit extends Cubit<LocaleState> {
 
   Locale get currentLocale => _currentLocale;
 
-  String getLocalizedValue(String key) {
-    final langCode = _currentLocale.languageCode;
-    return _localizedValues[langCode]?[key] ?? key;
-  }
-
   final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'login': 'Login',
@@ -92,6 +87,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "syncing": "Syncing data...",
       "settingth": "Setting things up...",
       "anerr": "An error occurred while loading",
+      "try_again": "Try Again",
+
       "types": "Diabetes Type",
       "type1": "Type 1 Diabetes",
       "type2": "Type 2 Diabetes ",
@@ -277,6 +274,14 @@ class LocaleCubit extends Cubit<LocaleState> {
       "medical_info": "المعلومات الطبية",
       "archives_page_title": "سجلات تحليليي",
       "analysis_details": "تفاصيل التحليل",
+      "meal_details": "تفاصيل الوجبة",
+      "meal_type": "نوع الوجبة",
+      "meal_description": "وصف الوجبة",
+      "report_metadata": "تفاصيل التقرير",
+      "analysed_at": "تم التحليل في",
+      "risk_level": "مستوى الخطر",
+      "gluco_percentage": "نسبة الجلوكو",
+
       "new_conversation": "محادثة جديدة",
       "archives_error_message": "فشل تحميل السجلات",
       "archives_empty_message": "لا توجد سجلات تحليلية",
@@ -338,6 +343,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "syncing": "مزامنة البيانات...",
       "settingth": "جاري الإعداد...",
       "anerr": "حدث خطأ في التحميل",
+      "try_again": "إعادة المحاولة",
       "types": "نوع السكري",
       "type1": "سكري نوع 1",
       "type2": "سكري نوع 2",

@@ -176,10 +176,17 @@ class _ChatPageState extends State<ChatPage> {
                           // Create new conversation if this is a new chat
                           if (_isNewConversation) {
                             final cubit = context.read<BotCubit>();
-                            await cubit.createConversation(
-                              text,
-                            ); // TODO: Get actual user ID
-                            // The conversation ID will be set in the listener
+                            await cubit.createConversation(text);
+                            // Wait for the conversation ID to be set by the BlocListener
+                            // before sending the message
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                            );
+                          }
+
+                          // Now _currentConversationId should be set
+                          if (_currentConversationId == null) {
+                            return; // Safety check
                           }
 
                           final message = MessageEntity(
@@ -212,6 +219,8 @@ class _ChatPageState extends State<ChatPage> {
 
   /// App Bar with Health Assistant Avatar
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final locale = context.read<LocaleCubit>();
+
     return AppBar(
       backgroundColor: AppColor.backgroundNeutral,
       elevation: 0,
@@ -246,7 +255,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           SizedBox(width: 10.w),
           Text(
-            context.read<LocaleCubit>().translate('chat_title'),
+            locale.translate('subt'),
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -260,6 +269,8 @@ class _ChatPageState extends State<ChatPage> {
 
   /// Error State with Retry Logic
   Widget _buildErrorState(BuildContext context, BotError state) {
+    final locale = context.read<LocaleCubit>();
+
     String errorMsg = state.failure.message;
     if (errorMsg.contains('connection')) {
       errorMsg = 'Check your internet connection and try again.';
@@ -279,7 +290,10 @@ class _ChatPageState extends State<ChatPage> {
           TextButton.icon(
             onPressed: () => context.read<BotCubit>().getAllConversations(),
             icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
+            label: Text(
+              locale.translate('try_again'),
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
