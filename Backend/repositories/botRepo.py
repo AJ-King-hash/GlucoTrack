@@ -49,7 +49,7 @@ def delete(id:int,db:Session):
 
 
 def get_messages(conv_id:int,db:Session):
-    messages=db.query(models.Message).where(models.Message.conversation_id==str(conv_id)).all()
+    messages=db.query(models.Message).where(models.Message.conversation_id==conv_id).all()
     return messages
 
 def create_message(request,db:Session):
