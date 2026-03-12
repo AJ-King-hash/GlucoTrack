@@ -15,12 +15,13 @@ def get_all(user_id:int,db:Session):
     conversations=db.query(models.Conversation).where(models.Conversation.user_id==user_id).all()
     return conversations
 
-def create(request,db:Session,current_user):
         
+def create(request,db:Session,current_user):
     new_conversation=models.Conversation(
         user_id=current_user.id,
         title=request.title,
     )
+
     db.add(new_conversation)
     db.commit()
     db.refresh(new_conversation)
@@ -47,7 +48,7 @@ def delete(id:int,db:Session):
 ################## Messages ##################
 
 
-def get_messages(conv_id:int,db:Session):
+def get_messages(conv_id,db:Session):
     messages=db.query(models.Message).where(models.Message.conversation_id==conv_id).all()
     return messages
 

@@ -5,7 +5,7 @@
 ### 1. Base URL Fix
 
 - **File**: `frontend/lib/core/api/dio_client.dart`
-- **Change**: Updated base URL from `http://10.248.171.223:8000` to `http://192.168.251.59:8000` to match the backend configuration in ApiEndpoints.
+- **Change**: Updated base URL to `http://10.248.171.223:8000` to match the backend configuration.
 
 ### 2. Added Update Meal Method
 

@@ -10,7 +10,7 @@ import '../manager/home_cubit.dart';
 import '../manager/home_state.dart';
 import '../widgets/option_card.dart';
 import '../widgets/user_info_card.dart';
-import '../widgets/card_widget.dart';
+import '../widgets/card_widget.dart'; // MedicalHeaderCard is in here
 import '../widgets/picker_bottom_sheet.dart';
 
 class HomeContent extends StatelessWidget {
@@ -35,6 +35,7 @@ class HomeContent extends StatelessWidget {
             ),
             centerTitle: true,
             backgroundColor: AppColor.backgroundNeutral,
+            elevation: 0,
             actions: [
               IconButton(
                 icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
@@ -47,14 +48,16 @@ class HomeContent extends StatelessWidget {
           body: SafeArea(
             child: Column(
               children: [
-                /// Header Card
+                /// Header Card (Balance / Quick Stats)
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.w,
                     vertical: 20.h,
                   ),
-                  child: MedicalHeaderCard(),
+                  child: const MedicalHeaderCard(),
                 ),
+
+                /// Main Content Area
                 Expanded(
                   child: Container(
                     width: double.infinity,
@@ -65,6 +68,7 @@ class HomeContent extends StatelessWidget {
                       ),
                     ),
                     child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(
                         horizontal: 20.w,
                         vertical: 24.h,
@@ -72,7 +76,7 @@ class HomeContent extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// User Info
+                          /// User Profile / Physical Stats
                           UserInfoCard(
                             age: state.age,
                             weight: state.weight,
@@ -122,16 +126,19 @@ class HomeContent extends StatelessWidget {
                                     .read<HomeCubit>()
                                     .updatePregnancyCount(c),
                           ),
+
                           SizedBox(height: 32.h),
 
-                          /// Types Section
+                          /// Diabetes Type Selection
                           buildMedicalSection(
                             title: locale.translate('types'),
                             children: [
                               OptionCard(
                                 label: locale.translate('type1'),
-                                icon: Icons.nightlight_round,
-                                selected: state.mealTime == 0,
+                                icon: Icons.healing,
+                                selected:
+                                    state.mealTime ==
+                                    0, // Using index or logic from state
                                 onTap:
                                     () async => await context
                                         .read<HomeCubit>()
@@ -139,7 +146,7 @@ class HomeContent extends StatelessWidget {
                               ),
                               OptionCard(
                                 label: locale.translate('type2'),
-                                icon: Icons.schedule,
+                                icon: Icons.bloodtype,
                                 selected: state.mealTime == 2,
                                 onTap:
                                     () async => await context
@@ -151,7 +158,7 @@ class HomeContent extends StatelessWidget {
 
                           SizedBox(height: 28.h),
 
-                          /// Last Eat Section
+                          /// Timing Relative to Meals
                           buildMedicalSection(
                             title: locale.translate('lasteat'),
                             children: [
@@ -166,7 +173,7 @@ class HomeContent extends StatelessWidget {
                               ),
                               OptionCard(
                                 label: locale.translate('before'),
-                                icon: Icons.schedule,
+                                icon: Icons.restaurant,
                                 selected: state.mealTime == 1,
                                 onTap:
                                     () async => await context
@@ -175,7 +182,7 @@ class HomeContent extends StatelessWidget {
                               ),
                               OptionCard(
                                 label: locale.translate('after'),
-                                icon: Icons.schedule,
+                                icon: Icons.flatware,
                                 selected: state.mealTime == 2,
                                 onTap:
                                     () async => await context
@@ -187,7 +194,7 @@ class HomeContent extends StatelessWidget {
 
                           SizedBox(height: 28.h),
 
-                          /// Physical Activity Section
+                          /// Activity Level
                           buildMedicalSection(
                             title: locale.translate('physical'),
                             children: [
@@ -226,6 +233,10 @@ class HomeContent extends StatelessWidget {
 
                           SizedBox(height: 20.h),
                           _buildRiskManagementButton(context, locale),
+
+                          SizedBox(
+                            height: 40.h,
+                          ), // Extra padding for bottom scroll
                         ],
                       ),
                     ),
@@ -246,24 +257,18 @@ class HomeContent extends StatelessWidget {
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColor.positive,
+          foregroundColor: AppColor.textNeutral,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
-          elevation: 6,
-          padding: EdgeInsets.symmetric(vertical: 12.h),
+          elevation: 4,
         ),
-        icon: const Icon(Icons.show_chart, color: AppColor.info),
+        icon: const Icon(Icons.analytics_outlined),
         label: Text(
           locale.translate('resultAna'),
-          style: TextStyle(
-            color: AppColor.textNeutral,
-            fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
         ),
-        onPressed: () {
-          showMealBottomSheet(context);
-        },
+        onPressed: () => showMealBottomSheet(context),
       ),
     );
   }
@@ -275,43 +280,37 @@ class HomeContent extends StatelessWidget {
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColor.info,
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
-          elevation: 6,
-          padding: EdgeInsets.symmetric(vertical: 12.h),
+          elevation: 4,
         ),
-        icon: const Icon(Icons.warning, color: Colors.white),
+        icon: const Icon(Icons.warning_amber_rounded),
         label: Text(
           locale.translate('risk_management'),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
         ),
-        onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.risk);
-        },
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.risk),
       ),
     );
   }
 }
 
-/// Widget for Medical Sections
+/// Helper function for section styling
 Widget buildMedicalSection({
   required String title,
   required List<Widget> children,
 }) {
   return Container(
-    padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+    padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20.r),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.02),
-          blurRadius: 10,
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 12,
           offset: const Offset(0, 4),
         ),
       ],
@@ -333,24 +332,17 @@ Widget buildMedicalSection({
             Text(
               title,
               style: TextStyle(
-                fontSize: 15.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColor.textNeutral,
               ),
             ),
           ],
         ),
-        SizedBox(height: 14.h),
-        Column(
-          children:
-              children
-                  .map(
-                    (child) => Padding(
-                      padding: EdgeInsets.only(bottom: 10.h),
-                      child: child,
-                    ),
-                  )
-                  .toList(),
+        SizedBox(height: 16.h),
+        ...children.map(
+          (child) =>
+              Padding(padding: EdgeInsets.only(bottom: 12.h), child: child),
         ),
       ],
     ),

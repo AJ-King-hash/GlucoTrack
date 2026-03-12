@@ -1,11 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/api/api_error.dart';
+import 'package:untitled10/features/auth/data/models/user_model.dart';
 import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 import 'package:untitled10/features/user/repo/user_repo.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
   UserCubit(this.userRepository) : super(UserInitial());
+
+  /// Set user data directly (e.g., from login response) without API call
+  void setUser(UserModel user) {
+    emit(UserLoaded(user));
+  }
 
   //function for create user
   Future<void> createUser({
@@ -45,11 +51,11 @@ class UserCubit extends Cubit<UserState> {
         }
       });
     } catch (e) {
-      String errorMsg = "Error in Profile";
+      String errMsg = "Error in Profile";
       if (e is ApiError) {
-        errorMsg = e.message;
+        errMsg = e.message;
       }
-      emit(UserError(errorMsg));
+      emit(UserError(errMsg));
     }
   }
 
@@ -58,10 +64,16 @@ class UserCubit extends Cubit<UserState> {
     required String name,
     required String email,
     required String password,
+    String? oldPassword,
   }) async {
     emit(UserLoading());
     try {
-      final result = await userRepository.updateUser(name, email, password);
+      final result = await userRepository.updateUser(
+        name,
+        email,
+        password,
+        oldPassword: oldPassword,
+      );
       result.fold((failure) => emit(UserError(failure.message)), (user) {
         if (user != null) {
           emit(UserLoaded(user));
@@ -69,8 +81,6 @@ class UserCubit extends Cubit<UserState> {
           emit(UserError("Failed to update profile"));
         }
       });
-      await getUser();
-      emit(UserSuccess("Profile updated successfully"));
     } catch (e) {
       String errorMsg = "Error in Update Profile";
       if (e is ApiError) {

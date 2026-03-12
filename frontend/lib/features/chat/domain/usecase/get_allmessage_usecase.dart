@@ -4,17 +4,13 @@ import '../../../../core/utils/either.dart';
 import '../../repo/chat_repo.dart';
 import '../entity/message_entity.dart';
 
-
 class GetAllMessageParams {
   final int conversationId;
 
-  const GetAllMessageParams({
-    required this.conversationId,
-  });
+  const GetAllMessageParams({required this.conversationId});
 }
 
-class GetAllMessageUseCase
-    extends BaseUseCase<List<MessageEntity>, int> {
+class GetAllMessageUseCase extends BaseUseCase<List<MessageEntity>, int> {
   final BotRepository repository;
 
   GetAllMessageUseCase(this.repository);

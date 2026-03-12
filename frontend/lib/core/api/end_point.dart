@@ -2,7 +2,7 @@
 
 /// Backend API Endpoints Configuration
 ///
-/// Base URL: http://192.168.251.59:8000
+/// Base URL: http://10.248.171.223:8000
 /// All endpoints are prefixed with the base URL
 class ApiEndpoints {
   ApiEndpoints._();
@@ -41,7 +41,6 @@ class ApiEndpoints {
   // ==================== ANALYSIS ====================
   static const String allAnalysis = "/analyse/all/";
   static String deleteAnalysis(int id) => "/analyse/$id";
-  static const String analysisCount = "/analyse/count/";
 
   // ==================== OTP ====================
   static const String otpCheck = "/otp/check";
@@ -51,11 +50,11 @@ class ApiEndpoints {
 
   // ==================== NOTIFICATIONS ====================
   /// Update reminder times for the authenticated user
-  static const String updateReminders = "/notification/reminders";
+  static const String updateReminders = "/user";
 
   /// Update FCM token for push notifications
-  static const String updateFcmToken = "/notification/fcm-token";
+  static const String updateFcmToken = "/user";
 
   /// Trigger reminders manually (for testing)
-  static const String triggerReminders = "/notification/trigger-reminders";
+  static const String triggerReminders = "/user";
 }

@@ -5,7 +5,7 @@ import 'auth_interceptor.dart';
 class DioClient {
   DioClient._internal();
 
-  static const String baseUrl = "http://10.248.171.223:8000";
+  static const String baseUrl = "http://192.168.1.8:8000";
   static final DioClient _instance = DioClient._internal();
 
   factory DioClient() => _instance;
@@ -16,8 +16,8 @@ class DioClient {
     final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         sendTimeout: const Duration(seconds: 15),
         headers: {
           "Content-Type": "application/json",

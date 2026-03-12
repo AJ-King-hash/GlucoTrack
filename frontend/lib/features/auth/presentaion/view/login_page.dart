@@ -10,6 +10,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 import '../../../../core/widgets/language_bottom_sheet.dart';
+import '../../../user/presentation/manager/user_cubit.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
@@ -118,6 +119,14 @@ class LoginPage extends StatelessWidget {
                       BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
+                            // Set user data in UserCubit so change password works
+                            if (state.user != null) {
+                              try {
+                                context.read<UserCubit>().setUser(state.user!);
+                              } catch (e) {
+                                debugPrint('Error setting user: $e');
+                              }
+                            }
                             Navigator.pushReplacementNamed(
                               context,
                               AppRoutes.home,

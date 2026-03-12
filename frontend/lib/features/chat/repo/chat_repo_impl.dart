@@ -15,9 +15,9 @@ class BotRepositoryImpl implements BotRepository {
 
   @override
   Future<Either<Failure, ConversationEntity>> createConversation(
-    int userId,
+    String title,
   ) async {
-    final result = await apiService.createConversation({'user_id': userId});
+    final result = await apiService.createConversation({'title': title});
 
     return result.fold(
       (failure) => Left(failure),
@@ -36,16 +36,9 @@ class BotRepositoryImpl implements BotRepository {
   }
 
   @override
-  Future<Either<Failure, List<ConversationEntity>>> getAllConversations({
-    int page = 1,
-    int limit = 10,
-    String? search,
-  }) async {
-    final result = await apiService.getAllConversations(
-      page: page,
-      limit: limit,
-      search: search,
-    );
+  Future<Either<Failure, List<ConversationEntity>>>
+  getAllConversations() async {
+    final result = await apiService.getAllConversations();
 
     return result.fold(
       (failure) => Left(failure),
@@ -83,8 +76,8 @@ class BotRepositoryImpl implements BotRepository {
         id: message.id,
         conversationId: message.conversationId,
         content: message.content,
-        role: message.role,
         createdAt: message.createdAt,
+        senderType: message.senderType,
       ).toJson(),
     );
 
@@ -100,11 +93,7 @@ class BotRepositoryImpl implements BotRepository {
     int page = 1,
     int limit = 50,
   }) async {
-    final result = await apiService.getMessages(
-      conversationId,
-      page: page,
-      limit: limit,
-    );
+    final result = await apiService.getMessages(conversationId);
 
     return result.fold(
       (failure) => Left(failure),

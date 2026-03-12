@@ -42,7 +42,7 @@ def create_message(request:schemas.MessageBase,db:Session=Depends(get_db),curren
 #     return botRepo.show(id,db)
 
 @router.get("/message/all/{conv_id}",response_model=List[schemas.MessageShow])
-def all_messages(conv_id:int,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
+def all_messages(conv_id,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return botRepo.get_messages(conv_id,db)
 
 

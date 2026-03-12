@@ -2,17 +2,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled10/core/color/app_color.dart';
 
-class MessageInput extends StatelessWidget {
+class MessageInput extends StatefulWidget {
   final Function(String) onSend;
   final bool enabled;
+  final TextEditingController? controller;
 
-  MessageInput({
+  const MessageInput({
     super.key,
     required this.onSend,
     this.enabled = true,
+    this.controller,
   });
 
-  final TextEditingController controller = TextEditingController();
+  @override
+  State<MessageInput> createState() => _MessageInputState();
+}
+
+class _MessageInputState extends State<MessageInput> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +60,10 @@ class MessageInput extends StatelessWidget {
                   color: AppColor.backgroundNeutral,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: enabled
-                        ? Colors.blue.withOpacity(0.15)
-                        : Colors.grey.withOpacity(0.2),
+                    color:
+                        widget.enabled
+                            ? Colors.blue.withValues(alpha: 0.15)
+                            : Colors.grey.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
@@ -49,25 +71,23 @@ class MessageInput extends StatelessWidget {
                     Icon(
                       CupertinoIcons.mic,
                       size: 20,
-                      color: enabled
-                          ? AppColor.info
-                          : Colors.grey,
+                      color: widget.enabled ? AppColor.info : Colors.grey,
                     ),
-
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
-                        controller: controller,
-                        enabled: enabled,
+                        controller: _controller,
+                        enabled: widget.enabled,
                         maxLines: null,
                         textInputAction: TextInputAction.send,
-                        onSubmitted: enabled
-                            ? (value) {
-                          if (value.trim().isEmpty) return;
-                          onSend(value.trim());
-                          controller.clear();
-                        }
-                            : null,
+                        onSubmitted:
+                            widget.enabled
+                                ? (value) {
+                                  if (value.trim().isEmpty) return;
+                                  widget.onSend(value.trim());
+                                  _controller.clear();
+                                }
+                                : null,
                         decoration: const InputDecoration(
                           hintText: 'اكتب سؤالك الطبي هنا...',
                           border: InputBorder.none,
@@ -85,30 +105,31 @@ class MessageInput extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: enabled
-                    ? AppColor.positive
-                    : Colors.grey.shade400,
+                color:
+                    widget.enabled ? AppColor.positive : Colors.grey.shade400,
               ),
-              child: enabled
-                  ? IconButton(
-                icon: const Icon(
-                  Icons.send_rounded,
-                  color: AppColor.info,
-                ),
-                onPressed: () {
-                  if (controller.text.trim().isEmpty) return;
-                  onSend(controller.text.trim());
-                  controller.clear();
-                },
-              )
-                  : const Padding(
-                padding: EdgeInsets.all(12),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor:
-                  AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
+              child:
+                  widget.enabled
+                      ? IconButton(
+                        icon: const Icon(
+                          Icons.send_rounded,
+                          color: AppColor.info,
+                        ),
+                        onPressed: () {
+                          if (_controller.text.trim().isEmpty) return;
+                          widget.onSend(_controller.text.trim());
+                          _controller.clear();
+                        },
+                      )
+                      : const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      ),
             ),
           ],
         ),

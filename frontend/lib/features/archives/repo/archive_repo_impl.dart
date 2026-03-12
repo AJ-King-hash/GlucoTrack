@@ -36,18 +36,6 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   }
 
   @override
-  Future<Either<Failure, int>> getArchiveCount() async {
-    final result = await apiService.getAnalysisCount();
-
-    return result.fold((failure) => Left(failure), (data) {
-      if (data is Map && data['total'] != null) {
-        return Right(data['total'] as int);
-      }
-      return const Right(0);
-    });
-  }
-
-  @override
   Future<Either<Failure, ArchiveModel>> createArchive(
     ArchiveModel archive,
   ) async {
