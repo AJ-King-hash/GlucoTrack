@@ -138,8 +138,8 @@ class ApiService {
   Future<Either<Failure, dynamic>> createUser(Map<String, dynamic> body) =>
       _handleRequest(_dio.post(ApiEndpoints.user, data: body), (data) => data);
 
-  Future<Either<Failure, dynamic>> getUser() =>
-      _handleRequest(_dio.get(ApiEndpoints.user), (data) => data);
+  Future<Either<Failure, dynamic>> getUser(int userId) =>
+      _handleRequest(_dio.get(ApiEndpoints.userById(userId)), (data) => data);
 
   Future<Either<Failure, dynamic>> getUserById(int id) =>
       _handleRequest(_dio.get(ApiEndpoints.userById(id)), (data) => data);

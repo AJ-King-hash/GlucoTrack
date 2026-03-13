@@ -45,7 +45,9 @@ class MyApp extends StatelessWidget {
         // instantiate shared dependencies once and pass them to cubits
         BlocProvider(create: (_) => LocaleCubit()),
         BlocProvider(create: (context) => AuthCubit(sl<AuthRepository>())),
-        BlocProvider(create: (_) => UserCubit(sl<UserRepository>())),
+        BlocProvider(
+          create: (_) => UserCubit(sl<UserRepository>(), sl<AuthRepository>()),
+        ),
       ],
       child: BlocBuilder<LocaleCubit, LocaleState>(
         builder: (context, state) {

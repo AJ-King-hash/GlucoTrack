@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/api/api_error.dart';
 import 'package:untitled10/features/auth/data/models/user_model.dart';
+import 'package:untitled10/features/auth/repo/auth_repo.dart';
 import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 import 'package:untitled10/features/user/repo/user_repo.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
-  UserCubit(this.userRepository) : super(UserInitial());
+  final AuthRepository authRepository;
+  UserCubit(this.userRepository, this.authRepository) : super(UserInitial());
 
   /// Set user data directly (e.g., from login response) without API call
   void setUser(UserModel user) {
@@ -42,7 +44,14 @@ class UserCubit extends Cubit<UserState> {
   Future<void> getUser() async {
     emit(UserLoading());
     try {
-      final result = await userRepository.getUser();
+      // Get current user ID from auth repository
+      final currentUser = authRepository.currentUser;
+      if (currentUser == null || currentUser.id == null) {
+        emit(UserError("User not authenticated"));
+        return;
+      }
+
+      final result = await userRepository.getUser(currentUser.id!);
       result.fold((failure) => emit(UserError(failure.message)), (user) {
         if (user != null) {
           emit(UserLoaded(user));
