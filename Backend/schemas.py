@@ -20,7 +20,6 @@ class AnalyseBase(BaseModel):
     analysed_at:datetime
 class RiskBase(BaseModel):
     age:int
-    user_id:int
     weight:float
     height:float
     sugar_pregnancy:int
@@ -87,6 +86,8 @@ class ShowUser(BaseModel):
     id:int
     name:str
     email:str
+    gluco_reminder:Optional[datetime]=None
+    medicine_reminder:Optional[datetime]=None
     # otps:List[Otp]=[]
     class Config():
         from_attributes=True

@@ -38,7 +38,7 @@ def create(user_id,request,db:Session):
 def update(user_id:int,request,db:Session):
     risks=db.query(models.RiskFactor).filter(models.RiskFactor.user_id==user_id).first()
     if not risks:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"risk Factors with the user id {user_id} is not available")
+        return []
     risks.age=request.age
     risks.weight=float(request.weight)
     risks.height=float(request.height)

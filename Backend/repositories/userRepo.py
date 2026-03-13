@@ -37,7 +37,7 @@ def show(id:int,db:Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
     return user
 
-def update(id:int,request,db:Session):
+def update(id,request,db:Session):
     user=db.query(models.User).filter(models.User.id==id).first() 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
@@ -50,8 +50,10 @@ def update(id:int,request,db:Session):
                 detail="Incorrect old password"
             )
     
-    user.name=request.name
-    user.email=request.email
+    if request.name:
+        user.name=request.name
+    if request.email:
+        user.email=request.email
     user.updated_at=datetime.now(timezone.utc)
     
     # Update password only if provided
@@ -61,6 +63,7 @@ def update(id:int,request,db:Session):
     # Update reminder times if provided
     if request.gluco_time:
         user.gluco_reminder = parse_time_to_datetime(request.gluco_time)
+        print(parse_time_to_datetime(request.gluco_time))
     elif request.gluco_time is None and hasattr(request, 'gluco_time'):
         # Allow clearing the reminder
         user.gluco_reminder = None
