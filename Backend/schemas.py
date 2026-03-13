@@ -6,12 +6,14 @@ class User(BaseModel):
     name:str
     email:str
     password:str
+class UserUpdate(BaseModel):
+    name:Optional[str] = None
+    email:Optional[str] = None
+    password:Optional[str] = None
     old_password: Optional[str] = None
     gluco_time: Optional[str] = None  # e.g., "08:00" (24-hour format)
     medicine_time: Optional[str] = None  # e.g., "20:00"
     fcm_token: Optional[str] = None  # Firebase Cloud Messaging token
-    # created_at:datetime
-    # updated_at:Optional[datetime] = None
 
 class AnalyseBase(BaseModel):
     gluco_percent:float

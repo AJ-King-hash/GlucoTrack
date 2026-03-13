@@ -48,7 +48,7 @@ def delete(id:int,db:Session):
 ################## Messages ##################
 
 
-def get_messages(conv_id:int,db:Session):
+def get_messages(conv_id,db:Session):
     messages=db.query(models.Message).where(models.Message.conversation_id==conv_id).all()
     return messages
 
