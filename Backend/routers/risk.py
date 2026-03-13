@@ -20,7 +20,7 @@ def create_risk(request: schemas.RiskBase, db: Session = Depends(get_db),current
 def get_risk(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return riskRepo.show(current_user.id,db)
 
-@router.put("/",response_model=schemas.RiskShow)
+@router.put("/")
 def update_risk(request:schemas.RiskBase,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     
     return {"message": "Risk updated successfully", "user": riskRepo.update(current_user.id,request,db)}
