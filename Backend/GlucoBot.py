@@ -9,7 +9,7 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY", "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"))
+        api_key="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")
 
     def chat(self,message):
         completion = self.client.chat.completions.create(

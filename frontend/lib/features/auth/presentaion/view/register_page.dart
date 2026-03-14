@@ -10,6 +10,8 @@ import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
+import '../../../../core/widgets/states/error_state.dart';
+import '../../../../core/widgets/states/loading_state.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -128,7 +130,21 @@ class RegisterPage extends StatelessWidget {
                   },
                   builder: (context, state) {
                     if (state is UserLoading) {
-                      return const CircularProgressIndicator();
+                      return const LoadingState(message: 'Creating account...');
+                    }
+                    if (state is UserError) {
+                      return ErrorState(
+                        message: state.message,
+                        onActionPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<UserCubit>().createUser(
+                              name: nameController.text.trim(),
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                          }
+                        },
+                      );
                     }
                     return AppButton(
                       iconColor: AppColor.info,

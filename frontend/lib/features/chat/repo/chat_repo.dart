@@ -10,9 +10,6 @@ abstract class BotRepository {
   /// Get all conversations
   Future<Either<Failure, List<ConversationEntity>>> getAllConversations();
 
-  /// Get total count of conversations for pagination
-  Future<Either<Failure, int>> getConversationCount();
-
   Future<Either<Failure, bool>> deleteConversation(int id);
   Future<Either<Failure, MessageEntity>> sendMessage(MessageEntity message);
 

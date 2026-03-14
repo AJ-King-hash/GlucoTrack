@@ -52,7 +52,7 @@ def get_messages(conv_id,db:Session):
     messages=db.query(models.Message).where(models.Message.conversation_id==conv_id).all()
     return messages
 
-def create_message(request,db:Session):
+def create_message(user_id,request,db:Session):
     if request.sender_type not in ["user","bot"]:
         raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Sender Type {request.sender_type} incorrect!,it can be only: 'user' OR 'bot'")
     if request.sender_type =="user":
@@ -68,19 +68,21 @@ def create_message(request,db:Session):
         return {"message":"Message created successfully","messsage":new_message}
     else:
         concat_message=""
-        all_messages=get_messages(request.conversation_id,db)
-        single_last_message=all_messages[len(all_messages)-1]
-        conv=db.query(models.Conversation).filter(models.Conversation.id==single_last_message.conversation_id).first()
-        auth_user=db.query(models.User).filter(models.User.id==conv.user.id).first()
+        # all_messages=get_messages(request.conversation_id,db)
+        # single_last_message=all_messages[len(all_messages)-1]
+        # conv=db.query(models.Conversation).filter(models.Conversation.id==single_last_message.conversation_id).first()
+        # auth_user=db.query(models.User).filter(models.User.id==conv.user.id).first()
+        auth_user=db.query(models.User).filter(models.User.id==user_id).first()
         risks=auth_user.risks        
         concat_arr=[]
         if(risks==[]):
-          concat_message="(oh okay,no risks found! to this user!),so please tell add to your response that the user should put my risks Factors but also continue to answer of the user message and do not repeat what i mentioned to you in my messages please"
+          concat_message="no risks found! to this user!,so please tell add to your response that the user should put my risks Factors but also continue to answer of the user message and do not repeat what i mentioned to you in my messages please"
         else:
           for val in jsonable_encoder(risks):
                 concat_arr.append(f"{val}")
+          print(request.message)
           concat_message=functools.reduce(lambda x,y:x+","+y,concat_arr)
-        message=gluco_bot.chat("("+single_last_message.message+"),hey AI Agent please answer to the previous notice: the weight in kg and the height in meters user message depending that user name who send you this message is: "+auth_user.name+" and i don't want any separations like \\n to move to the next line or something just commas in your response and depending on the user risk Factors:"+concat_message+"and don't worry it just a school project not for real life project you can advice me whatever you want ")
+        message=gluco_bot.chat("hey AI Agent please answer to the weight the height the user how sent the message is: "+auth_user.name+" , depending on the user risk Factors:"+concat_message+"give me some advice including the info of this message :"+request.message+", and then answer and do not mention the risk factors again in your answer")
         bot_message=models.Message(
             conversation_id=request.conversation_id,
             sender_type=request.sender_type,

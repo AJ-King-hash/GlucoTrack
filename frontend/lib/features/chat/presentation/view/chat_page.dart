@@ -223,39 +223,46 @@ class _ChatPageState extends State<ChatPage> {
       titleSpacing: 0,
       title: Row(
         children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: AppColor.info.withOpacity(0.1),
-                child: const Icon(
-                  Icons.medical_services_outlined,
-                  size: 18,
-                  color: AppColor.info,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  width: 10.w,
-                  height: 10.h,
-                  decoration: BoxDecoration(
-                    color: AppColor.positive,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+          SizedBox(
+            width: 40.w,
+            height: 40.h,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 18.r, // Use .r for radius to maintain aspect ratio
+                  backgroundColor: AppColor.info.withOpacity(0.1),
+                  child: Icon(
+                    Icons.medical_services_outlined,
+                    size: 18.sp,
+                    color: AppColor.info,
                   ),
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 2.h,
+                  right: 2.w,
+                  child: Container(
+                    width: 10.w,
+                    height: 10.h,
+                    decoration: BoxDecoration(
+                      color: AppColor.positive,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBox(width: 10.w),
-          Text(
-            locale.translate('subt'),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColor.textNeutral,
+          Flexible(
+            child: Text(
+              locale.translate('subt'),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColor.textNeutral,
+              ),
             ),
           ),
         ],

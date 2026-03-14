@@ -35,7 +35,7 @@ def delete_conversation(id:int,db:Session=Depends(get_db),current_user:schemas.U
 
 @router.post("/message")
 def create_message(request:schemas.MessageBase,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
-    return botRepo.create_message(request,db)
+    return botRepo.create_message(current_user.id,request,db)
 
 # @router.get("/message/{id}",response_model=schemas.MessageShow)
 # def show_message(id:int,db:Session=Depends(get_db)):

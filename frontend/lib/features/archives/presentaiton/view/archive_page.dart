@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/injection_container.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
+import 'package:untitled10/core/widgets/states/loading_state.dart';
+import 'package:untitled10/core/widgets/states/error_state.dart';
+import 'package:untitled10/core/widgets/states/empty_state.dart';
 
 import '../manager/archives_cubit.dart';
 import '../manager/archives_state.dart';
@@ -294,15 +297,18 @@ class ArchivesPage extends StatelessWidget {
     LocaleCubit locale,
   ) {
     if (state.status == ArchiveStatus.loading) {
-      return const Center(child: CircularProgressIndicator.adaptive());
+      return const LoadingState(message: 'Loading archives...');
     }
 
     if (state.status == ArchiveStatus.error) {
-      return _buildErrorState(cubit, locale, state.errorMessage);
+      return ErrorState(
+        message: state.errorMessage,
+        onActionPressed: () => cubit.refreshArchives(),
+      );
     }
 
     if (state.archives.isEmpty) {
-      return _buildEmptyState(locale);
+      return const EmptyState(lottieAsset: 'assets/lottie/empty ghost.json');
     }
 
     return RefreshIndicator(
@@ -324,75 +330,6 @@ class ArchivesPage extends StatelessWidget {
                 ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(LocaleCubit locale) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.auto_graph_outlined, size: 80, color: Colors.grey[300]),
-          const SizedBox(height: 16),
-          Text(
-            locale.translate('archives_empty_message'),
-            style: TextStyle(color: Colors.grey[500], fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorState(
-    ArchiveCubit cubit,
-    LocaleCubit locale,
-    String? errorMessage,
-  ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(Icons.error_outline, color: Colors.red, size: 40),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: 250,
-            child: Text(
-              errorMessage ?? locale.translate('archives_error_message'),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () => cubit.refreshArchives(),
-            icon: const Icon(Icons.refresh),
-            label: Text(locale.translate('refresh')),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 4,
-            ),
-          ),
-        ],
       ),
     );
   }

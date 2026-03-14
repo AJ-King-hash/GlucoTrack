@@ -8,6 +8,7 @@ class SecureStorageService {
   static const _storage = FlutterSecureStorage();
   static const _tokenKey = "access_token";
   static const _isFirstTimeKey = "is_first_time";
+  static const _userIdKey = "user_id";
 
   static Future<bool> saveToken(String token) async {
     try {
@@ -50,6 +51,32 @@ class SecureStorageService {
       return value == null ? true : value.toLowerCase() != 'false';
     } catch (e) {
       return true;
+    }
+  }
+
+  static Future<bool> saveUserId(String userId) async {
+    try {
+      await _storage.write(key: _userIdKey, value: userId);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<String?> getUserId() async {
+    try {
+      return await _storage.read(key: _userIdKey);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<bool> deleteUserId() async {
+    try {
+      await _storage.delete(key: _userIdKey);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

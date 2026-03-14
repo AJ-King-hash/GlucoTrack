@@ -8,6 +8,8 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_logo.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 import '../../../../core/widgets/auth_background.dart';
+import '../../../../core/widgets/states/error_state.dart';
+import '../../../../core/widgets/states/loading_state.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
@@ -20,9 +22,7 @@ class ResetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
-
       listener: (context, state) {
-
         if (state is AuthSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -37,18 +37,46 @@ class ResetPasswordPage extends StatelessWidget {
             arguments: emailController.text.trim(),
           );
         }
-      if (state is AuthError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.message),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-
-    },
-        builder: (context,state){
-        final isLoading = state is AuthLoading;
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthLoading) {
+          return Scaffold(
+            backgroundColor: AppColor.backgroundNeutral,
+            body: AuthBackground(
+              child: SafeArea(
+                child: Center(
+                  child: const LoadingState(message: 'Sending reset code...'),
+                ),
+              ),
+            ),
+          );
+        }
+        if (state is AuthError) {
+          return Scaffold(
+            backgroundColor: AppColor.backgroundNeutral,
+            body: AuthBackground(
+              child: SafeArea(
+                child: Center(
+                  child: ErrorState(
+                    message: state.message,
+                    onActionPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // context.read<AuthCubit>().forgotPassword(
+                        //   emailController.text.trim(),
+                        // );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
         return Scaffold(
           backgroundColor: AppColor.backgroundNeutral,
           body: AuthBackground(
@@ -99,8 +127,9 @@ class ResetPasswordPage extends StatelessWidget {
                             if (value == null || value.isEmpty) {
                               return 'يرجى إدخال البريد الإلكتروني';
                             }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                .hasMatch(value)) {
+                            if (!RegExp(
+                              r'^[^@]+@[^@]+\.[^@]+',
+                            ).hasMatch(value)) {
                               return 'يرجى إدخال بريد إلكتروني صحيح';
                             }
                             return null;
@@ -109,9 +138,7 @@ class ResetPasswordPage extends StatelessWidget {
 
                         SizedBox(height: 30.h),
 
-                        isLoading
-                            ? const CircularProgressIndicator()
-                            : AppButton(
+                        AppButton(
                           icon: Icons.send,
                           iconColor: AppColor.info,
                           text: "إرسال الرمز",
@@ -119,9 +146,9 @@ class ResetPasswordPage extends StatelessWidget {
                           textColor: AppColor.textNeutral,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                             // context.read<AuthCubit>().forgotPassword(
-                               // emailController.text.trim(),
-                              //);
+                              // context.read<AuthCubit>().forgotPassword(
+                              //   emailController.text.trim(),
+                              // );
                             }
                           },
                         ),
@@ -151,7 +178,7 @@ class ResetPasswordPage extends StatelessWidget {
             ),
           ),
         );
-        },
+      },
     );
   }
 }

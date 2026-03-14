@@ -8,7 +8,7 @@ abstract class UserRepository {
     String email,
     String password,
   );
-  Future<Either<Failure, UserModel?>> getUser();
+  Future<Either<Failure, UserModel?>> getUser(int userId);
   Future<Either<Failure, UserModel?>> updateUser(
     String name,
     String email,

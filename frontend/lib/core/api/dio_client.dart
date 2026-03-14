@@ -9,7 +9,6 @@ class DioClient {
   static final DioClient _instance = DioClient._internal();
 
   factory DioClient() => _instance;
-
   late final Dio dio = _createDio();
 
   Dio _createDio() {
