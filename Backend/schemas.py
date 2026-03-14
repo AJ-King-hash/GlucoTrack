@@ -144,9 +144,9 @@ class ResetPasswordRequest(BaseModel):
 
 
 class MessageBase(BaseModel):
-    conversation_id:int
-    sender_type:str
-    message:Optional[str] = None
+     conversation_id:int
+     sender_type:str
+     message:Optional[str] = None
 class MessageShow(MessageBase):
     id:int
     conversation_id:int

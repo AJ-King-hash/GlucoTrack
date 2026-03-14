@@ -4,12 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../core/color/app_color.dart';
-
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 import '../../../../core/widgets/language_bottom_sheet.dart';
+import '../../../../core/widgets/states/error_state.dart';
+import '../../../../core/widgets/states/loading_state.dart';
 import '../../../user/presentation/manager/user_cubit.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
@@ -171,7 +172,20 @@ class LoginPage extends StatelessWidget {
                         },
                         builder: (context, state) {
                           if (state is AuthLoading) {
-                            return const CircularProgressIndicator();
+                            return const LoadingState(message: 'Logging in...');
+                          }
+                          if (state is AuthError) {
+                            return ErrorState(
+                              message: state.message,
+                              onActionPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthCubit>().login(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                  );
+                                }
+                              },
+                            );
                           }
                           return AppButton(
                             text: context.read<LocaleCubit>().translate(

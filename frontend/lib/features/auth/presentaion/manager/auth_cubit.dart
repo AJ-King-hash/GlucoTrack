@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/api/api_error.dart';
 import 'package:untitled10/features/auth/presentaion/manager/auth_state.dart';
 import 'package:untitled10/features/auth/repo/auth_repo.dart';
+import 'package:untitled10/core/utils/pref_helper.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository authRepository;
@@ -13,6 +14,10 @@ class AuthCubit extends Cubit<AuthState> {
       final result = await authRepository.login(email, password);
       result.fold((failure) => emit(AuthError(failure.message)), (user) {
         if (user != null) {
+          // Save user ID to secure storage
+          if (user.id != null) {
+            PrefHelper.saveUserId(user.id.toString());
+          }
           emit(AuthSuccess("Login successful", user: user));
         } else {
           emit(AuthError("Invalid credentials"));
@@ -31,10 +36,11 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final result = await authRepository.logout();
-      result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (_) => emit(AuthInitial()), // Reset to initial state after logout
-      );
+      result.fold((failure) => emit(AuthError(failure.message)), (_) {
+        PrefHelper.clearToken();
+        PrefHelper.clearUserId();
+        emit(AuthInitial()); // Reset to initial state after logout
+      });
     } catch (e) {
       String errMsg = "Error in Logout";
       if (e is ApiError) {
