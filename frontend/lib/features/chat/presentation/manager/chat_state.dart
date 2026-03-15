@@ -1,56 +1,56 @@
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failure.dart';
+import '../../domain/entity/conversation_entity.dart';
+import '../../domain/entity/message_entity.dart';
 
-abstract class BotState extends Equatable {
-  const BotState();
+enum BotStatus { initial, loading, loaded, error }
 
-  @override
-  List<Object?> get props => [];
-}
+class BotState extends Equatable {
+  final List<ConversationEntity> conversations;
+  final List<MessageEntity> messages;
+  final ConversationEntity? currentConversation;
+  final BotStatus status;
+  final bool isBotTyping;
+  final Failure? failure;
 
-class BotInitial extends BotState {
-  const BotInitial();
-}
+  const BotState({
+    this.conversations = const [],
+    this.messages = const [],
+    this.currentConversation,
+    this.status = BotStatus.initial,
+    this.isBotTyping = false,
+    this.failure,
+  });
 
-class BotLoading extends BotState {
-  const BotLoading();
-}
-
-class BotSuccess<T> extends BotState {
-  final T data;
-
-  const BotSuccess(this.data);
-
-  BotSuccess<T> copyWith({T? data}) {
-    return BotSuccess<T>(data ?? this.data);
+  BotState copyWith({
+    List<ConversationEntity>? conversations,
+    List<MessageEntity>? messages,
+    ConversationEntity? currentConversation,
+    BotStatus? status,
+    bool? isBotTyping,
+    Failure? failure,
+    bool clearCurrentConversation = false,
+  }) {
+    return BotState(
+      conversations: conversations ?? this.conversations,
+      messages: messages ?? this.messages,
+      currentConversation:
+          clearCurrentConversation
+              ? null
+              : (currentConversation ?? this.currentConversation),
+      status: status ?? this.status,
+      isBotTyping: isBotTyping ?? this.isBotTyping,
+      failure: failure ?? this.failure,
+    );
   }
 
   @override
-  List<Object?> get props => [data];
-}
-
-class BotListSuccess<T> extends BotState {
-  final List<T> data;
-
-  const BotListSuccess(this.data);
-
-  BotListSuccess<T> copyWith({List<T>? data}) {
-    return BotListSuccess<T>(data ?? this.data);
-  }
-
-  @override
-  List<Object?> get props => [data];
-}
-
-class BotError extends BotState {
-  final Failure failure;
-
-  const BotError(this.failure);
-
-  BotError copyWith({Failure? failure}) {
-    return BotError(failure ?? this.failure);
-  }
-
-  @override
-  List<Object?> get props => [failure];
+  List<Object?> get props => [
+    conversations,
+    messages,
+    currentConversation,
+    status,
+    isBotTyping,
+    failure,
+  ];
 }

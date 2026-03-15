@@ -4,7 +4,7 @@ class MessageModel extends MessageEntity {
   const MessageModel({
     required super.id,
     required super.conversationId,
-    required super.content,
+    required super.message,
     required super.createdAt,
     required super.senderType,
   });
@@ -13,7 +13,7 @@ class MessageModel extends MessageEntity {
     return MessageModel(
       id: json['id'] ?? 0,
       conversationId: json['conversation_id'] ?? 0,
-      content: json['content'] ?? '',
+      message: json['message'] ?? '',
       createdAt: json['created_at']?.toString() ?? '',
       senderType: json['sender_type'] ?? 'user',
     );
@@ -23,7 +23,7 @@ class MessageModel extends MessageEntity {
     return {
       'id': id,
       'conversation_id': conversationId,
-      'content': content,
+      'message': message,
       'created_at': createdAt,
       'sender_type': senderType,
     };

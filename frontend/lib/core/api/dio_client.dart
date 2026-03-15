@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'auth_interceptor.dart';
+import 'package:untitled10/core/api/auth_interceptor.dart';
 
 class DioClient {
   DioClient._internal();
 
-  static const String baseUrl = "http://192.168.1.8:8000";
+  static const String baseUrl = "http://192.168.34.73:8000";
   static final DioClient _instance = DioClient._internal();
 
   factory DioClient() => _instance;

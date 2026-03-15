@@ -20,7 +20,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
   @override
   void initState() {
     super.initState();
-    // Fetch conversations when drawer opens
+    // Fetch conversations when drawer is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<BotCubit>().getAllConversations();
     });
@@ -35,14 +35,12 @@ class _ChatDrawerState extends State<ChatDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Create new chat
+            // 1. New Chat Button
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // Close drawer first
-                  Navigator.pop(context);
-                  // Trigger new chat callback
+                  Navigator.pop(context); // Close drawer [cite: 125]
                   widget.onNewChat?.call();
                 },
                 icon: const Icon(Icons.add),
@@ -55,23 +53,30 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
             SectionTitle(title: locale.translate("recent_chats")),
 
+            // 2. Dynamic Conversation List
             Expanded(
               child: BlocBuilder<BotCubit, BotState>(
                 builder: (context, state) {
-                  if (state is BotLoading) {
+                  // Handle Loading State
+                  if (state.status == BotStatus.loading &&
+                      state.conversations.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (state is BotError) {
+                  // Handle Error State
+                  if (state.status == BotStatus.error &&
+                      state.failure != null) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Error: ${state.failure.message}'),
+                          Text('Error: ${state.failure!.message}'),
                           TextButton(
-                            onPressed: () {
-                              context.read<BotCubit>().getAllConversations();
-                            },
+                            onPressed:
+                                () =>
+                                    context
+                                        .read<BotCubit>()
+                                        .getAllConversations(),
                             child: Text(locale.translate('try_again')),
                           ),
                         ],
@@ -79,40 +84,37 @@ class _ChatDrawerState extends State<ChatDrawer> {
                     );
                   }
 
-                  if (state is BotListSuccess) {
-                    final conversations = state.data;
-                    if (conversations.isEmpty) {
-                      return const Center(child: Text('No conversations yet'));
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      itemCount: conversations.length,
-                      itemBuilder: (context, index) {
-                        final conversation = conversations[index];
-                        return ArchivedChatItem(
-                          title:
-                              conversation.title.isNotEmpty
-                                  ? conversation.title
-                                  : 'Chat ${conversation.id}',
-                          onTap: () {
-                            Navigator.pop(context);
-                            widget.onConversationSelected?.call(
-                              conversation.id,
-                            );
-                          },
-                          onDelete: () {
-                            context.read<BotCubit>().deleteConversation(
-                              conversation.id,
-                            );
-                          },
-                        );
-                      },
-                    );
+                  // Handle Empty List
+                  if (state.conversations.isEmpty) {
+                    return const Center(child: Text('No conversations yet'));
                   }
 
-                  // Initial state - show loading
-                  return const Center(child: CircularProgressIndicator());
+                  // Build Conversation List
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: state.conversations.length,
+                    itemBuilder: (context, index) {
+                      final conversation = state.conversations[index];
+
+                      return ArchivedChatItem(
+                        key: ValueKey(conversation.id),
+                        title:
+                            conversation.title.isNotEmpty
+                                ? conversation.title
+                                : 'Chat ${conversation.id}',
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.onConversationSelected?.call(conversation.id);
+                        },
+                        onDelete: () {
+                          // Note: Consider adding a confirmation dialog here
+                          context.read<BotCubit>().deleteConversation(
+                            conversation.id,
+                          );
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ),
