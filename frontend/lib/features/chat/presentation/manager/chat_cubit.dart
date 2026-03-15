@@ -89,24 +89,38 @@ class BotCubit extends Cubit<BotState> {
     await sendResult.fold(
       (failure) async =>
           emit(state.copyWith(status: BotStatus.error, failure: failure)),
-      (data) async {
-        // Small debounce to let the backend process the AI response
-        await Future.delayed(const Duration(milliseconds: 500));
+      (userMessage) async {
+        // 3. Send Bot Reponse
+        final botMessage = MessageEntity(
+          id: DateTime.now().millisecondsSinceEpoch,
+          conversationId: conversationId,
+          message: '', // Backend will populate this with the bot's response
+          createdAt: DateTime.now().toIso8601String(),
+          senderType: 'bot',
+        );
 
-        final refreshResult = await getAllMessagesUseCase(id);
-        refreshResult.fold(
-          (failure) => emit(state.copyWith(isBotTyping: false)),
-          (messages) {
-            // ENSURE we only update if we are still on the same conversation
-            if (state.currentConversation?.id == id) {
-              emit(
-                state.copyWith(
-                  messages: messages,
-                  isBotTyping: false,
-                  status: BotStatus.loaded,
-                ),
-              );
-            }
+        final result = await sendMessageUseCase(botMessage);
+        result.fold(
+          (failure) =>
+              emit(state.copyWith(isBotTyping: false, status: BotStatus.error)),
+          (botResponse) async {
+            await Future.delayed(const Duration(milliseconds: 500));
+            final refreshResult = await getAllMessagesUseCase(id);
+            refreshResult.fold(
+              (failure) => emit(state.copyWith(isBotTyping: false)),
+              (messages) {
+                // ENSURE we only update if we are still on the same conversation
+                if (state.currentConversation?.id == id) {
+                  emit(
+                    state.copyWith(
+                      messages: messages,
+                      isBotTyping: false,
+                      status: BotStatus.loaded,
+                    ),
+                  );
+                }
+              },
+            );
           },
         );
       },
