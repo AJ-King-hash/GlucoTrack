@@ -50,6 +50,8 @@ def update(id,request,db:Session):
                 detail="Incorrect old password"
             )
     
+    if request.gender:
+        user.name=request.gender
     if request.name:
         user.name=request.name
     if request.email:
