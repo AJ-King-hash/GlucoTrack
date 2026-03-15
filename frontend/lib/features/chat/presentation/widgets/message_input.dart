@@ -68,11 +68,6 @@ class _MessageInputState extends State<MessageInput> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      CupertinoIcons.mic,
-                      size: 20,
-                      color: widget.enabled ? AppColor.info : Colors.grey,
-                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(

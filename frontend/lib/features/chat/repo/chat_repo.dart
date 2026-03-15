@@ -17,7 +17,4 @@ abstract class BotRepository {
   Future<Either<Failure, List<MessageEntity>>> getAllMessages(
     int conversationId,
   );
-
-  /// Get total count of messages for pagination
-  Future<Either<Failure, int>> getMessageCount(int conversationId);
 }

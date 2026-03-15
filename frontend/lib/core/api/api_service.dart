@@ -199,13 +199,6 @@ class ApiService {
         (data) => data,
       );
 
-  /// Get total count of messages for pagination
-  Future<Either<Failure, dynamic>> getMessageCount(int conversationId) =>
-      _handleRequest(
-        _dio.get(ApiEndpoints.messageCount(conversationId)),
-        (data) => data,
-      );
-
   // ================= RISK =================
   /// Note: Risk endpoints use current authenticated user from token.
   /// The user ID is extracted from the JWT token on the backend.

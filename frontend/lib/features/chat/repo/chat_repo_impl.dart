@@ -92,7 +92,7 @@ class BotRepositoryImpl implements BotRepository {
       MessageModel(
         id: message.id,
         conversationId: message.conversationId,
-        content: message.content,
+        message: message.message,
         createdAt: message.createdAt,
         senderType: message.senderType,
       ).toJson(),
@@ -122,22 +122,5 @@ class BotRepositoryImpl implements BotRepository {
       (data) =>
           Right((data as List).map((e) => MessageModel.fromJson(e)).toList()),
     );
-  }
-
-  @override
-  Future<Either<Failure, int>> getMessageCount(int conversationId) async {
-    final userId = await PrefHelper.getUserId();
-    if (userId == null) {
-      return Left(UnauthorizedFailure(message: 'User not authenticated'));
-    }
-
-    final result = await apiService.getMessageCount(conversationId);
-
-    return result.fold((failure) => Left(failure), (data) {
-      if (data is Map && data['total'] != null) {
-        return Right(data['total'] as int);
-      }
-      return const Right(0);
-    });
   }
 }
