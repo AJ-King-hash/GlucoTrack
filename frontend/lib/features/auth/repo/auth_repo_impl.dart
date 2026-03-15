@@ -84,7 +84,9 @@ class AuthRepoImpl extends AuthRepository {
       return const Right(null);
     }
     try {
-      final userResult = await userRepository?.getUser();
+      final userResult = await userRepository?.getUser(
+        0,
+      ); // TODO: Pass actual userId when available
       return userResult?.fold((failure) => Left(failure), (user) {
             _currentUser = user;
             return Right(user);

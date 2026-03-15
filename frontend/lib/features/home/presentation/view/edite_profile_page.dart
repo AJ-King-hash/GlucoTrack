@@ -36,6 +36,7 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
         if (state is UserLoaded) {
           final user = state.userModel;
+          print("user: " + user.toString());
           nameController.text = user.name;
           emailController.text = user.email;
         }
@@ -145,43 +146,6 @@ class _EditeProfilePageState extends State<EditeProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                //header card
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 24.h),
-                  decoration: BoxDecoration(
-                    color: AppColor.info.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 90.w,
-                        height: 90.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColor.info.withValues(alpha: 0.1),
-                        ),
-                        child: Icon(
-                          Icons.person_outline,
-                          size: 42.sp,
-                          color: AppColor.info,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        context.read<LocaleCubit>().translate(
-                          'account_information',
-                        ),
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColor.textNeutral,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
                 SizedBox(height: 32.h),
                 //form card
                 Container(

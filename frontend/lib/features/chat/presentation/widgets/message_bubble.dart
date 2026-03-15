@@ -46,7 +46,7 @@ class MessageBubble extends StatelessWidget {
                     isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Text(
-                    message.content,
+                    message.message,
                     style: TextStyle(
                       color: isUser ? Colors.white : Colors.black87,
                       fontSize: 15.sp,

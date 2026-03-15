@@ -39,11 +39,11 @@ class UserRepositoryImpl implements UserRepository {
 
   //function for get user data
   @override
-  Future<Either<Failure, UserModel?>> getUser() async {
+  Future<Either<Failure, UserModel?>> getUser(int userId) async {
     final token = await SecureStorageService.getToken();
     if (token == null) return const Right(null);
 
-    final result = await apiService.getUser();
+    final result = await apiService.getUserById(userId);
 
     return result.fold((failure) => Left(failure), (data) {
       final user = UserModel.fromJson(data['user']);

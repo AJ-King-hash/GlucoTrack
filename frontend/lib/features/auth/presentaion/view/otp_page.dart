@@ -6,6 +6,8 @@ import 'package:untitled10/core/routes/app_routes.dart';
 import 'package:untitled10/core/widgets/app_button.dart';
 import 'package:untitled10/core/widgets/app_logo.dart';
 import 'package:untitled10/core/widgets/auth_background.dart';
+import 'package:untitled10/core/widgets/states/error_state.dart';
+import 'package:untitled10/core/widgets/states/loading_state.dart';
 import 'package:untitled10/features/auth/presentaion/widgets/otp_box.dart';
 
 import '../manager/auth_cubit.dart';
@@ -62,7 +64,20 @@ class _OtpPageState extends State<OtpPage> {
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
-                    final isLoading = state is AuthLoading;
+                    if (state is AuthLoading) {
+                      return const LoadingState(message: 'Verifying OTP...');
+                    }
+                    if (state is AuthError) {
+                      return ErrorState(
+                        message: state.message,
+                        onActionPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            final otp = controllers.map((e) => e.text).join();
+                            cubit.verifyOtp(widget.email!, otp);
+                          }
+                        },
+                      );
+                    }
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -115,40 +130,30 @@ class _OtpPageState extends State<OtpPage> {
                                 ),
                               ),
                               SizedBox(height: 32.h),
-                              isLoading
-                                  ? SizedBox(
-                                    height: 48.h,
-                                    child: const CircularProgressIndicator(),
-                                  )
-                                  : AppButton(
-                                    icon: Icons.send,
-                                    iconColor: AppColor.info,
-                                    text: "تأكيد",
-                                    height: 50.h,
-                                    fontSize: 16.sp,
-                                    textColor: Colors.white,
-                                    backgroundColor: AppColor.positive,
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        final otp =
-                                            controllers
-                                                .map((e) => e.text)
-                                                .join();
-                                        cubit.verifyOtp(widget.email!, otp);
-                                      }
-                                    },
-                                  ),
+                              AppButton(
+                                icon: Icons.send,
+                                iconColor: AppColor.info,
+                                text: "تأكيد",
+                                height: 50.h,
+                                fontSize: 16.sp,
+                                textColor: Colors.white,
+                                backgroundColor: AppColor.positive,
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    final otp =
+                                        controllers.map((e) => e.text).join();
+                                    cubit.verifyOtp(widget.email!, otp);
+                                  }
+                                },
+                              ),
                             ],
                           ),
                         ),
                         SizedBox(height: 24.h),
                         TextButton(
-                          onPressed:
-                              isLoading
-                                  ? null
-                                  : () {
-                                    cubit.close();
-                                  },
+                          onPressed: () {
+                            cubit.close();
+                          },
                           child: Text(
                             "إعادة إرسال الرمز",
                             style: TextStyle(

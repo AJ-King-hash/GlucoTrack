@@ -7,7 +7,6 @@ import '../../domain/usecase/get_allconversation_usecase.dart';
 import '../../domain/usecase/get_allmessage_usecase.dart';
 import '../../domain/usecase/get_conversation_usecase.dart';
 import '../../domain/usecase/send_message_usecase.dart';
-
 import 'chat_state.dart';
 
 class BotCubit extends Cubit<BotState> {
@@ -25,82 +24,179 @@ class BotCubit extends Cubit<BotState> {
     required this.deleteConversationUseCase,
     required this.sendMessageUseCase,
     required this.getAllMessagesUseCase,
-  }) : super(const BotInitial());
+  }) : super(const BotState());
 
-  Future<void> createConversation(String title) async {
-    emit(const BotLoading());
-    final result = await createConversationUseCase((title));
-    result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotSuccess(data)),
+  // Resets the chat UI when "New Chat" is clicked
+  void resetChat() {
+    emit(
+      state.copyWith(
+        messages: [],
+        clearCurrentConversation: true,
+        status: BotStatus.loaded,
+      ),
     );
   }
 
-  Future<void> getConversation(int conversationId) async {
-    emit(const BotLoading());
-    final result = await getConversationUseCase(conversationId);
-    result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotSuccess(data)),
+  Future<void> handleMessageSent(String text, int conversationId) async {
+    int id = conversationId;
+
+    // 1. Creation Phase
+    if (id == 0) {
+      // Clear old messages immediately so the UI doesn't show "ghost" data
+      emit(state.copyWith(status: BotStatus.loading, messages: []));
+
+      final result = await createConversationUseCase(text);
+
+      // We use a temporary variable to capture the new ID correctly
+      int? newId;
+      result.fold(
+        (failure) =>
+            emit(state.copyWith(status: BotStatus.error, failure: failure)),
+        (conv) {
+          newId = conv.id;
+          // Update the conversation info but KEEP messages empty for now
+          emit(
+            state.copyWith(
+              currentConversation: conv,
+              status: BotStatus.loaded,
+              messages: [],
+            ),
+          );
+        },
+      );
+
+      if (newId == null) return; // Stop if creation failed
+      id = newId!;
+
+      // Refresh the drawer list in the background
+      await getAllConversations();
+    }
+
+    // 2. Prepare User Message
+    final userMessage = MessageEntity(
+      id: DateTime.now().millisecondsSinceEpoch,
+      conversationId: id,
+      message: text,
+      createdAt: DateTime.now().toIso8601String(),
+      senderType: 'user',
+    );
+
+    // 3. Send & Fetch Truth
+    emit(state.copyWith(isBotTyping: true));
+
+    final sendResult = await sendMessageUseCase(userMessage);
+
+    await sendResult.fold(
+      (failure) async =>
+          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (userMessage) async {
+        // 3. Send Bot Reponse
+        final botMessage = MessageEntity(
+          id: DateTime.now().millisecondsSinceEpoch,
+          conversationId: conversationId,
+          message: '', // Backend will populate this with the bot's response
+          createdAt: DateTime.now().toIso8601String(),
+          senderType: 'bot',
+        );
+
+        final result = await sendMessageUseCase(botMessage);
+        result.fold(
+          (failure) =>
+              emit(state.copyWith(isBotTyping: false, status: BotStatus.error)),
+          (botResponse) async {
+            await Future.delayed(const Duration(milliseconds: 500));
+            final refreshResult = await getAllMessagesUseCase(id);
+            refreshResult.fold(
+              (failure) => emit(state.copyWith(isBotTyping: false)),
+              (messages) {
+                // ENSURE we only update if we are still on the same conversation
+                if (state.currentConversation?.id == id) {
+                  emit(
+                    state.copyWith(
+                      messages: messages,
+                      isBotTyping: false,
+                      status: BotStatus.loaded,
+                    ),
+                  );
+                }
+              },
+            );
+          },
+        );
+      },
     );
   }
 
   Future<void> getAllConversations() async {
-    emit(const BotLoading());
     final result = await getAllConversationsUseCase(const NoParams());
     result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotListSuccess(data)),
+      (failure) =>
+          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (data) =>
+          emit(state.copyWith(conversations: data, status: BotStatus.loaded)),
+    );
+  }
+
+  Future<void> loadConversation(int id) async {
+    emit(state.copyWith(status: BotStatus.loading));
+
+    final convResult = await getConversationUseCase(id);
+    final msgResult = await getAllMessagesUseCase(id);
+
+    convResult.fold(
+      (f) => emit(state.copyWith(status: BotStatus.error, failure: f)),
+      (conv) {
+        msgResult.fold(
+          (f) => emit(state.copyWith(status: BotStatus.error, failure: f)),
+          (msgs) => emit(
+            state.copyWith(
+              currentConversation: conv,
+              messages: msgs,
+              status: BotStatus.loaded,
+            ),
+          ),
+        );
+      },
     );
   }
 
   Future<void> deleteConversation(int conversationId) async {
-    emit(const BotLoading());
+    // 1. Emit loading but keep existing data to prevent UI flicker
+    emit(state.copyWith(status: BotStatus.loading));
+
     final result = await deleteConversationUseCase(
       DeleteConversationParams(conversationId),
     );
+
     result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotSuccess(data)),
-    );
-  }
+      (failure) =>
+          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (success) {
+        // 2. Filter out the deleted conversation from the local list
+        final updatedConversations =
+            state.conversations
+                .where((conv) => conv.id != conversationId)
+                .toList();
 
-  Future<void> sendMessage(MessageEntity message) async {
-    emit(const BotLoading());
-    final result = await sendMessageUseCase(message);
-    result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotSuccess(data)),
-    );
-  }
-
-  /// Send a bot response message for the given conversation
-  /// This is called automatically after user sends a message
-  Future<void> sendBotResponse(int conversationId, String userMessage) async {
-    emit(const BotLoading());
-
-    // Create bot message with senderType = 'bot'
-    final botMessage = MessageEntity(
-      id: DateTime.now().millisecondsSinceEpoch,
-      conversationId: conversationId,
-      content: '', // Backend will populate this with the bot's response
-      createdAt: DateTime.now().toIso8601String(),
-      senderType: 'bot',
-    );
-
-    final result = await sendMessageUseCase(botMessage);
-    result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotSuccess(data)),
-    );
-  }
-
-  Future<void> getAllMessages(int conversationId) async {
-    emit(const BotLoading());
-    final result = await getAllMessagesUseCase(conversationId);
-    result.fold(
-      (failure) => emit(BotError(failure)),
-      (data) => emit(BotListSuccess(data)),
+        // 3. If the user deleted the current active conversation, reset the chat view
+        if (state.currentConversation?.id == conversationId) {
+          emit(
+            state.copyWith(
+              conversations: updatedConversations,
+              clearCurrentConversation: true,
+              messages: [],
+              status: BotStatus.loaded,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              conversations: updatedConversations,
+              status: BotStatus.loaded,
+            ),
+          );
+        }
+      },
     );
   }
 }

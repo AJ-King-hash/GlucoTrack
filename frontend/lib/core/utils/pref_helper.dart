@@ -28,4 +28,26 @@ class PrefHelper {
   static Future<void> clearToken() async {
     await SecureStorageService.deleteToken();
   }
+
+  /// Saves the user ID securely.
+  ///
+  /// Delegates to [SecureStorageService.saveUserId] for secure storage.
+  static Future<void> saveUserId(String userId) async {
+    await SecureStorageService.saveUserId(userId);
+  }
+
+  /// Retrieves the stored user ID.
+  ///
+  /// Delegates to [SecureStorageService.getUserId] for secure retrieval.
+  /// Returns null if no user ID is stored.
+  static Future<String?> getUserId() async {
+    return await SecureStorageService.getUserId();
+  }
+
+  /// Clears the stored user ID.
+  ///
+  /// Delegates to [SecureStorageService.deleteUserId] for secure deletion.
+  static Future<void> clearUserId() async {
+    await SecureStorageService.deleteUserId();
+  }
 }
