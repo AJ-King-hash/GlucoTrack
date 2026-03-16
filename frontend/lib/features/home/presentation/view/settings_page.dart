@@ -146,7 +146,7 @@ class SettingsPage extends StatelessWidget {
                             try {
                               await context.read<UserCubit>().getUser();
                             } catch (e) {
-                              // Silently handle error - settings already updated locally
+                              print("errror: " + e.toString());
                             }
                           },
                           onTimeSelected: (time) async {
@@ -156,7 +156,7 @@ class SettingsPage extends StatelessWidget {
                             try {
                               await context.read<UserCubit>().getUser();
                             } catch (e) {
-                              // Silently handle error - settings already updated locally
+                              print("errror: " + e.toString());
                             }
                           },
                         ),
