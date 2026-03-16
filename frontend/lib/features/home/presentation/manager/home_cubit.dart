@@ -21,7 +21,15 @@ class HomeCubit extends Cubit<HomeState> {
     this._updateRiskUsecase,
     this._apiService,
     this._authRepository,
-  ) : super(const HomeState(mealTime: 1, activity: 1, weight: 70, age: 30)) {
+  ) : super(
+        const HomeState(
+          mealTime: 1,
+          activity: 1,
+          weight: 70,
+          age: 30,
+          diabetesType: 1,
+        ),
+      ) {
     _initializeUserData();
   }
 
@@ -93,6 +101,7 @@ class HomeCubit extends Cubit<HomeState> {
         age: risk.age,
         weight: risk.weight.toInt(), // Convert to int if needed
         activity: _mapPhysicalActivityToInt(risk.physicalActivity),
+        diabetesType: _mapDiabetesTypeToInt(risk.diabetesType),
         // We'll need to handle gender and marital status if they're added to backend
         // For now, we'll leave them as null/initial values
       ),
@@ -111,6 +120,31 @@ class HomeCubit extends Cubit<HomeState> {
         return 2;
       default:
         return 1; // Default to moderate
+    }
+  }
+
+  int _mapDiabetesTypeToInt(String diabetesType) {
+    // Backend uses 'type1' and 'type2'
+    switch (diabetesType.toLowerCase()) {
+      case 'type1':
+      case 'd1':
+        return 0;
+      case 'type2':
+      case 'd2':
+        return 1;
+      default:
+        return 1; // Default to type2
+    }
+  }
+
+  String _mapIntToDiabetesType(int diabetesType) {
+    switch (diabetesType) {
+      case 0:
+        return 'type1';
+      case 1:
+        return 'type2';
+      default:
+        return 'type2'; // Default to type2
     }
   }
 
@@ -144,10 +178,18 @@ class HomeCubit extends Cubit<HomeState> {
       smoking: base?.smoking ?? false, // Use existing or default
       geneticDisease: base?.geneticDisease ?? false, // Use existing or default
       physicalActivity: _mapIntToPhysicalActivity(state.activity),
-      diabetesType: base?.diabetesType ?? 'type2', // Use existing or default
+      diabetesType: _mapIntToDiabetesType(
+        state.diabetesType,
+      ), // Use state diabetesType
       medicineType:
           base?.medicineType ?? 'MouthSugarLower', // Use existing or default
     );
+  }
+
+  Future<void> updateDiabetesType(int diabetesType) async {
+    emit(state.copyWith(diabetesType: diabetesType));
+    final riskEntity = _stateToRiskEntity();
+    await _updateRisk(riskEntity);
   }
 
   Future<void> updateMealTime(int mealTime) async {
