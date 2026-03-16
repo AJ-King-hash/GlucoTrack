@@ -175,22 +175,20 @@ class HomeContent extends StatelessWidget {
                                 OptionCard(
                                   label: locale.translate('type1'),
                                   icon: Icons.healing,
-                                  selected:
-                                      state.mealTime ==
-                                      0, // Using index or logic from state
+                                  selected: state.diabetesType == 0,
                                   onTap:
                                       () async => await context
                                           .read<HomeCubit>()
-                                          .updateMealTime(0),
+                                          .updateDiabetesType(0),
                                 ),
                                 OptionCard(
                                   label: locale.translate('type2'),
                                   icon: Icons.bloodtype,
-                                  selected: state.mealTime == 2,
+                                  selected: state.diabetesType == 1,
                                   onTap:
                                       () async => await context
                                           .read<HomeCubit>()
-                                          .updateMealTime(2),
+                                          .updateDiabetesType(1),
                                 ),
                               ],
                             ),
