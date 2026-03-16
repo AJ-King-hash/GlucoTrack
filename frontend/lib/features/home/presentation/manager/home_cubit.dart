@@ -4,16 +4,24 @@ import 'package:untitled10/features/home/presentation/manager/home_state.dart';
 import 'package:untitled10/features/risk/domain/usecase/get_risk_usecase.dart';
 import 'package:untitled10/features/risk/domain/usecase/update_risk_usecase.dart';
 import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
+import 'package:untitled10/core/api/api_service.dart';
+import 'package:untitled10/features/auth/repo/auth_repo.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRiskUsecase _getRiskUsecase;
   final UpdateRiskUsecase _updateRiskUsecase;
+  final ApiService _apiService;
+  final AuthRepository _authRepository;
 
   // Store the existing risk entity to preserve fields not in HomeState
   RiskEntity? _currentRiskEntity;
 
-  HomeCubit(this._getRiskUsecase, this._updateRiskUsecase)
-    : super(const HomeState(mealTime: 1, activity: 1, weight: 70, age: 30)) {
+  HomeCubit(
+    this._getRiskUsecase,
+    this._updateRiskUsecase,
+    this._apiService,
+    this._authRepository,
+  ) : super(const HomeState(mealTime: 1, activity: 1, weight: 70, age: 30)) {
     _initializeUserData();
   }
 
@@ -27,6 +35,41 @@ class HomeCubit extends Cubit<HomeState> {
       );
     } catch (e) {
       _handleError(e);
+    }
+
+    // Also load user data to get gender
+    await _loadUserGender();
+  }
+
+  Future<void> _loadUserGender() async {
+    try {
+      final currentUser = _authRepository.currentUser;
+      if (currentUser != null && currentUser.gender != null) {
+        final gender = _mapStringToGender(currentUser.gender!);
+        emit(state.copyWith(gender: gender));
+      }
+    } catch (e) {
+      // Silently fail - gender is optional
+    }
+  }
+
+  Gender? _mapStringToGender(String gender) {
+    switch (gender.toLowerCase()) {
+      case 'male':
+        return Gender.male;
+      case 'female':
+        return Gender.female;
+      default:
+        return null;
+    }
+  }
+
+  String _mapGenderToString(Gender gender) {
+    switch (gender) {
+      case Gender.male:
+        return 'male';
+      case Gender.female:
+        return 'female';
     }
   }
 
@@ -131,10 +174,55 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> updateGender(Gender gender) async {
+    // Emit loading state
     emit(
-      state.copyWith(gender: gender, maritalStatus: null, pregnancyCount: 0),
+      state.copyWith(
+        isGenderUpdating: true,
+        gender: gender,
+        clearGenderUpdate: true,
+      ),
     );
-    // Note: Gender is not directly stored in RiskEntity, so no API call needed
+
+    try {
+      // Call API to update gender
+      final result = await _apiService.updateUser({
+        'gender': _mapGenderToString(gender),
+      });
+
+      result.fold(
+        (failure) {
+          // Emit error state
+          emit(
+            state.copyWith(
+              isGenderUpdating: false,
+              genderUpdateMessage: failure.message,
+              genderUpdateSuccess: false,
+            ),
+          );
+        },
+        (data) {
+          // Emit success state
+          emit(
+            state.copyWith(
+              isGenderUpdating: false,
+              genderUpdateMessage: 'Gender updated successfully',
+              genderUpdateSuccess: true,
+              maritalStatus: null,
+              pregnancyCount: 0,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      // Emit error state
+      emit(
+        state.copyWith(
+          isGenderUpdating: false,
+          genderUpdateMessage: 'Failed to update gender',
+          genderUpdateSuccess: false,
+        ),
+      );
+    }
   }
 
   Future<void> updateMaterialStatus(MaritalStatus material) async {
@@ -162,5 +250,10 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       _handleError(e);
     }
+  }
+
+  /// Clear gender update message after toast is shown
+  void clearGenderUpdateMessage() {
+    emit(state.copyWith(clearGenderUpdate: true));
   }
 }

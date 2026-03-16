@@ -10,12 +10,13 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   /// Load settings from user data
   /// This method initializes the settings state with user-specific data
-  ///
   /// [user] - The user model containing reminder settings
   void loadSettings(UserModel user) {
-    // Use user data if available, otherwise use defaults
-    final sugarReminder = user.sugarReminder ?? true;
-    final medicineReminder = user.medicineReminder ?? false;
+    // Derive enabled state from presence of time values
+    // If time is set, reminder is enabled; otherwise it's disabled
+    final sugarReminder = user.glucoTime != null && user.glucoTime!.isNotEmpty;
+    final medicineReminder =
+        user.medicineTime != null && user.medicineTime!.isNotEmpty;
 
     emit(
       SettingsInitial(
@@ -32,8 +33,20 @@ class SettingsCubit extends Cubit<SettingsState> {
     final currentState = state;
     if (currentState is! SettingsInitial) return;
 
-    emit(SettingsLoading());
+    emit(
+      SettingsLoading(
+        sugarReminder: currentState.sugarReminder,
+        medicineReminder: currentState.medicineReminder,
+        glucoTime: currentState.glucoTime,
+        medicineTime: currentState.medicineTime,
+      ),
+    );
+
     try {
+      // If enabling: use current time or default
+      // If disabling: send empty string to disable
+      final newGlucoTime = value ? (currentState.glucoTime ?? '08:00') : '';
+
       final updated = currentState.copyWith(
         sugarReminder: value,
         glucoTime: value ? (currentState.glucoTime ?? '08:00') : null,
@@ -42,22 +55,26 @@ class SettingsCubit extends Cubit<SettingsState> {
       emit(updated);
 
       // Call API to update sugar reminder via user endpoint
-      final result = await apiService.updateUser({
-        'gluco_time': value ? (currentState.glucoTime ?? '08:00') : '',
-      });
+      final result = await apiService.updateUser({'gluco_time': newGlucoTime});
 
-      result.fold((failure) {
-        emit(
-          SettingsFailure(
-            message: failure.message,
-            sugarReminder: currentState.sugarReminder,
-            medicineReminder: currentState.medicineReminder,
-            glucoTime: currentState.glucoTime,
-            medicineTime: currentState.medicineTime,
-            failedSetting: FailedSetting.sugarReminder,
-          ),
-        );
-      }, (data) async {});
+      result.fold(
+        (failure) {
+          emit(
+            SettingsFailure(
+              message: failure.message,
+              sugarReminder: currentState.sugarReminder,
+              medicineReminder: currentState.medicineReminder,
+              glucoTime: currentState.glucoTime,
+              medicineTime: currentState.medicineTime,
+              failedSetting: FailedSetting.sugarReminder,
+            ),
+          );
+        },
+        (data) {
+          // Success - emit updated state with isSuccess flag to trigger UI update
+          emit(updated.copyWith(isSuccess: true));
+        },
+      );
     } catch (e) {
       emit(
         SettingsFailure(
@@ -77,8 +94,21 @@ class SettingsCubit extends Cubit<SettingsState> {
     final currentState = state;
     if (currentState is! SettingsInitial) return;
 
-    emit(SettingsLoading());
+    emit(
+      SettingsLoading(
+        sugarReminder: currentState.sugarReminder,
+        medicineReminder: currentState.medicineReminder,
+        glucoTime: currentState.glucoTime,
+        medicineTime: currentState.medicineTime,
+      ),
+    );
+
     try {
+      // If enabling: use current time or default
+      // If disabling: send empty string to disable
+      final newMedicineTime =
+          value ? (currentState.medicineTime ?? '20:00') : '';
+
       final updated = currentState.copyWith(
         medicineReminder: value,
         medicineTime: value ? (currentState.medicineTime ?? '20:00') : null,
@@ -88,7 +118,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       // Call API to update medicine reminder via user endpoint
       final result = await apiService.updateUser({
-        'medicine_time': value ? (currentState.medicineTime ?? '20:00') : '',
+        'medicine_time': newMedicineTime,
       });
 
       result.fold(
@@ -104,8 +134,9 @@ class SettingsCubit extends Cubit<SettingsState> {
             ),
           );
         },
-        (_) {
-          emit(currentState.copyWith(medicineReminder: value, isSuccess: true));
+        (data) {
+          // Success - emit updated state with isSuccess flag
+          emit(updated.copyWith(isSuccess: true));
         },
       );
     } catch (e) {
@@ -130,25 +161,39 @@ class SettingsCubit extends Cubit<SettingsState> {
     final timeString =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
-    emit(SettingsLoading());
+    emit(
+      SettingsLoading(
+        sugarReminder: currentState.sugarReminder,
+        medicineReminder: currentState.medicineReminder,
+        glucoTime: currentState.glucoTime,
+        medicineTime: currentState.medicineTime,
+      ),
+    );
+
     try {
       final updated = currentState.copyWith(glucoTime: timeString);
       emit(updated);
 
       final result = await apiService.updateUser({'gluco_time': timeString});
 
-      result.fold((failure) {
-        emit(
-          SettingsFailure(
-            message: failure.message,
-            sugarReminder: currentState.sugarReminder,
-            medicineReminder: currentState.medicineReminder,
-            glucoTime: currentState.glucoTime,
-            medicineTime: currentState.medicineTime,
-            failedSetting: FailedSetting.sugarReminder,
-          ),
-        );
-      }, (_) {});
+      result.fold(
+        (failure) {
+          emit(
+            SettingsFailure(
+              message: failure.message,
+              sugarReminder: currentState.sugarReminder,
+              medicineReminder: currentState.medicineReminder,
+              glucoTime: currentState.glucoTime,
+              medicineTime: currentState.medicineTime,
+              failedSetting: FailedSetting.sugarReminder,
+            ),
+          );
+        },
+        (data) {
+          // Success - emit updated state with isSuccess flag
+          emit(updated.copyWith(isSuccess: true));
+        },
+      );
     } catch (e) {
       emit(
         SettingsFailure(
@@ -171,25 +216,39 @@ class SettingsCubit extends Cubit<SettingsState> {
     final timeString =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
-    emit(SettingsLoading());
+    emit(
+      SettingsLoading(
+        sugarReminder: currentState.sugarReminder,
+        medicineReminder: currentState.medicineReminder,
+        glucoTime: currentState.glucoTime,
+        medicineTime: currentState.medicineTime,
+      ),
+    );
+
     try {
       final updated = currentState.copyWith(medicineTime: timeString);
       emit(updated);
 
       final result = await apiService.updateUser({'medicine_time': timeString});
 
-      result.fold((failure) {
-        emit(
-          SettingsFailure(
-            message: failure.message,
-            sugarReminder: currentState.sugarReminder,
-            medicineReminder: currentState.medicineReminder,
-            glucoTime: currentState.glucoTime,
-            medicineTime: currentState.medicineTime,
-            failedSetting: FailedSetting.medicineReminder,
-          ),
-        );
-      }, (_) {});
+      result.fold(
+        (failure) {
+          emit(
+            SettingsFailure(
+              message: failure.message,
+              sugarReminder: currentState.sugarReminder,
+              medicineReminder: currentState.medicineReminder,
+              glucoTime: currentState.glucoTime,
+              medicineTime: currentState.medicineTime,
+              failedSetting: FailedSetting.medicineReminder,
+            ),
+          );
+        },
+        (data) {
+          // Success - emit updated state with isSuccess flag
+          emit(updated.copyWith(isSuccess: true));
+        },
+      );
     } catch (e) {
       emit(
         SettingsFailure(
