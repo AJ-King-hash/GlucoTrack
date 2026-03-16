@@ -3,7 +3,6 @@ import models
 from fastapi import HTTPException,status
 from datetime import datetime,timezone
 import numpy as np
-
 def create(user_id,request,db:Session):
 
     if request.diabetes_type not in ["d1","d2"]:
