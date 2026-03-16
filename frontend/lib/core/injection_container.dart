@@ -83,7 +83,12 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
-    () => HomeCubit(sl<GetRiskUsecase>(), sl<UpdateRiskUsecase>()),
+    () => HomeCubit(
+      sl<GetRiskUsecase>(),
+      sl<UpdateRiskUsecase>(),
+      sl<ApiService>(),
+      sl<AuthRepository>(),
+    ),
   );
 
   // Chat Use Cases

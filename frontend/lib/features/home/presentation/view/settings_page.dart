@@ -31,15 +31,18 @@ class SettingsPage extends StatelessWidget {
       },
       child: MultiBlocListener(
         listeners: [
+          // Listen to UserCubit changes - reload settings when user data is updated
           BlocListener<UserCubit, UserState>(
             listener: (context, state) {
               if (state is UserLoaded) {
+                // Reload settings from updated user data
                 context.read<SettingsCubit>().loadSettings(state.userModel);
               }
             },
           ),
+          // Listen to SettingsCubit changes - show feedback and potentially revalidate
           BlocListener<SettingsCubit, SettingsState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state is SettingsFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -48,8 +51,19 @@ class SettingsPage extends StatelessWidget {
                   ),
                 );
               } else if (state is SettingsInitial && state.isSuccess) {
-                // Add isSuccess flag to state
-                ScaffoldMessenger.of(context).showSnackBar(
+                // Capture references before async call to avoid context issues
+                final userCubit = context.read<UserCubit>();
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+                // Re-fetch user data from backend to ensure UI shows correct values after update
+                // This provides proper revalidation of the settings state
+                try {
+                  await userCubit.getUser();
+                } catch (e) {
+                  // Silently handle - settings already updated locally in cubit
+                }
+                // Show success message
+                scaffoldMessenger.showSnackBar(
                   const SnackBar(
                     content: Text('Settings updated successfully!'),
                     backgroundColor: AppColor.positive,
@@ -139,25 +153,15 @@ class SettingsPage extends StatelessWidget {
                           titleColor: AppColor.textNeutral,
                           selectedTime: state.medicineTime,
                           isEnabled: state.medicineReminder,
-                          onToggle: (v) async {
+                          onToggle: (v) {
                             context
                                 .read<SettingsCubit>()
                                 .toggleMedicineReminder(v);
-                            try {
-                              await context.read<UserCubit>().getUser();
-                            } catch (e) {
-                              // Silently handle error - settings already updated locally
-                            }
                           },
-                          onTimeSelected: (time) async {
+                          onTimeSelected: (time) {
                             context.read<SettingsCubit>().updateMedicineTime(
                               time,
                             );
-                            try {
-                              await context.read<UserCubit>().getUser();
-                            } catch (e) {
-                              // Silently handle error - settings already updated locally
-                            }
                           },
                         ),
                         _sectionTitle(

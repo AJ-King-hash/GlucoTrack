@@ -7,7 +7,7 @@ abstract class SettingsState extends Equatable {
   final bool medicineReminder;
   final String? glucoTime;
   final String? medicineTime;
-  final bool isSuccess; // New flag for toast triggers
+  final bool isSuccess;
 
   const SettingsState({
     this.sugarReminder = true,
@@ -72,6 +72,7 @@ class SettingsLoading extends SettingsState {
     super.medicineReminder,
     super.glucoTime,
     super.medicineTime,
+    super.isSuccess,
   });
 }
 
