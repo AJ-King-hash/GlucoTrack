@@ -39,7 +39,7 @@ def delete(id:int,db:Session):
 
     if not conversation:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"conversation with the id {id} is not available")
-    map(lambda x:db.delete(x),messages)
+    db.delete(messages)
     db.delete(conversation)
     db.commit() 
 

@@ -10,6 +10,7 @@ class UserUpdate(BaseModel):
     name:Optional[str] = None
     email:Optional[str] = None
     password:Optional[str] = None
+    gender:Optional[str] = None
     old_password: Optional[str] = None
     gluco_time: Optional[str] = None  # e.g., "08:00" (24-hour format)
     medicine_time: Optional[str] = None  # e.g., "20:00"
@@ -86,6 +87,7 @@ class ShowUser(BaseModel):
     id:int
     name:str
     email:str
+    gender:Optional[str]=None
     gluco_reminder:Optional[datetime]=None
     medicine_reminder:Optional[datetime]=None
     # otps:List[Otp]=[]
