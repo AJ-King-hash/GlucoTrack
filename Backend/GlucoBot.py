@@ -4,16 +4,12 @@ from datetime import datetime
 import json
 import re
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key=os.environ.get("OPENROUTER_API_KEY", ""))
+        api_key="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")
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
