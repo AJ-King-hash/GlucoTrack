@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:untitled10/core/color/app_color.dart';
+import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:untitled10/core/utils/toast_utility.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_logo.dart';
 import '../../../../core/widgets/app_text_feild.dart';
@@ -24,18 +26,24 @@ class ResetPasswordPage extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("تم إرسال رمز التحقق إلى بريدك الإلكتروني"),
-              backgroundColor: Colors.green,
+          // Show success toast
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: context.read<LocaleCubit>().translate(
+              'enter_email_for_otp',
             ),
           );
 
-          Navigator.pushNamed(
-            context,
-            AppRoutes.otp,
-            arguments: emailController.text.trim(),
-          );
+          // Navigate after delay to allow toast to show
+          Future.delayed(const Duration(milliseconds: 3500), () {
+            if (context.mounted) {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.otp,
+                arguments: emailController.text.trim(),
+              );
+            }
+          });
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -97,7 +105,9 @@ class ResetPasswordPage extends StatelessWidget {
                         SizedBox(height: 24.h),
 
                         Text(
-                          "إعادة تعيين كلمة المرور",
+                          context.read<LocaleCubit>().translate(
+                            'reset_password',
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 26.sp,
@@ -109,7 +119,9 @@ class ResetPasswordPage extends StatelessWidget {
                         SizedBox(height: 16.h),
 
                         Text(
-                          "أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق",
+                          context.read<LocaleCubit>().translate(
+                            'enter_email_for_otp',
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.sp,
@@ -121,16 +133,20 @@ class ResetPasswordPage extends StatelessWidget {
 
                         AppTextField(
                           controller: emailController,
-                          label: "البريد الإلكتروني",
+                          label: context.read<LocaleCubit>().translate('email'),
                           icon: Icons.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال البريد الإلكتروني';
+                              return context.read<LocaleCubit>().translate(
+                                'email_required',
+                              );
                             }
                             if (!RegExp(
                               r'^[^@]+@[^@]+\.[^@]+',
                             ).hasMatch(value)) {
-                              return 'يرجى إدخال بريد إلكتروني صحيح';
+                              return context.read<LocaleCubit>().translate(
+                                'invalid_email',
+                              );
                             }
                             return null;
                           },
@@ -141,7 +157,9 @@ class ResetPasswordPage extends StatelessWidget {
                         AppButton(
                           icon: Icons.send,
                           iconColor: AppColor.info,
-                          text: "إرسال الرمز",
+                          text: context.read<LocaleCubit>().translate(
+                            'send_code',
+                          ),
                           backgroundColor: AppColor.positive,
                           textColor: AppColor.textNeutral,
                           onPressed: () {
@@ -160,7 +178,9 @@ class ResetPasswordPage extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            "العودة إلى تسجيل الدخول",
+                            context.read<LocaleCubit>().translate(
+                              'back_to_login',
+                            ),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: AppColor.warning,
