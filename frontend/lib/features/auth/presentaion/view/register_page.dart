@@ -10,8 +10,7 @@ import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
-import '../../../../core/widgets/states/error_state.dart';
-import '../../../../core/widgets/states/loading_state.dart';
+import '../../../../core/utils/toast_utility.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -92,50 +91,27 @@ class RegisterPage extends StatelessWidget {
                 BlocConsumer<UserCubit, UserState>(
                   listener: (context, state) {
                     if (state is UserSuccess) {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-                    }
-                    if (state is UserError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
-                          ),
-                          margin: EdgeInsets.only(
-                            bottom: 20,
-                            right: 10,
-                            left: 10,
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                          clipBehavior: Clip.none,
-                          elevation: 10,
-                          content: Row(
-                            children: [
-                              Text(
-                                state.message,
-                                style: TextStyle(
-                                  color: AppColor.textNeutral,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.sp,
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              Icon(Icons.error, color: AppColor.textNeutral),
-                            ],
-                          ),
-                          backgroundColor: AppColor.warning,
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is UserLoading) {
-                      return const LoadingState(message: 'Creating account...');
-                    }
-                    if (state is UserError) {
-                      return ErrorState(
+                      // Show success toast
+                      ToastUtility.showSuccessDismissibleToast(
+                        context,
                         message: state.message,
-                        onActionPressed: () {
+                      );
+                      // Navigate to login after a brief delay
+                      Future.delayed(const Duration(milliseconds: 3500), () {
+                        if (context.mounted) {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.login,
+                          );
+                        }
+                      });
+                    }
+                    if (state is UserError) {
+                      // Show error toast with retry action
+                      ToastUtility.showErrorWithRetryToast(
+                        context,
+                        message: state.message,
+                        onRetry: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<UserCubit>().createUser(
                               name: nameController.text.trim(),
@@ -146,7 +122,10 @@ class RegisterPage extends StatelessWidget {
                         },
                       );
                     }
+                  },
+                  builder: (context, state) {
                     return AppButton(
+                      loading: state is UserLoading,
                       iconColor: AppColor.info,
                       text: context.read<LocaleCubit>().translate('register'),
                       icon: Icons.person_add,

@@ -36,7 +36,7 @@ class AppRoutes {
     otp: (context) => OtpPage(),
     home: (context) => HomePage(),
     started: (context) => GetStartedPage(),
-    editProfile: (context) => EditeProfilePage(),
+    editProfile: (context) => EditProfilePage(),
     // archiveDetailsPage:(context)=>ArchiveDetailsPage(),
     splashScreen: (context) => SplashScreen(),
     aboutApp: (context) => AboutAppPage(),

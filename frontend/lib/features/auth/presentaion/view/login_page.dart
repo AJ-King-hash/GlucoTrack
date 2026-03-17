@@ -9,8 +9,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 import '../../../../core/widgets/language_bottom_sheet.dart';
-import '../../../../core/widgets/states/error_state.dart';
-import '../../../../core/widgets/states/loading_state.dart';
+import '../../../../core/utils/toast_utility.dart';
 import '../../../user/presentation/manager/user_cubit.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
@@ -120,6 +119,11 @@ class LoginPage extends StatelessWidget {
                       BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
+                            // Show success toast
+                            ToastUtility.showSuccessDismissibleToast(
+                              context,
+                              message: state.message,
+                            );
                             // Set user data in UserCubit so change password works
                             if (state.user != null) {
                               try {
@@ -128,56 +132,25 @@ class LoginPage extends StatelessWidget {
                                 debugPrint('Error setting user: $e');
                               }
                             }
-                            Navigator.pushReplacementNamed(
+                            // Navigate after a brief delay to allow toast to show
+                            Future.delayed(
+                              const Duration(milliseconds: 3500),
+                              () {
+                                if (context.mounted) {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    AppRoutes.home,
+                                  );
+                                }
+                              },
+                            );
+                          }
+                          if (state is AuthError) {
+                            // Show error toast with retry action
+                            ToastUtility.showErrorWithRetryToast(
                               context,
-                              AppRoutes.home,
-                            );
-                          }
-                          if (state is AuthError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 10,
-                                ),
-                                margin: EdgeInsets.only(
-                                  bottom: 20,
-                                  right: 10,
-                                  left: 10,
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                clipBehavior: Clip.none,
-                                elevation: 10,
-                                content: Row(
-                                  children: [
-                                    Text(
-                                      state.message,
-                                      style: TextStyle(
-                                        color: AppColor.textNeutral,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16.sp,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Icon(
-                                      Icons.error,
-                                      color: AppColor.textNeutral,
-                                    ),
-                                  ],
-                                ),
-                                backgroundColor: AppColor.warning,
-                              ),
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state is AuthLoading) {
-                            return const LoadingState(message: 'Logging in...');
-                          }
-                          if (state is AuthError) {
-                            return ErrorState(
                               message: state.message,
-                              onActionPressed: () {
+                              onRetry: () {
                                 if (_formKey.currentState!.validate()) {
                                   context.read<AuthCubit>().login(
                                     email: emailController.text.trim(),
@@ -187,7 +160,10 @@ class LoginPage extends StatelessWidget {
                               },
                             );
                           }
+                        },
+                        builder: (context, state) {
                           return AppButton(
+                            loading: state is AuthLoading,
                             text: context.read<LocaleCubit>().translate(
                               'login',
                             ),

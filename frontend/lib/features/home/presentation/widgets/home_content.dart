@@ -21,10 +21,15 @@ class HomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<HomeCubit, HomeState>(
       listenWhen: (previous, current) {
-        // Listen to changes in gender update states
+        // Listen to changes in gender and diabetes type update states
         return previous.isGenderUpdating != current.isGenderUpdating ||
             previous.genderUpdateMessage != current.genderUpdateMessage ||
-            previous.genderUpdateSuccess != current.genderUpdateSuccess;
+            previous.genderUpdateSuccess != current.genderUpdateSuccess ||
+            previous.isDiabetesTypeUpdating != current.isDiabetesTypeUpdating ||
+            previous.diabetesTypeUpdateMessage !=
+                current.diabetesTypeUpdateMessage ||
+            previous.diabetesTypeUpdateSuccess !=
+                current.diabetesTypeUpdateSuccess;
       },
       listener: (context, state) {
         if (state.isGenderUpdating) {
@@ -52,6 +57,37 @@ class HomeContent extends StatelessWidget {
               message: state.genderUpdateMessage!,
               onDismissed: () {
                 context.read<HomeCubit>().clearGenderUpdateMessage();
+              },
+            );
+          }
+        }
+
+        // Handle diabetes type update states
+        if (state.isDiabetesTypeUpdating) {
+          // Show loading toast
+          ToastUtility.showLoadingDismissibleToast(
+            context,
+            message: 'Updating diabetes type...',
+            onDismissed: () {
+              context.read<HomeCubit>().clearDiabetesTypeUpdateMessage();
+            },
+          );
+        } else if (state.diabetesTypeUpdateMessage != null) {
+          // Show success or error toast based on the result
+          if (state.diabetesTypeUpdateSuccess == true) {
+            ToastUtility.showSuccessDismissibleToast(
+              context,
+              message: state.diabetesTypeUpdateMessage!,
+              onDismissed: () {
+                context.read<HomeCubit>().clearDiabetesTypeUpdateMessage();
+              },
+            );
+          } else if (state.diabetesTypeUpdateSuccess == false) {
+            ToastUtility.showErrorDismissibleToast(
+              context,
+              message: state.diabetesTypeUpdateMessage!,
+              onDismissed: () {
+                context.read<HomeCubit>().clearDiabetesTypeUpdateMessage();
               },
             );
           }
