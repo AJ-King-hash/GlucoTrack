@@ -85,6 +85,8 @@ class UserCubit extends Cubit<UserState> {
       );
       result.fold((failure) => emit(UserError(failure.message)), (user) {
         if (user != null) {
+          // Emit UserSuccess for update, then reload user data
+          emit(UserSuccess("Profile updated successfully"));
           emit(UserLoaded(user));
         } else {
           emit(UserError("Failed to update profile"));
