@@ -12,15 +12,15 @@ import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 
-class EditeProfilePage extends StatefulWidget {
+class EditProfilePage extends StatefulWidget {
   final UserModel? userModel;
-  const EditeProfilePage({super.key, this.userModel});
+  const EditProfilePage({super.key, this.userModel});
 
   @override
-  State<EditeProfilePage> createState() => _EditeProfilePageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditeProfilePageState extends State<EditeProfilePage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   StreamSubscription? _userSubscription;
