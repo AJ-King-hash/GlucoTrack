@@ -38,10 +38,15 @@ class RiskCubit extends Cubit<RiskState> {
     emit(RiskLoading());
 
     final result = await _getRiskUsecase(id);
-    result.fold(
-      (failure) => emit(RiskFailure(_mapFailureToMessage(failure))),
-      (risk) => emit(RiskLoaded(risk)),
-    );
+    result.fold((failure) => emit(RiskFailure(_mapFailureToMessage(failure))), (
+      risk,
+    ) {
+      if (risk == null) {
+        emit(RiskEmpty());
+      } else {
+        emit(RiskLoaded(risk));
+      }
+    });
   }
 
   Future<void> updateRisk(int id, RiskEntity risk) async {
