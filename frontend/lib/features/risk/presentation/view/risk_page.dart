@@ -34,16 +34,9 @@ class _RiskPageState extends State<RiskPage> {
       body: BlocConsumer<RiskCubit, RiskState>(
         listener: (context, state) {
           if (state is RiskFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                action: SnackBarAction(
-                  label: context.read<LocaleCubit>().translate('try_again'),
-                  onPressed: () => context.read<RiskCubit>().getRisk(0),
-                ),
-                duration: const Duration(seconds: 8),
-              ),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is RiskCreated) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -86,10 +79,26 @@ class _RiskPageState extends State<RiskPage> {
             return RiskDetailsView(risk: state.risk);
           } else if (state is RiskUpdated) {
             return RiskDetailsView(risk: state.risk);
-          } else if (state is RiskEmpty) {
-            return _buildEmptyState(context);
           } else if (state is RiskFailure) {
-            return _buildContentAfterError(context);
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, color: Colors.red),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<RiskCubit>().getRisk(0),
+                    child: Text(
+                      context.read<LocaleCubit>().translate('try_again'),
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else {
             return Center(
               child: Text(
@@ -111,39 +120,6 @@ class _RiskPageState extends State<RiskPage> {
       context: context,
       builder: (context) => const CreateRiskDialog(),
     );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.health_and_safety_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            context.read<LocaleCubit>().translate('no_risk_assessment'),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            context.read<LocaleCubit>().translate('create_risk_to_get_started'),
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContentAfterError(BuildContext context) {
-    return const SizedBox.shrink();
   }
 }
 

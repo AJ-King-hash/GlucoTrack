@@ -99,8 +99,6 @@
   "meal_description": "Meal Description",
   "analysed_at": "Analysed At",
   "try_again": "Try Again",
-  "no_risk_assessment": "No Risk Assessment Yet",
-  "create_risk_to_get_started": "Create your first risk assessment to get started",
   "error_occurred": "An error occurred",
   "loading": "Loading...",
   "sugar_reminder_time": "Blood Sugar Check Time",
