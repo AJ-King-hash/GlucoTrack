@@ -41,6 +41,8 @@ class RiskUpdated extends RiskState {
 
 class RiskDeleted extends RiskState {}
 
+class RiskEmpty extends RiskState {}
+
 class RiskFailure extends RiskState {
   final String message;
 

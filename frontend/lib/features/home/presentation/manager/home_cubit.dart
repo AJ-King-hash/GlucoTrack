@@ -37,10 +37,11 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       // Backend uses authentication token to identify user, so id parameter is ignored
       final result = await _getRiskUsecase(0);
-      result.fold(
-        (failure) => _handleFailure(failure),
-        (risk) => _updateStateFromRisk(risk),
-      );
+      result.fold((failure) => _handleFailure(failure), (risk) {
+        if (risk != null) {
+          _updateStateFromRisk(risk);
+        }
+      });
     } catch (e) {
       _handleError(e);
     }
@@ -285,10 +286,9 @@ class HomeCubit extends Cubit<HomeState> {
       final result = await _updateRiskUsecase(
         UpdateRiskParams(id: riskId, risk: riskEntity),
       );
-      result.fold(
-        (failure) => _handleFailure(failure),
-        (risk) => _updateStateFromRisk(risk),
-      );
+      result.fold((failure) => _handleFailure(failure), (risk) {
+        _updateStateFromRisk(risk);
+      });
     } catch (e) {
       _handleError(e);
     }
