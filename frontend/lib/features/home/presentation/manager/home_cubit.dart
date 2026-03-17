@@ -187,9 +187,32 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> updateDiabetesType(int diabetesType) async {
-    emit(state.copyWith(diabetesType: diabetesType));
-    final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
+    // Emit loading state
+    emit(
+      state.copyWith(isDiabetesTypeUpdating: true, diabetesType: diabetesType),
+    );
+
+    try {
+      final riskEntity = _stateToRiskEntity();
+      await _updateRisk(riskEntity);
+      // Emit success state
+      emit(
+        state.copyWith(
+          isDiabetesTypeUpdating: false,
+          diabetesTypeUpdateMessage: 'Diabetes type updated successfully',
+          diabetesTypeUpdateSuccess: true,
+        ),
+      );
+    } catch (e) {
+      // Emit error state
+      emit(
+        state.copyWith(
+          isDiabetesTypeUpdating: false,
+          diabetesTypeUpdateMessage: 'Failed to update diabetes type',
+          diabetesTypeUpdateSuccess: false,
+        ),
+      );
+    }
   }
 
   Future<void> updateMealTime(int mealTime) async {
@@ -297,5 +320,10 @@ class HomeCubit extends Cubit<HomeState> {
   /// Clear gender update message after toast is shown
   void clearGenderUpdateMessage() {
     emit(state.copyWith(clearGenderUpdate: true));
+  }
+
+  /// Clear diabetes type update message after toast is shown
+  void clearDiabetesTypeUpdateMessage() {
+    emit(state.copyWith(clearDiabetesTypeUpdate: true));
   }
 }
