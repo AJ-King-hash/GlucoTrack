@@ -16,9 +16,6 @@ class HomeState extends Equatable {
   final bool isGenderUpdating;
   final String? genderUpdateMessage;
   final bool? genderUpdateSuccess;
-  final bool isDiabetesTypeUpdating;
-  final String? diabetesTypeUpdateMessage;
-  final bool? diabetesTypeUpdateSuccess;
   const HomeState({
     required this.weight,
     required this.age,
@@ -31,9 +28,6 @@ class HomeState extends Equatable {
     this.isGenderUpdating = false,
     this.genderUpdateMessage,
     this.genderUpdateSuccess,
-    this.isDiabetesTypeUpdating = false,
-    this.diabetesTypeUpdateMessage,
-    this.diabetesTypeUpdateSuccess,
   });
   HomeState copyWith({
     int? mealTime,
@@ -48,10 +42,6 @@ class HomeState extends Equatable {
     String? genderUpdateMessage,
     bool? genderUpdateSuccess,
     bool clearGenderUpdate = false,
-    bool? isDiabetesTypeUpdating,
-    String? diabetesTypeUpdateMessage,
-    bool? diabetesTypeUpdateSuccess,
-    bool clearDiabetesTypeUpdate = false,
   }) {
     return HomeState(
       age: age ?? this.age,
@@ -71,16 +61,6 @@ class HomeState extends Equatable {
           clearGenderUpdate
               ? null
               : (genderUpdateSuccess ?? this.genderUpdateSuccess),
-      isDiabetesTypeUpdating:
-          isDiabetesTypeUpdating ?? this.isDiabetesTypeUpdating,
-      diabetesTypeUpdateMessage:
-          clearDiabetesTypeUpdate
-              ? null
-              : (diabetesTypeUpdateMessage ?? this.diabetesTypeUpdateMessage),
-      diabetesTypeUpdateSuccess:
-          clearDiabetesTypeUpdate
-              ? null
-              : (diabetesTypeUpdateSuccess ?? this.diabetesTypeUpdateSuccess),
     );
   }
 
@@ -97,8 +77,5 @@ class HomeState extends Equatable {
     isGenderUpdating,
     genderUpdateMessage,
     genderUpdateSuccess,
-    isDiabetesTypeUpdating,
-    diabetesTypeUpdateMessage,
-    diabetesTypeUpdateSuccess,
   ];
 }

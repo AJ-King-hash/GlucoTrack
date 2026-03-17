@@ -129,56 +129,6 @@ class ToastUtility {
     );
   }
 
-  /// Shows an error toast with a retry action button.
-  /// Stays visible for 5 minutes (300 seconds) or until user taps Retry or Dismiss.
-  /// Note: onDismissed callback will NOT fire on timeout - only on user dismissal.
-  static void showErrorWithRetryToast(
-    BuildContext context, {
-    required String message,
-    VoidCallback? onRetry,
-    VoidCallback? onDismissed,
-  }) {
-    final snackBar = SnackBar(
-      content: Row(
-        children: [
-          Icon(Icons.error, color: Colors.white),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-      backgroundColor: Colors.red,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 300),
-      action: SnackBarAction(
-        label: 'Retry',
-        textColor: Colors.white,
-        onPressed: () {
-          if (onRetry != null) {
-            onRetry();
-          }
-        },
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar).closed.then((reason) {
-      // Only call onDismissed for user-initiated dismissal, not timeout
-      if (onDismissed != null &&
-          reason != SnackBarClosedReason.action &&
-          reason != SnackBarClosedReason.timeout) {
-        onDismissed();
-      }
-    });
-  }
-
   static Color _getColorForType(ToastType type) {
     switch (type) {
       case ToastType.success:

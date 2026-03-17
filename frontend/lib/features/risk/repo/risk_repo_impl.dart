@@ -37,16 +37,14 @@ class RiskRepoImpl implements RiskRepository {
   }
 
   @override
-  Future<Either<Failure, RiskEntity?>> getRisk(int id) async {
+  Future<Either<Failure, RiskEntity>> getRisk(int id) async {
     // Note: The id parameter is not used as the backend identifies
     // the user from the authentication token. Kept for interface consistency.
     final result = await apiService.getRisk();
-    return result.fold((failure) => Left(failure), (data) {
-      if (data == null) {
-        return const Right(null);
-      }
-      return Right(RiskModel.fromJson(data));
-    });
+    return result.fold(
+      (failure) => Left(failure),
+      (data) => Right(RiskModel.fromJson(data)),
+    );
   }
 
   @override
