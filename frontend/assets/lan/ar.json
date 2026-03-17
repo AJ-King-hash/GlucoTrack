@@ -100,8 +100,6 @@
   "meal_description": "وصف الوجبة",
   "analysed_at": "تم التحليل في",
   "try_again": "إعادة المحاولة",
-  "no_risk_assessment": "لا يوجد تقييم للمخاطر بعد",
-  "create_risk_to_get_started": "أنشئ تقييم المخاطر الأول للبدء",
   "error_occurred": "حدث خطأ",
   "loading": "جاري التحميل...",
   "sugar_reminder_time": "وقت فحص السكر",

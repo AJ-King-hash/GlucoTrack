@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
 import 'package:untitled10/core/widgets/app_button.dart';
 import 'package:untitled10/core/widgets/app_logo.dart';
@@ -85,9 +84,7 @@ class _OtpPageState extends State<OtpPage> {
                         const AppLogo(),
                         SizedBox(height: 24.h),
                         Text(
-                          context.read<LocaleCubit>().translate(
-                            'confirm_account',
-                          ),
+                          "تأكيد الحساب",
                           style: TextStyle(
                             fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
@@ -96,9 +93,7 @@ class _OtpPageState extends State<OtpPage> {
                         ),
                         SizedBox(height: 12.h),
                         Text(
-                          context.read<LocaleCubit>().translate(
-                            'enter_otp_sent',
-                          ),
+                          "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.sp,
@@ -138,9 +133,7 @@ class _OtpPageState extends State<OtpPage> {
                               AppButton(
                                 icon: Icons.send,
                                 iconColor: AppColor.info,
-                                text: context.read<LocaleCubit>().translate(
-                                  'confirm',
-                                ),
+                                text: "تأكيد",
                                 height: 50.h,
                                 fontSize: 16.sp,
                                 textColor: Colors.white,
@@ -162,7 +155,7 @@ class _OtpPageState extends State<OtpPage> {
                             cubit.close();
                           },
                           child: Text(
-                            context.read<LocaleCubit>().translate('resend_otp'),
+                            "إعادة إرسال الرمز",
                             style: TextStyle(
                               color: AppColor.warning,
                               fontSize: 15.sp,
