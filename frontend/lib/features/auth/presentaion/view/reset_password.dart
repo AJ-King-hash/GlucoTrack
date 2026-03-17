@@ -8,8 +8,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_logo.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 import '../../../../core/widgets/auth_background.dart';
-import '../../../../core/widgets/states/error_state.dart';
-import '../../../../core/widgets/states/loading_state.dart';
+import '../../../../core/utils/toast_utility.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
@@ -24,59 +23,32 @@ class ResetPasswordPage extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("تم إرسال رمز التحقق إلى بريدك الإلكتروني"),
-              backgroundColor: Colors.green,
-            ),
+          // Show success toast
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
           );
 
-          Navigator.pushNamed(
-            context,
-            AppRoutes.otp,
-            arguments: emailController.text.trim(),
-          );
+          // Navigate after delay to allow toast to show
+          Future.delayed(const Duration(milliseconds: 3500), () {
+            if (context.mounted) {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.otp,
+                arguments: emailController.text.trim(),
+              );
+            }
+          });
         }
         if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          // Show error toast
+          ToastUtility.showErrorDismissibleToast(
+            context,
+            message: state.message,
           );
         }
       },
       builder: (context, state) {
-        if (state is AuthLoading) {
-          return Scaffold(
-            backgroundColor: AppColor.backgroundNeutral,
-            body: AuthBackground(
-              child: SafeArea(
-                child: Center(
-                  child: const LoadingState(message: 'Sending reset code...'),
-                ),
-              ),
-            ),
-          );
-        }
-        if (state is AuthError) {
-          return Scaffold(
-            backgroundColor: AppColor.backgroundNeutral,
-            body: AuthBackground(
-              child: SafeArea(
-                child: Center(
-                  child: ErrorState(
-                    message: state.message,
-                    onActionPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // context.read<AuthCubit>().forgotPassword(
-                        //   emailController.text.trim(),
-                        // );
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
         return Scaffold(
           backgroundColor: AppColor.backgroundNeutral,
           body: AuthBackground(
@@ -139,6 +111,7 @@ class ResetPasswordPage extends StatelessWidget {
                         SizedBox(height: 30.h),
 
                         AppButton(
+                          loading: state is AuthLoading,
                           icon: Icons.send,
                           iconColor: AppColor.info,
                           text: "إرسال الرمز",
