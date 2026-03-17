@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled10/core/color/app_color.dart';
+import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
 import 'package:untitled10/core/widgets/app_button.dart';
 import 'package:untitled10/core/widgets/app_logo.dart';
 import 'package:untitled10/core/widgets/auth_background.dart';
-import 'package:untitled10/core/widgets/states/error_state.dart';
-import 'package:untitled10/core/widgets/states/loading_state.dart';
+import 'package:untitled10/core/utils/toast_utility.dart';
 import 'package:untitled10/features/auth/presentaion/widgets/otp_box.dart';
 
 import '../manager/auth_cubit.dart';
@@ -46,11 +46,29 @@ class _OtpPageState extends State<OtpPage> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
+          // Show success toast
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: state.message,
+          );
+          // Navigate after a brief delay
+          Future.delayed(const Duration(milliseconds: 3500), () {
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+            }
+          });
         }
         if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          // Show error toast with retry action
+          ToastUtility.showErrorWithRetryToast(
+            context,
+            message: state.message,
+            onRetry: () {
+              if (_formKey.currentState!.validate()) {
+                final otp = controllers.map((e) => e.text).join();
+                cubit.verifyOtp(widget.email!, otp);
+              }
+            },
           );
         }
       },
@@ -64,27 +82,15 @@ class _OtpPageState extends State<OtpPage> {
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
-                    if (state is AuthLoading) {
-                      return const LoadingState(message: 'Verifying OTP...');
-                    }
-                    if (state is AuthError) {
-                      return ErrorState(
-                        message: state.message,
-                        onActionPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            final otp = controllers.map((e) => e.text).join();
-                            cubit.verifyOtp(widget.email!, otp);
-                          }
-                        },
-                      );
-                    }
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const AppLogo(),
                         SizedBox(height: 24.h),
                         Text(
-                          "تأكيد الحساب",
+                          context.read<LocaleCubit>().translate(
+                            'confirm_account',
+                          ),
                           style: TextStyle(
                             fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
@@ -93,7 +99,9 @@ class _OtpPageState extends State<OtpPage> {
                         ),
                         SizedBox(height: 12.h),
                         Text(
-                          "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+                          context.read<LocaleCubit>().translate(
+                            'enter_otp_sent',
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.sp,
@@ -131,9 +139,12 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                               SizedBox(height: 32.h),
                               AppButton(
+                                loading: state is AuthLoading,
                                 icon: Icons.send,
                                 iconColor: AppColor.info,
-                                text: "تأكيد",
+                                text: context.read<LocaleCubit>().translate(
+                                  'confirm',
+                                ),
                                 height: 50.h,
                                 fontSize: 16.sp,
                                 textColor: Colors.white,
@@ -155,7 +166,7 @@ class _OtpPageState extends State<OtpPage> {
                             cubit.close();
                           },
                           child: Text(
-                            "إعادة إرسال الرمز",
+                            context.read<LocaleCubit>().translate('resend_otp'),
                             style: TextStyle(
                               color: AppColor.warning,
                               fontSize: 15.sp,
