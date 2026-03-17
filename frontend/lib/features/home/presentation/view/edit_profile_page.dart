@@ -9,7 +9,6 @@ import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
-import '../../../../core/utils/toast_utility.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_feild.dart';
 
@@ -55,17 +54,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   bool _validateForm() {
     if (nameController.text.trim().isEmpty) {
-      ToastUtility.showErrorDismissibleToast(
-        context,
-        message: 'Name cannot be empty',
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Name cannot be empty'),
+          backgroundColor: AppColor.negative,
+        ),
       );
       return false;
     }
 
     if (emailController.text.trim().isEmpty) {
-      ToastUtility.showErrorDismissibleToast(
-        context,
-        message: 'Email cannot be empty',
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Email cannot be empty'),
+          backgroundColor: AppColor.negative,
+        ),
       );
       return false;
     }
@@ -82,11 +85,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
         email: emailController.text.trim(),
         password: '',
       );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: AppColor.positive,
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
-        ToastUtility.showErrorDismissibleToast(
-          context,
-          message: 'Failed to update profile',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update profile'),
+            backgroundColor: AppColor.negative,
+          ),
         );
       }
     }
@@ -94,122 +108,105 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserCubit, UserState>(
-      listener: (context, state) {
-        if (state is UserSuccess) {
-          // Profile updated successfully - only fires on update, not on page load
-          ToastUtility.showSuccessDismissibleToast(
-            context,
-            message: state.message,
-          );
-        } else if (state is UserError) {
-          // Show error toast
-          ToastUtility.showErrorDismissibleToast(
-            context,
-            message: state.message,
-          );
-        }
+    return RefreshIndicator(
+      color: Colors.white,
+      backgroundColor: AppColor.positive,
+      displacement: 60,
+      onRefresh: () async {
+        await context.read<UserCubit>().getUser();
       },
-      child: RefreshIndicator(
-        color: Colors.white,
-        backgroundColor: AppColor.positive,
-        displacement: 60,
-        onRefresh: () async {
-          await context.read<UserCubit>().getUser();
-        },
-        child: Scaffold(
+      child: Scaffold(
+        backgroundColor: AppColor.backgroundNeutral,
+        appBar: AppBar(
+          elevation: 0,
           backgroundColor: AppColor.backgroundNeutral,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: AppColor.backgroundNeutral,
-            centerTitle: true,
-            title: Text(
-              context.read<LocaleCubit>().translate('edit_profile'),
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColor.textNeutral,
-              ),
+          centerTitle: true,
+          title: Text(
+            context.read<LocaleCubit>().translate('edit_profile'),
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColor.textNeutral,
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  CupertinoIcons.bell,
-                  color: AppColor.info,
-                  size: 22.sp,
-                ),
-                onPressed: () {},
-              ),
-            ],
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: 32.h),
-                  //form card
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 18.w,
-                      vertical: 22.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 25,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        /// Name
-                        AppTextField(
-                          controller: nameController,
-                          label: context.read<LocaleCubit>().translate(
-                            'full_name',
-                          ),
-                          icon: Icons.person_outline,
-                          iconColor: AppColor.info,
-                          labelColor: AppColor.textNeutral,
-                        ),
-                        SizedBox(height: 18.h),
-
-                        /// Email
-                        AppTextField(
-                          controller: emailController,
-                          label: context.read<LocaleCubit>().translate('email'),
-                          icon: Icons.email_outlined,
-                          iconColor: AppColor.info,
-                          labelColor: AppColor.textNeutral,
-                        ),
-                        SizedBox(height: 18.h),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 40.h),
-                  //button for save
-                  SizedBox(
-                    height: 54.h,
-                    child: AppButton(
-                      text: context.read<LocaleCubit>().translate('save'),
-                      icon: Icons.save_outlined,
-                      textColor: AppColor.textNeutral,
-                      iconColor: AppColor.info,
-                      backgroundColor: AppColor.positive,
-                      onPressed: () {
-                        _updateProfile();
-                      },
-                    ),
-                  ),
-                ],
+          actions: [
+            IconButton(
+              icon: Icon(
+                CupertinoIcons.bell,
+                color: AppColor.info,
+                size: 22.sp,
               ),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 32.h),
+                //form card
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 22.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 25,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      /// Name
+                      AppTextField(
+                        controller: nameController,
+                        label: context.read<LocaleCubit>().translate(
+                          'full_name',
+                        ),
+                        icon: Icons.person_outline,
+                        iconColor: AppColor.info,
+                        labelColor: AppColor.textNeutral,
+                      ),
+                      SizedBox(height: 18.h),
+
+                      /// Email
+                      AppTextField(
+                        controller: emailController,
+                        label: context.read<LocaleCubit>().translate('email'),
+                        icon: Icons.email_outlined,
+                        iconColor: AppColor.info,
+                        labelColor: AppColor.textNeutral,
+                      ),
+                      SizedBox(height: 18.h),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 40.h),
+                //button for save
+                SizedBox(
+                  height: 54.h,
+                  child: AppButton(
+                    text: context.read<LocaleCubit>().translate('save'),
+                    icon: Icons.save_outlined,
+                    textColor: AppColor.textNeutral,
+                    iconColor: AppColor.info,
+                    backgroundColor: AppColor.positive,
+                    onPressed: () {
+                      _updateProfile();
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
