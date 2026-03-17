@@ -21,13 +21,13 @@ class RiskModel extends RiskEntity {
     return RiskModel(
       id: json['id'] as int?,
       age: json['age'] as int,
-      weight: json['weight'] as double,
-      height: json['height'] as double,
-      bmi: json['BMI'] as double,
+      weight: (json['weight'] as num).toDouble(),
+      height: (json['height'] as num).toDouble(),
+      bmi: (json['BMI'] as num).toDouble(),
       sugarPregnancy: json['sugar_pregnancy'] as int,
       smoking: json['smoking'] as bool,
       geneticDisease: json['genetic_disease'] as bool,
-      physicalActivity: json['physical_activity'] as String,
+      physicalActivity: json['physical_activity'] as String? ?? '',
       diabetesType: json['diabetes_type'] as String,
       medicineType: json['medicine_type'] as String,
       createdAt:
