@@ -57,7 +57,7 @@ def update(user_id:int,request,db:Session):
 def show(user_id:int,db:Session):
     risks=db.query(models.RiskFactor).filter(models.RiskFactor.user_id==user_id).first()
     if not risks:
-        return None  # Return None instead of 404 for empty data
+        return []
     return risks
 
 def delete(user_id:int,db:Session):
