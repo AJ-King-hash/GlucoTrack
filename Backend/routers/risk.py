@@ -16,7 +16,7 @@ router=APIRouter(
 def create_risk(request: schemas.RiskBase, db: Session = Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return riskRepo.create(current_user.id,request,db)
 
-@router.get("/",response_model=schemas.RiskShow)
+@router.get("/")
 def get_risk(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return riskRepo.show(current_user.id,db)
 
