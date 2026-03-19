@@ -70,6 +70,8 @@ class AnalyseShow(AnalyseBase):
     id:int
     gluco_percent:float
     risk_result:str
+    recommendations:str
+    meal_tips:str
     analysed_at:datetime
     meal:MealBase    
     class Config():

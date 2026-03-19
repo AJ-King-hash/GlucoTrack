@@ -11,6 +11,7 @@ def get_all(user_id:int,db:Session):
     meals=db.query(models.Meal).where(models.Meal.user_id==user_id).all()
     return meals
 
+
 def create(request,db:Session,current_user):
     # gluco_bot.chat()
    
@@ -44,7 +45,10 @@ def create(request,db:Session,current_user):
         meal_id=new_meal.id,
         gluco_percent=float(res_dict["gluco_percent"]),
         risk_result=res_dict["risk"],
-        analysed_at=pd.to_datetime(res_dict["analysed_at"]))
+        analysed_at=pd.to_datetime(res_dict["analysed_at"]),
+        recommendations=res_dict["recommendations"],
+        meal_tips=res_dict["meal_tips"]
+        )
     
     db.add(new_archive)
     db.commit()
