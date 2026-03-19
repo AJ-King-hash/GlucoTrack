@@ -19,18 +19,8 @@ class Meal(Base):
     __tablename__="meals"
     id=Column(Integer,primary_key=True,index=True)
     user_id=Column(Integer,ForeignKey("users.id"))
-    # GI=Column(Float,nullable=True)
     # GL=(GI*Carbohydrates)/100
     GL=Column(Float,nullable=True) 
-    # Calories=Column(Float,nullable=True)  
-    # Carbohydrates=Column(Float,nullable=True)  
-    # Protein=Column(Float,nullable=True)  
-    # Fat=Column(Float,nullable=True)
-    # Sodium=Column(Float,nullable=True)
-    # Potassium=Column(Float,nullable=True)
-    # Magnesium=Column(Float,nullable=True)
-    # Calcium=Column(Float,nullable=True)
-    # Fiber=Column(Float,nullable=True)
     meal_type=Column(String)
     meal_time=Column(DateTime(timezone=True))
     description=Column(String,nullable=True)
@@ -45,6 +35,8 @@ class PrevAnalyse(Base):
     gluco_percent=Column(Float(2))
     # Low,Medium,High
     risk_result=Column(String)
+    recommendations=Column(String)
+    meal_tips=Column(String)
     analysed_at=Column(DateTime(timezone=True),default=datetime.now(timezone.utc))
     creator=relationship("User",back_populates="analysis")
     meal=relationship("Meal",back_populates="analyse")
