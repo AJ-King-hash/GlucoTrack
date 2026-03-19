@@ -10,6 +10,7 @@ import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/core/localization/locale_state.dart';
 import 'package:untitled10/core/routes/app_routes.dart';
 import 'package:untitled10/core/services/notification_service.dart';
+import 'package:untitled10/core/services/navigation_service.dart';
 
 import 'package:untitled10/features/auth/presentaion/manager/auth_cubit.dart';
 import 'package:untitled10/features/auth/repo/auth_repo.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
                     ),
                     initialRoute: AppRoutes.started,
                     routes: AppRoutes.routes,
+                    navigatorKey: NavigationService().navigatorKey,
                   );
                 },
               );

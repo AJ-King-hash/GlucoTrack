@@ -124,12 +124,21 @@ class _RiskPageState extends State<RiskPage> {
 }
 
 class RiskDetailsView extends StatelessWidget {
-  final RiskEntity risk;
+  final RiskEntity? risk;
 
   const RiskDetailsView({super.key, required this.risk});
 
   @override
   Widget build(BuildContext context) {
+    if (risk == null) {
+      return Center(
+        child: Text(
+          context.read<LocaleCubit>().translate('no_risk_data_available'),
+          style: const TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+    final safeRisk = risk!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Container(
@@ -177,11 +186,11 @@ class RiskDetailsView extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                _getBmiCategory(context, risk.bmi),
+                                _getBmiCategory(context, safeRisk.bmi),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: _getBmiColor(
-                                    risk.bmi,
+                                    safeRisk.bmi,
                                   ).withValues(alpha: 0.8),
                                 ),
                               ),
@@ -198,11 +207,11 @@ class RiskDetailsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            risk.bmi.toStringAsFixed(1),
+                            safeRisk.bmi.toStringAsFixed(1),
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: _getBmiColor(risk.bmi),
+                              color: _getBmiColor(safeRisk.bmi),
                             ),
                           ),
                         ),
@@ -210,10 +219,10 @@ class RiskDetailsView extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     LinearProgressIndicator(
-                      value: (risk.bmi / 40).clamp(0, 1),
+                      value: (safeRisk.bmi / 40).clamp(0, 1),
                       backgroundColor: Colors.grey.withValues(alpha: 0.2),
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        _getBmiColor(risk.bmi),
+                        _getBmiColor(safeRisk.bmi),
                       ),
                       minHeight: 8,
                       borderRadius: BorderRadius.circular(4),
@@ -256,7 +265,7 @@ class RiskDetailsView extends StatelessWidget {
                     context,
                     icon: Icons.cake,
                     label: 'age',
-                    value: risk.age.toString(),
+                    value: safeRisk.age.toString(),
                     unit: '',
                     color: Colors.blue,
                   ),
@@ -267,7 +276,7 @@ class RiskDetailsView extends StatelessWidget {
                     context,
                     icon: Icons.monitor_weight,
                     label: 'weight',
-                    value: risk.weight.toStringAsFixed(1),
+                    value: safeRisk.weight.toStringAsFixed(1),
                     unit: 'kg',
                     color: Colors.green,
                   ),
@@ -278,7 +287,7 @@ class RiskDetailsView extends StatelessWidget {
                     context,
                     icon: Icons.height,
                     label: 'height',
-                    value: risk.height.toStringAsFixed(2),
+                    value: safeRisk.height.toStringAsFixed(2),
                     unit: 'm',
                     color: Colors.purple,
                   ),
@@ -294,22 +303,22 @@ class RiskDetailsView extends StatelessWidget {
               context,
               icon: Icons.smoking_rooms,
               label: 'smoking',
-              value: risk.smoking,
+              value: safeRisk.smoking,
             ),
             const SizedBox(height: 12),
             _buildRiskFactorCard(
               context,
               icon: Icons.family_restroom,
               label: 'genetic_disease',
-              value: risk.geneticDisease,
+              value: safeRisk.geneticDisease,
             ),
             const SizedBox(height: 12),
             _buildRiskFactorCard(
               context,
               icon: Icons.directions_run,
               label: 'physical_activity',
-              value: risk.physicalActivity.isNotEmpty,
-              customValue: risk.physicalActivity,
+              value: safeRisk.physicalActivity.isNotEmpty,
+              customValue: safeRisk.physicalActivity,
             ),
             const SizedBox(height: 24),
 
@@ -320,21 +329,23 @@ class RiskDetailsView extends StatelessWidget {
               context,
               icon: Icons.medication,
               label: 'medicine_type',
-              value: risk.medicineType.isEmpty ? '-' : risk.medicineType,
+              value:
+                  safeRisk.medicineType.isEmpty ? '-' : safeRisk.medicineType,
             ),
             const SizedBox(height: 12),
             _buildInfoCard(
               context,
               icon: Icons.bloodtype,
               label: 'diabetes_type',
-              value: risk.diabetesType.isEmpty ? '-' : risk.diabetesType,
+              value:
+                  safeRisk.diabetesType.isEmpty ? '-' : safeRisk.diabetesType,
             ),
             const SizedBox(height: 12),
             _buildInfoCard(
               context,
               icon: Icons.water_drop,
               label: 'sugar_pregnancy',
-              value: risk.sugarPregnancy.toString(),
+              value: safeRisk.sugarPregnancy.toString(),
             ),
             const SizedBox(height: 32),
 
@@ -343,7 +354,7 @@ class RiskDetailsView extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _showUpdateRiskDialog(context, risk),
+                    onPressed: () => _showUpdateRiskDialog(context, safeRisk),
                     icon: const Icon(Icons.edit),
                     label: Text(
                       context.read<LocaleCubit>().translate('update'),
@@ -370,8 +381,8 @@ class RiskDetailsView extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      if (risk.id != null) {
-                        _showDeleteConfirmation(context, risk.id!);
+                      if (safeRisk.id != null) {
+                        _showDeleteConfirmation(context, safeRisk.id!);
                       }
                     },
                     style: ElevatedButton.styleFrom(

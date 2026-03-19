@@ -21,11 +21,7 @@ class NetworkFailure extends Failure {
 class ValidationFailure extends Failure {
   final Map<String, dynamic>? errors;
 
-  const ValidationFailure({
-    required super.message,
-    this.errors,
-    super.code,
-  });
+  const ValidationFailure({required super.message, this.errors, super.code});
 
   @override
   List<Object?> get props => [message, code, errors];
