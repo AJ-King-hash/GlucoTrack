@@ -57,7 +57,7 @@ def update(user_id:int,request,db:Session):
 def show(user_id:int,db:Session):
     risks=db.query(models.RiskFactor).filter(models.RiskFactor.user_id==user_id).first()
     if not risks:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Risk Factors with the id {user_id} is not available")
+        return []
     return risks
 
 def delete(user_id:int,db:Session):
