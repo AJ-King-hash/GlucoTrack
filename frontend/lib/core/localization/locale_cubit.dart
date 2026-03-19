@@ -126,6 +126,16 @@ class LocaleCubit extends Cubit<LocaleState> {
       "set_time": "Set Time",
       "select_time": "Select Time",
       "dont_have_account": "Dont have an account? ",
+      "name_required": "Please enter your name",
+      "confirm_account": "Confirm Account",
+      "enter_otp_sent": "Enter the verification code sent to your email",
+      "confirm": "Confirm",
+      "resend_otp": "Resend Code",
+      "reset_password": "Reset Password",
+      "enter_email_for_otp":
+          "Enter your email and we will send you a verification code",
+      "send_code": "Send Code",
+      "back_to_login": "Back to Login",
       "tit": "Gluco AI Assistant",
       "subt":
           "I'm ready to help you with any diabetes-related health questions.\n start by asking your questions  ",
@@ -184,9 +194,13 @@ class LocaleCubit extends Cubit<LocaleState> {
       "please_enter_physical_activity": "Please enter physical activity",
       "please_enter_diabetes_type": "Please enter diabetes type",
       "please_enter_medicine_type": "Please enter medicine type",
+      "no_risk_data_available":
+          "No risk data available. Create a new risk to get started.",
+
       "risk_created_successfully": "Risk created successfully",
       "risk_updated_successfully": "Risk updated successfully",
       "risk_deleted_successfully": "Risk deleted successfully",
+
       "delete_risk": "Delete Risk",
       "delete_risk_confirm":
           "Are you sure you want to delete this risk record?",
@@ -205,6 +219,15 @@ class LocaleCubit extends Cubit<LocaleState> {
       "sug_low": "أعراض انخفاض السكر",
       "sug_moni": "كيف أراقب مستوى السكر؟",
       "dont_have_account": "ليس لديك حساب؟ ",
+      "name_required": "يرجى إدخال الاسم",
+      "confirm_account": "تأكيد الحساب",
+      "enter_otp_sent": "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+      "confirm": "تأكيد",
+      "resend_otp": "إعادة إرسال الرمز",
+      "reset_password": "إعادة تعيين كلمة المرور",
+      "enter_email_for_otp": "أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق",
+      "send_code": "إرسال الرمز",
+      "back_to_login": "العودة إلى تسجيل الدخول",
       "account_information": "معلومات الحساب",
       'login': 'تسجيل الدخول',
       'welcome_back': 'مرحباً بعودتك',
@@ -330,6 +353,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "please_enter_physical_activity": "الرجاء إدخال النشاط البدني",
       "please_enter_diabetes_type": "الرجاء إدخال نوع السكري",
       "please_enter_medicine_type": "الرجاء إدخال نوع الدواء",
+      "no_risk_data_available":
+          "لا تتوفر بيانات مخاطر. أنشئ مخاطر جديدة للبدء.",
       "risk_created_successfully": "تم إنشاء المخاطر بنجاح",
       "risk_updated_successfully": "تم تحديث المخاطر بنجاح",
       "risk_deleted_successfully": "تم حذف المخاطر بنجاح",

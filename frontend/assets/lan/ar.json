@@ -102,6 +102,7 @@
   "try_again": "إعادة المحاولة",
   "error_occurred": "حدث خطأ",
   "loading": "جاري التحميل...",
+  "no_risk_data_available": "لا تتوفر بيانات مخاطر. أنشئ مخاطر جديدة للبدء.",
   "sugar_reminder_time": "وقت فحص السكر",
   "medicine_reminder_time": "وقت الدواء",
   "set_time": "ضبط الوقت",

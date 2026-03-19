@@ -6,11 +6,12 @@ import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/show_meal_bottom_sheet.dart';
+import '../../../../core/utils/toast_utility.dart';
 import '../manager/home_cubit.dart';
 import '../manager/home_state.dart';
 import '../widgets/option_card.dart';
 import '../widgets/user_info_card.dart';
-import '../widgets/card_widget.dart'; // MedicalHeaderCard is in here
+import '../widgets/card_widget.dart';
 import '../widgets/picker_bottom_sheet.dart';
 
 class HomeContent extends StatelessWidget {
@@ -18,283 +19,320 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        final locale = context.read<LocaleCubit>();
+    return BlocListener<HomeCubit, HomeState>(
+      listenWhen: (previous, current) {
+        // Listen to changes in gender update states
+        return previous.isGenderUpdating != current.isGenderUpdating ||
+            previous.genderUpdateMessage != current.genderUpdateMessage ||
+            previous.genderUpdateSuccess != current.genderUpdateSuccess;
+      },
+      listener: (context, state) {
+        if (state.isGenderUpdating) {
+          // Show loading toast
+          ToastUtility.showLoadingDismissibleToast(
+            context,
+            message: 'Updating gender...',
+            onDismissed: () {
+              context.read<HomeCubit>().clearGenderUpdateMessage();
+            },
+          );
+        } else if (state.genderUpdateMessage != null) {
+          // Show success or error toast based on the result
+          if (state.genderUpdateSuccess == true) {
+            ToastUtility.showSuccessDismissibleToast(
+              context,
+              message: state.genderUpdateMessage!,
+              onDismissed: () {
+                context.read<HomeCubit>().clearGenderUpdateMessage();
+              },
+            );
+          } else if (state.genderUpdateSuccess == false) {
+            ToastUtility.showErrorDismissibleToast(
+              context,
+              message: state.genderUpdateMessage!,
+              onDismissed: () {
+                context.read<HomeCubit>().clearGenderUpdateMessage();
+              },
+            );
+          }
+        }
+      },
+      child: BlocBuilder<HomeCubit, HomeState>(
+        builder: (context, state) {
+          final locale = context.read<LocaleCubit>();
 
-        return Scaffold(
-          backgroundColor: AppColor.info,
-          appBar: AppBar(
-            title: Text(
-              locale.translate('app_title'),
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColor.textNeutral,
-              ),
-            ),
-            centerTitle: true,
-            backgroundColor: AppColor.backgroundNeutral,
-            elevation: 0,
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.notifications);
-                },
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                /// Header Card (Balance / Quick Stats)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 20.h,
-                  ),
-                  child: const MedicalHeaderCard(),
+          return Scaffold(
+            backgroundColor: AppColor.info,
+            appBar: AppBar(
+              title: Text(
+                locale.translate('app_title'),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColor.textNeutral,
                 ),
-
-                /// Main Content Area
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColor.backgroundNeutral,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
-                      ),
-                    ),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 24.h,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// User Profile / Physical Stats
-                          UserInfoCard(
-                            age: state.age,
-                            weight: state.weight,
-                            gender: state.gender,
-                            maritalStatus: state.maritalStatus,
-                            pregnancyCount: state.pregnancyCount,
-                            onAgeTap: () {
-                              showNumberPickerBottomSheet(
-                                context: context,
-                                title: locale.translate('select_age'),
-                                initialValue: state.age,
-                                min: 5,
-                                max: 100,
-                                unit: locale.translate('year'),
-                                onSave: (value) async {
-                                  await context.read<HomeCubit>().updateAge(
-                                    value,
-                                  );
-                                },
-                              );
-                            },
-                            onWeightTap: () {
-                              showNumberPickerBottomSheet(
-                                context: context,
-                                title: locale.translate('select_weight'),
-                                initialValue: state.weight,
-                                min: 5,
-                                max: 150,
-                                unit: locale.translate('kg'),
-                                onSave: (value) async {
-                                  await context.read<HomeCubit>().updateWeight(
-                                    value,
-                                  );
-                                },
-                              );
-                            },
-                            onGenderChanged:
-                                (g) async => await context
-                                    .read<HomeCubit>()
-                                    .updateGender(g),
-                            onMaritalStatusChanged:
-                                (m) async => await context
-                                    .read<HomeCubit>()
-                                    .updateMaterialStatus(m),
-                            onPregnancyCountChanged:
-                                (c) async => await context
-                                    .read<HomeCubit>()
-                                    .updatePregnancyCount(c),
-                          ),
-
-                          SizedBox(height: 32.h),
-
-                          /// Diabetes Type Selection
-                          buildMedicalSection(
-                            title: locale.translate('types'),
-                            children: [
-                              OptionCard(
-                                label: locale.translate('type1'),
-                                icon: Icons.healing,
-                                selected:
-                                    state.mealTime ==
-                                    0, // Using index or logic from state
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateMealTime(0),
-                              ),
-                              OptionCard(
-                                label: locale.translate('type2'),
-                                icon: Icons.bloodtype,
-                                selected: state.mealTime == 2,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateMealTime(2),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 28.h),
-
-                          /// Timing Relative to Meals
-                          buildMedicalSection(
-                            title: locale.translate('lasteat'),
-                            children: [
-                              OptionCard(
-                                label: locale.translate('fasting'),
-                                icon: Icons.nightlight_round,
-                                selected: state.mealTime == 0,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateMealTime(0),
-                              ),
-                              OptionCard(
-                                label: locale.translate('before'),
-                                icon: Icons.restaurant,
-                                selected: state.mealTime == 1,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateMealTime(1),
-                              ),
-                              OptionCard(
-                                label: locale.translate('after'),
-                                icon: Icons.flatware,
-                                selected: state.mealTime == 2,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateMealTime(2),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 28.h),
-
-                          /// Activity Level
-                          buildMedicalSection(
-                            title: locale.translate('physical'),
-                            children: [
-                              OptionCard(
-                                label: locale.translate('low'),
-                                icon: Icons.bed,
-                                selected: state.activity == 0,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(0),
-                              ),
-                              OptionCard(
-                                label: locale.translate('medarate'),
-                                icon: Icons.directions_walk,
-                                selected: state.activity == 1,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(1),
-                              ),
-                              OptionCard(
-                                label: locale.translate('height'),
-                                icon: Icons.directions_run,
-                                selected: state.activity == 2,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(2),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 24.h),
-                          _buildAnalyzeButton(context, locale),
-
-                          SizedBox(height: 20.h),
-                          _buildRiskManagementButton(context, locale),
-
-                          SizedBox(
-                            height: 40.h,
-                          ), // Extra padding for bottom scroll
-                        ],
-                      ),
-                    ),
-                  ),
+              ),
+              centerTitle: true,
+              backgroundColor: AppColor.backgroundNeutral,
+              elevation: 0,
+              actions: [
+                IconButton(
+                  icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.notifications);
+                  },
                 ),
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
+            body: SafeArea(
+              child: Column(
+                children: [
+                  /// Header Card (Balance / Quick Stats)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 20.h,
+                    ),
+                    child: const MedicalHeaderCard(),
+                  ),
 
-  Widget _buildAnalyzeButton(BuildContext context, LocaleCubit locale) {
-    return SizedBox(
-      width: double.infinity,
-      height: 55.h,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColor.positive,
-          foregroundColor: AppColor.textNeutral,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 4,
-        ),
-        icon: const Icon(Icons.analytics_outlined),
-        label: Text(
-          locale.translate('resultAna'),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-        ),
-        onPressed: () => showMealBottomSheet(context),
+                  /// Main Content Area
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColor.backgroundNeutral,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(30.r),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 24.h,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// User Profile / Physical Stats
+                            UserInfoCard(
+                              age: state.age,
+                              weight: state.weight,
+                              gender: state.gender,
+                              maritalStatus: state.maritalStatus,
+                              pregnancyCount: state.pregnancyCount,
+                              onAgeTap: () {
+                                showNumberPickerBottomSheet(
+                                  context: context,
+                                  title: locale.translate('select_age'),
+                                  initialValue: state.age,
+                                  min: 5,
+                                  max: 100,
+                                  unit: locale.translate('year'),
+                                  onSave: (value) async {
+                                    await context.read<HomeCubit>().updateAge(
+                                      value,
+                                    );
+                                  },
+                                );
+                              },
+                              onWeightTap: () {
+                                showNumberPickerBottomSheet(
+                                  context: context,
+                                  title: locale.translate('select_weight'),
+                                  initialValue: state.weight,
+                                  min: 5,
+                                  max: 150,
+                                  unit: locale.translate('kg'),
+                                  onSave: (value) async {
+                                    await context
+                                        .read<HomeCubit>()
+                                        .updateWeight(value);
+                                  },
+                                );
+                              },
+                              onGenderChanged:
+                                  (g) async => await context
+                                      .read<HomeCubit>()
+                                      .updateGender(g),
+                              onMaritalStatusChanged:
+                                  (m) async => await context
+                                      .read<HomeCubit>()
+                                      .updateMaterialStatus(m),
+                              onPregnancyCountChanged:
+                                  (c) async => await context
+                                      .read<HomeCubit>()
+                                      .updatePregnancyCount(c),
+                            ),
+
+                            SizedBox(height: 32.h),
+
+                            /// Diabetes Type Selection
+                            buildMedicalSection(
+                              title: locale.translate('types'),
+                              children: [
+                                OptionCard(
+                                  label: locale.translate('type1'),
+                                  icon: Icons.healing,
+                                  selected: state.diabetesType == 0,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateDiabetesType(0),
+                                ),
+                                OptionCard(
+                                  label: locale.translate('type2'),
+                                  icon: Icons.bloodtype,
+                                  selected: state.diabetesType == 1,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateDiabetesType(1),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 28.h),
+
+                            /// Timing Relative to Meals
+                            buildMedicalSection(
+                              title: locale.translate('lasteat'),
+                              children: [
+                                OptionCard(
+                                  label: locale.translate('fasting'),
+                                  icon: Icons.nightlight_round,
+                                  selected: state.mealTime == 0,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateMealTime(0),
+                                ),
+                                OptionCard(
+                                  label: locale.translate('before'),
+                                  icon: Icons.restaurant,
+                                  selected: state.mealTime == 1,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateMealTime(1),
+                                ),
+                                OptionCard(
+                                  label: locale.translate('after'),
+                                  icon: Icons.flatware,
+                                  selected: state.mealTime == 2,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateMealTime(2),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 28.h),
+
+                            /// Activity Level
+                            buildMedicalSection(
+                              title: locale.translate('physical'),
+                              children: [
+                                OptionCard(
+                                  label: locale.translate('low'),
+                                  icon: Icons.bed,
+                                  selected: state.activity == 0,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateActivity(0),
+                                ),
+                                OptionCard(
+                                  label: locale.translate('medarate'),
+                                  icon: Icons.directions_walk,
+                                  selected: state.activity == 1,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateActivity(1),
+                                ),
+                                OptionCard(
+                                  label: locale.translate('height'),
+                                  icon: Icons.directions_run,
+                                  selected: state.activity == 2,
+                                  onTap:
+                                      () async => await context
+                                          .read<HomeCubit>()
+                                          .updateActivity(2),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 24.h),
+                            _buildAnalyzeButton(context, locale),
+
+                            SizedBox(height: 20.h),
+                            _buildRiskManagementButton(context, locale),
+
+                            SizedBox(
+                              height: 40.h,
+                            ), // Extra padding for bottom scroll
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
+}
 
-  Widget _buildRiskManagementButton(BuildContext context, LocaleCubit locale) {
-    return SizedBox(
-      width: double.infinity,
-      height: 55.h,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColor.info,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 4,
+Widget _buildAnalyzeButton(BuildContext context, LocaleCubit locale) {
+  return SizedBox(
+    width: double.infinity,
+    height: 55.h,
+    child: ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColor.positive,
+        foregroundColor: AppColor.textNeutral,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        icon: const Icon(Icons.warning_amber_rounded),
-        label: Text(
-          locale.translate('risk_management'),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-        ),
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.risk),
+        elevation: 4,
       ),
-    );
-  }
+      icon: const Icon(Icons.analytics_outlined),
+      label: Text(
+        locale.translate('resultAna'),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+      ),
+      onPressed: () => showMealBottomSheet(context),
+    ),
+  );
+}
+
+Widget _buildRiskManagementButton(BuildContext context, LocaleCubit locale) {
+  return SizedBox(
+    width: double.infinity,
+    height: 55.h,
+    child: ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColor.info,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        elevation: 4,
+      ),
+      icon: const Icon(Icons.warning_amber_rounded),
+      label: Text(
+        locale.translate('risk_management'),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+      ),
+      onPressed: () => Navigator.pushNamed(context, AppRoutes.risk),
+    ),
+  );
 }
 
 /// Helper function for section styling
@@ -309,7 +347,7 @@ Widget buildMedicalSection({
       borderRadius: BorderRadius.circular(20.r),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),

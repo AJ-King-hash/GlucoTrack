@@ -92,7 +92,10 @@ class ArchiveDetailsPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(
@@ -116,7 +119,7 @@ class ArchiveDetailsPage extends StatelessWidget {
                   value: archive.glucoPercent / 100,
                   strokeWidth: 10,
                   color: statusColor,
-                  backgroundColor: statusColor.withOpacity(0.1),
+                  backgroundColor: statusColor.withValues(alpha: 0.1),
                 ),
               ),
               Text(

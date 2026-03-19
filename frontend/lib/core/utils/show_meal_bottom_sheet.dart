@@ -125,7 +125,7 @@ void showMealBottomSheet(BuildContext context) async {
 
                   // Dropdown for Meal Type
                   DropdownButtonFormField<String>(
-                    value: selectedMealType,
+                    initialValue: selectedMealType,
                     style: TextStyle(
                       color: AppColor.textNeutral,
                       fontSize: 14.sp,

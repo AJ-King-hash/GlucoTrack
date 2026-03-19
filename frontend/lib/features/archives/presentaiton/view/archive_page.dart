@@ -278,7 +278,7 @@ class ArchivesPage extends StatelessWidget {
         onTap();
         Navigator.pop(context);
       },
-      selectedColor: activeColor.withOpacity(0.2),
+      selectedColor: activeColor.withValues(alpha: 0.2),
       checkmarkColor: activeColor,
       labelStyle: TextStyle(
         color: isSelected ? activeColor : Colors.black54,
@@ -316,7 +316,7 @@ class ArchivesPage extends StatelessWidget {
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         itemCount: state.archives.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
         itemBuilder: (context, index) {
           final archive = state.archives[index];
           return ArchiveCard(

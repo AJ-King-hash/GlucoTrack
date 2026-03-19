@@ -7,11 +7,7 @@ class SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const SectionCard({
-    super.key,
-    required this.title,
-    required this.children,
-  });
+  const SectionCard({super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +18,7 @@ class SectionCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 3),
-          )
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -41,11 +33,7 @@ class SectionCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.h),
-          Wrap(
-            spacing: 12.w,
-            runSpacing: 12.h,
-            children: children,
-          )
+          Wrap(spacing: 12.w, runSpacing: 12.h, children: children),
         ],
       ),
     );

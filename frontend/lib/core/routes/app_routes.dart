@@ -7,7 +7,7 @@ import 'package:untitled10/features/auth/presentaion/view/otp_page.dart';
 import 'package:untitled10/features/auth/presentaion/view/register_page.dart';
 import 'package:untitled10/features/auth/presentaion/view/reset_password.dart';
 import 'package:untitled10/features/auth/presentaion/view/splash_page.dart';
-import 'package:untitled10/features/home/presentation/view/edite_profile_page.dart';
+import 'package:untitled10/features/home/presentation/view/edit_profile_page.dart';
 import 'package:untitled10/features/home/presentation/view/home_page.dart';
 import 'package:untitled10/features/home/presentation/widgets/about_app.dart';
 import 'package:untitled10/features/risk/presentation/view/risk_page.dart';
@@ -36,7 +36,7 @@ class AppRoutes {
     otp: (context) => OtpPage(),
     home: (context) => HomePage(),
     started: (context) => GetStartedPage(),
-    editProfile: (context) => EditeProfilePage(),
+    editProfile: (context) => EditProfilePage(),
     // archiveDetailsPage:(context)=>ArchiveDetailsPage(),
     splashScreen: (context) => SplashScreen(),
     aboutApp: (context) => AboutAppPage(),
