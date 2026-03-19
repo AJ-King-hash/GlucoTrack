@@ -4,7 +4,7 @@ class RiskEntity {
   final double weight;
   final double height;
   final double bmi;
-  final int sugarPregnancy;
+  final int? sugarPregnancy;
   final bool smoking;
   final bool geneticDisease;
   final String physicalActivity;
@@ -19,7 +19,7 @@ class RiskEntity {
     required this.weight,
     required this.height,
     required this.bmi,
-    required this.sugarPregnancy,
+    this.sugarPregnancy,
     required this.smoking,
     required this.geneticDisease,
     required this.physicalActivity,

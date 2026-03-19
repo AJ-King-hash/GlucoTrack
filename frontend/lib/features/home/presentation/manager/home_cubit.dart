@@ -93,19 +93,21 @@ class HomeCubit extends Cubit<HomeState> {
     // For now, we'll just leave the initial reasonable values
   }
 
-  void _updateStateFromRisk(RiskEntity risk) {
+  void _updateStateFromRisk(RiskEntity? risk) {
     // Store the full risk entity for later use
     _currentRiskEntity = risk;
-    emit(
-      state.copyWith(
-        age: risk.age,
-        weight: risk.weight.toInt(), // Convert to int if needed
-        activity: _mapPhysicalActivityToInt(risk.physicalActivity),
-        diabetesType: _mapDiabetesTypeToInt(risk.diabetesType),
-        // We'll need to handle gender and marital status if they're added to backend
-        // For now, we'll leave them as null/initial values
-      ),
-    );
+    if (risk != null) {
+      emit(
+        state.copyWith(
+          age: risk.age,
+          weight: risk.weight.toInt(), // Convert to int if needed
+          activity: _mapPhysicalActivityToInt(risk.physicalActivity),
+          diabetesType: _mapDiabetesTypeToInt(risk.diabetesType),
+          // We'll need to handle gender and marital status if they're added to backend
+          // For now, we'll leave them as null/initial values
+        ),
+      );
+    }
   }
 
   int _mapPhysicalActivityToInt(String activity) {

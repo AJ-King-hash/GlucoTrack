@@ -100,7 +100,9 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   //get currentUser;
+  @override
   UserModel? get currentUser => _currentUser;
   //get isLoggedIn
+  @override
   bool get isLoggedIn => _currentUser != null;
 }

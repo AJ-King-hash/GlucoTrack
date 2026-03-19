@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import '../utils/source_storage_service.dart';
+import '../services/navigation_service.dart';
+import '../utils/toast_utility.dart';
 
 class AuthInterceptor extends Interceptor {
-  final VoidCallback? onUnauthorized;
+  final NavigationService navigationService;
 
-  AuthInterceptor({this.onUnauthorized});
+  AuthInterceptor({required this.navigationService});
 
   @override
   Future<void> onRequest(
@@ -21,11 +23,19 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
-      await SecureStorageService.deleteToken();
-      onUnauthorized?.call();
+      await SecureStorageService.clearAll();
+      _handleUnauthorized();
     }
     super.onError(err, handler);
   }
-}
 
-typedef VoidCallback = void Function();
+  void _handleUnauthorized() {
+    // Show a toast to inform the user that their session has expired
+    if (navigationService.currentContext != null) {
+      ToastUtility.showError('Session expired. Please login again.');
+    }
+
+    // Navigate to login page
+    navigationService.navigateToLogin();
+  }
+}

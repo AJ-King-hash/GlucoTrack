@@ -32,19 +32,31 @@ class RiskRepoImpl implements RiskRepository {
 
     return result.fold(
       (failure) => Left(failure),
-      (data) => Right(RiskModel.fromJson(data)),
+      (data) => Right(RiskModel.fromJson(data as Map<String, dynamic>)),
     );
   }
 
   @override
-  Future<Either<Failure, RiskEntity>> getRisk(int id) async {
+  Future<Either<Failure, RiskEntity?>> getRisk(int id) async {
     // Note: The id parameter is not used as the backend identifies
     // the user from the authentication token. Kept for interface consistency.
     final result = await apiService.getRisk();
-    return result.fold(
-      (failure) => Left(failure),
-      (data) => Right(RiskModel.fromJson(data)),
-    );
+    return result.fold((failure) => Left(failure), (data) {
+      // Handle null response when no risk data exists
+      if (data == null) {
+        return const Right<Failure, RiskEntity?>(null);
+      }
+      // Handle case where data is not a Map
+      if (data is! Map<String, dynamic>) {
+        return Left(ServerFailure(message: "Invalid response format"));
+      }
+
+      try {
+        return Right<Failure, RiskEntity?>(RiskModel.fromJson(data));
+      } catch (e) {
+        return Left(ServerFailure(message: "Failed to parse risk data: $e"));
+      }
+    });
   }
 
   @override
@@ -74,7 +86,7 @@ class RiskRepoImpl implements RiskRepository {
 
     return result.fold(
       (failure) => Left(failure),
-      (data) => Right(RiskModel.fromJson(data)),
+      (data) => Right(RiskModel.fromJson(data as Map<String, dynamic>)),
     );
   }
 

@@ -23,7 +23,7 @@ class RiskBase(BaseModel):
     age:int
     weight:float
     height:float
-    sugar_pregnancy:int
+    sugar_pregnancy:Optional[int] = None
     smoking:bool
     genetic_disease:bool
     physical_activity:str
@@ -36,7 +36,7 @@ class RiskShow(RiskBase):
     weight:float
     height:float
     BMI:float
-    sugar_pregnancy:int
+    sugar_pregnancy:Optional[int] = None
     smoking:bool
     genetic_disease:bool
     diabetes_type:str

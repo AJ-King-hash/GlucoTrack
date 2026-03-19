@@ -103,11 +103,13 @@ class SettingsPage extends StatelessWidget {
                 } catch (e) {
                   // Silently handle - settings already updated locally in cubit
                 }
-                // Show success message using ToastUtility
-                ToastUtility.showSuccessDismissibleToast(
-                  context,
-                  message: 'Settings updated successfully!',
-                );
+                // Show success message using ToastUtility (using captured context)
+                if (context.mounted) {
+                  ToastUtility.showSuccessDismissibleToast(
+                    context,
+                    message: 'Settings updated successfully!',
+                  );
+                }
               }
             },
           ),

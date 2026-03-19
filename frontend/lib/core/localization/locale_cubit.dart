@@ -194,9 +194,13 @@ class LocaleCubit extends Cubit<LocaleState> {
       "please_enter_physical_activity": "Please enter physical activity",
       "please_enter_diabetes_type": "Please enter diabetes type",
       "please_enter_medicine_type": "Please enter medicine type",
+      "no_risk_data_available":
+          "No risk data available. Create a new risk to get started.",
+
       "risk_created_successfully": "Risk created successfully",
       "risk_updated_successfully": "Risk updated successfully",
       "risk_deleted_successfully": "Risk deleted successfully",
+
       "delete_risk": "Delete Risk",
       "delete_risk_confirm":
           "Are you sure you want to delete this risk record?",
@@ -349,6 +353,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "please_enter_physical_activity": "الرجاء إدخال النشاط البدني",
       "please_enter_diabetes_type": "الرجاء إدخال نوع السكري",
       "please_enter_medicine_type": "الرجاء إدخال نوع الدواء",
+      "no_risk_data_available":
+          "لا تتوفر بيانات مخاطر. أنشئ مخاطر جديدة للبدء.",
       "risk_created_successfully": "تم إنشاء المخاطر بنجاح",
       "risk_updated_successfully": "تم تحديث المخاطر بنجاح",
       "risk_deleted_successfully": "تم حذف المخاطر بنجاح",

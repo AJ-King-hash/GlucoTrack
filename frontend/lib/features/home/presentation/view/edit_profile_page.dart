@@ -37,7 +37,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
         if (state is UserLoaded) {
           final user = state.userModel;
-          print("user: " + user.toString());
+          debugPrint("user: $user");
           nameController.text = user.name;
           emailController.text = user.email;
         }

@@ -13,7 +13,7 @@ class RiskInitial extends RiskState {}
 class RiskLoading extends RiskState {}
 
 class RiskLoaded extends RiskState {
-  final RiskEntity risk;
+  final RiskEntity? risk;
 
   const RiskLoaded(this.risk);
 

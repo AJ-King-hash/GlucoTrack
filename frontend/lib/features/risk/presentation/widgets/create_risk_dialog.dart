@@ -4,6 +4,9 @@ import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
 import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
 import 'package:untitled10/features/home/presentation/widgets/dropdown.dart';
+import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
+import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+// import 'package:untitled10/features/auth/data/models/user_model.dart';
 
 class CreateRiskDialog extends StatefulWidget {
   const CreateRiskDialog({super.key});
@@ -19,7 +22,7 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
-  int sugarPregnancy = 0;
+  int? sugarPregnancy;
   bool smoking = false;
   bool geneticDisease = false;
   String physicalActivity = '';
@@ -30,6 +33,9 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
+    final userCubit = context.read<UserCubit>();
+    final user = (userCubit.state as UserLoaded?)?.userModel;
+    final isFemale = user?.gender == 'female';
 
     return AlertDialog(
       title: Text(locale.translate('create_new_risk')),
@@ -55,11 +61,16 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
                 hint: 'please_enter_height',
                 onSaved: (v) => height = double.tryParse(v!) ?? 0.0,
               ),
-              _buildTextFormField(
-                label: 'sugar_pregnancy',
-                onSaved: (v) => sugarPregnancy = int.tryParse(v!) ?? 0,
-                required: false,
-              ),
+              // Sugar Pregnancy - only show for female
+              if (isFemale)
+                _buildTextFormField(
+                  label: 'sugar_pregnancy',
+                  onSaved:
+                      (v) =>
+                          sugarPregnancy =
+                              v?.isEmpty == false ? int.tryParse(v!) : null,
+                  required: false,
+                ),
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),
                 value: smoking,

@@ -50,4 +50,11 @@ class PrefHelper {
   static Future<void> clearUserId() async {
     await SecureStorageService.deleteUserId();
   }
+
+  /// Clears all user-related data from secure storage.
+  ///
+  /// Delegates to [SecureStorageService.clearAll] to delete both the token and user ID.
+  static Future<void> clearAll() async {
+    await SecureStorageService.clearAll();
+  }
 }

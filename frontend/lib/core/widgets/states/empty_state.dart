@@ -15,7 +15,7 @@ class EmptyState extends StatelessWidget {
   final Color? iconColor;
 
   const EmptyState({
-    Key? key,
+    super.key,
     this.lottieAsset,
     this.messageKey,
     this.customMessage,
@@ -23,7 +23,7 @@ class EmptyState extends StatelessWidget {
     this.icon,
     this.iconSize,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

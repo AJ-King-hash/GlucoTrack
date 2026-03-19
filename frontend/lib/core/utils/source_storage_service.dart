@@ -10,6 +10,21 @@ class SecureStorageService {
   static const _isFirstTimeKey = "is_first_time";
   static const _userIdKey = "user_id";
 
+  /// Clears all user-related data from secure storage.
+  ///
+  /// This method deletes the authentication token and user ID from secure storage,
+  /// effectively logging the user out.
+  /// Returns true if all data was successfully cleared, false otherwise.
+  static Future<bool> clearAll() async {
+    try {
+      await _storage.delete(key: _tokenKey);
+      await _storage.delete(key: _userIdKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static Future<bool> saveToken(String token) async {
     try {
       await _storage.write(key: _tokenKey, value: token);
