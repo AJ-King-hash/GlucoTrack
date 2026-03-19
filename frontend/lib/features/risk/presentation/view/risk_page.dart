@@ -20,8 +20,7 @@ class _RiskPageState extends State<RiskPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch risk data when page loads
-    // The backend gets user ID from JWT token, so we pass any value
+    // Fetch risk when page loads
     context.read<RiskCubit>().getRisk(0);
   }
 
@@ -118,7 +117,11 @@ class _RiskPageState extends State<RiskPage> {
   void _showCreateRiskDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => const CreateRiskDialog(),
+      builder:
+          (_) => BlocProvider.value(
+            value: context.read<RiskCubit>(),
+            child: const CreateRiskDialog(),
+          ),
     );
   }
 }
@@ -341,12 +344,13 @@ class RiskDetailsView extends StatelessWidget {
                   safeRisk.diabetesType.isEmpty ? '-' : safeRisk.diabetesType,
             ),
             const SizedBox(height: 12),
-            _buildInfoCard(
-              context,
-              icon: Icons.water_drop,
-              label: 'sugar_pregnancy',
-              value: safeRisk.sugarPregnancy.toString(),
-            ),
+            if (safeRisk.sugarPregnancy != null)
+              _buildInfoCard(
+                context,
+                icon: Icons.water_drop,
+                label: 'sugar_pregnancy',
+                value: safeRisk.sugarPregnancy?.toString() ?? '-',
+              ),
             const SizedBox(height: 32),
 
             // Action Buttons - Enhanced design

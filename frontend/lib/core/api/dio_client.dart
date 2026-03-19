@@ -7,7 +7,6 @@ class DioClient {
   DioClient._internal();
 
   // Use String.fromEnvironment for build-time configuration
-  // Example: flutter build --dart-define=BASE_URL=http://localhost:8000
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
     defaultValue: 'http://192.168.34.73:8000',

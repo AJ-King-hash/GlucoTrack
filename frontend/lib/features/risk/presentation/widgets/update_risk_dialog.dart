@@ -1,9 +1,11 @@
-// features/risk/presentation/widgets/update_risk_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
 import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
+import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+import 'package:untitled10/features/home/presentation/widgets/dropdown.dart';
 
 class UpdateRiskDialog extends StatefulWidget {
   final RiskEntity risk;
@@ -18,7 +20,7 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   final _formKey = GlobalKey<FormState>();
   late int age;
   late double weight, height;
-  late int sugarPregnancy;
+  late int? sugarPregnancy;
   late bool smoking, geneticDisease;
   late String physicalActivity, diabetesType, medicineType;
   bool isLoading = false;
@@ -41,6 +43,9 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
+    final userCubit = context.read<UserCubit>();
+    final user = (userCubit.state as UserLoaded?)?.userModel;
+    final isFemale = user?.gender == 'female';
 
     return AlertDialog(
       title: Text(locale.translate('update_risk')),
@@ -66,13 +71,60 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
                 onSave: (v) => height = double.parse(v!),
               ),
 
+              // Sugar Pregnancy - only show for female
+              if (isFemale)
+                _buildTextField(
+                  label: 'sugar_pregnancy',
+                  initial: sugarPregnancy?.toString() ?? '',
+                  onSave:
+                      (v) =>
+                          sugarPregnancy =
+                              v?.isEmpty == false ? int.tryParse(v!) : null,
+                  required: false,
+                ),
+
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),
                 value: smoking,
                 onChanged: (v) => setState(() => smoking = v!),
               ),
 
-              // Add your Dropdowns and other fields here...
+              CheckboxListTile(
+                title: Text(locale.translate('genetic_disease')),
+                value: geneticDisease,
+                onChanged: (v) => setState(() => geneticDisease = v!),
+              ),
+
+              _buildTextField(
+                label: 'physical_activity',
+                initial: physicalActivity,
+                onSave: (v) => physicalActivity = v!,
+                keyboardType: TextInputType.text,
+              ),
+
+              Dropdown(
+                label: locale.translate('diabetes_type'),
+                items: const ['d1', 'd2'],
+                initialValue: diabetesType.isNotEmpty ? diabetesType : null,
+                onChanged: (v) => setState(() => diabetesType = v ?? ''),
+                validator:
+                    (v) =>
+                        v == null || v.isEmpty
+                            ? locale.translate('please_select_diabetes_type')
+                            : null,
+              ),
+              const SizedBox(height: 16),
+              Dropdown(
+                label: locale.translate('medicine_type'),
+                items: const ['Insuline', 'MouthSugarLower'],
+                initialValue: medicineType.isNotEmpty ? medicineType : null,
+                onChanged: (v) => setState(() => medicineType = v ?? ''),
+                validator:
+                    (v) =>
+                        v == null || v.isEmpty
+                            ? locale.translate('please_select_medicine_type')
+                            : null,
+              ),
             ],
           ),
         ),
@@ -130,19 +182,23 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
     required String label,
     required String initial,
     required FormFieldSetter<String> onSave,
+    TextInputType keyboardType = TextInputType.number,
+    bool required = true,
   }) {
     return TextFormField(
       initialValue: initial,
       decoration: InputDecoration(
         labelText: context.read<LocaleCubit>().translate(label),
       ),
-      keyboardType: TextInputType.number,
+      keyboardType: keyboardType,
       onSaved: onSave,
       validator:
-          (v) =>
-              v!.isEmpty
-                  ? context.read<LocaleCubit>().translate('required_field')
-                  : null,
+          required
+              ? (v) =>
+                  v!.isEmpty
+                      ? context.read<LocaleCubit>().translate('required_field')
+                      : null
+              : null,
     );
   }
 }
