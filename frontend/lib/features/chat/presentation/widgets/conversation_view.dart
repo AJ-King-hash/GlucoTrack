@@ -61,8 +61,9 @@ class _ConversationViewState extends State<ConversationView> {
                                 ? state.messages.length + 1
                                 : state.messages.length,
                         itemBuilder: (context, index) {
-                          if (state.isBotTyping && index == 0)
+                          if (state.isBotTyping && index == 0) {
                             return _buildTypingIndicator();
+                          }
 
                           final msgIndex =
                               state.isBotTyping

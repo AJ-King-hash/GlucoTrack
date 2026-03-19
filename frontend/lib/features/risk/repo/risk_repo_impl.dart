@@ -50,6 +50,7 @@ class RiskRepoImpl implements RiskRepository {
       if (data is! Map<String, dynamic>) {
         return Left(ServerFailure(message: "Invalid response format"));
       }
+
       try {
         return Right<Failure, RiskEntity?>(RiskModel.fromJson(data));
       } catch (e) {

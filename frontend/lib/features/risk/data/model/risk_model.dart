@@ -24,7 +24,7 @@ class RiskModel extends RiskEntity {
       weight: (json['weight'] as num).toDouble(),
       height: (json['height'] as num).toDouble(),
       bmi: (json['BMI'] as num).toDouble(),
-      sugarPregnancy: json['sugar_pregnancy'] as int,
+      sugarPregnancy: json['sugar_pregnancy'] as int? ?? 0,
       smoking: json['smoking'] as bool,
       geneticDisease: json['genetic_disease'] as bool,
       physicalActivity: json['physical_activity'] as String? ?? '',

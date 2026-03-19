@@ -54,14 +54,14 @@ class _ChatPageState extends State<ChatPage> {
     String defaultTitleText = locale.translate("chat_title");
 
     return AppBar(
-      backgroundColor: AppColor.backgroundNeutral.withOpacity(0.9),
+      backgroundColor: AppColor.backgroundNeutral.withValues(alpha: 0.9),
       elevation: 0,
       centerTitle: false,
       titleSpacing: 0,
       // A subtle bottom border for a clean separation from the chat list
       shape: Border(
         bottom: BorderSide(
-          color: AppColor.textNeutral.withOpacity(0.05),
+          color: AppColor.textNeutral.withValues(alpha: 0.05),
           width: 1,
         ),
       ),
@@ -83,7 +83,7 @@ class _ChatPageState extends State<ChatPage> {
                 height: 42.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColor.info.withOpacity(0.1),
+                  color: AppColor.info.withValues(alpha: 0.1),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
@@ -106,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                           border: Border.all(color: Colors.white, width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColor.positive.withOpacity(0.3),
+                              color: AppColor.positive.withValues(alpha: 0.3),
                               blurRadius: 4,
                               spreadRadius: 1,
                             ),

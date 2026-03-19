@@ -45,7 +45,7 @@ class ArchiveCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -127,10 +127,10 @@ class ArchiveCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [color.withOpacity(0.2), color.withOpacity(0.05)],
+          colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.05)],
         ),
         shape: BoxShape.circle,
-        border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Center(
         child: RichText(
@@ -148,7 +148,7 @@ class ArchiveCard extends StatelessWidget {
               TextSpan(
                 text: '\n%',
                 style: TextStyle(
-                  color: color.withOpacity(0.7),
+                  color: color.withValues(alpha: 0.7),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),

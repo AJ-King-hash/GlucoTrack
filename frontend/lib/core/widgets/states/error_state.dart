@@ -11,13 +11,13 @@ class ErrorState extends StatelessWidget {
   final bool showActionButton;
 
   const ErrorState({
-    Key? key,
+    super.key,
     this.message,
     this.actionLabel,
     this.onActionPressed,
     this.icon,
     this.showActionButton = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

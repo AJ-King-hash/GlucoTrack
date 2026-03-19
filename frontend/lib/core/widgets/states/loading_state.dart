@@ -9,12 +9,12 @@ class LoadingState extends StatelessWidget {
   final Color? color;
 
   const LoadingState({
-    Key? key,
+    super.key,
     this.message,
     this.indicator,
     this.size,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
