@@ -208,7 +208,7 @@ class HomeCubit extends Cubit<HomeState> {
       bmi:
           base?.bmi ??
           (state.weight / (1.70 * 1.70)), // Use existing or calculate
-      sugarPregnancy: state.pregnancyCount,
+      sugarPregnancy: 0,
       smoking: base?.smoking ?? false, // Use existing or default
       geneticDisease: base?.geneticDisease ?? false, // Use existing or default
       physicalActivity: _mapIntToPhysicalActivity(state.activity),
@@ -286,8 +286,6 @@ class HomeCubit extends Cubit<HomeState> {
               isGenderUpdating: false,
               genderUpdateMessage: 'Gender updated successfully',
               genderUpdateSuccess: true,
-              maritalStatus: null,
-              pregnancyCount: 0,
             ),
           );
         },
@@ -302,17 +300,6 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     }
-  }
-
-  Future<void> updateMaterialStatus(MaritalStatus material) async {
-    emit(state.copyWith(maritalStatus: material, pregnancyCount: 0));
-    // Note: Marital status is not directly stored in RiskEntity, so no API call needed
-  }
-
-  Future<void> updatePregnancyCount(int count) async {
-    emit(state.copyWith(pregnancyCount: count));
-    final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
   }
 
   Future<void> _updateRisk(RiskEntity riskEntity) async {

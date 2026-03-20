@@ -9,10 +9,8 @@ class HomeState extends Equatable {
   final int activity;
   final int age;
   final int weight;
-  final int diabetesType; // 0 = type1, 1 = type2
+  final int diabetesType;
   final Gender? gender;
-  final MaritalStatus? maritalStatus;
-  final int pregnancyCount;
   final bool isGenderUpdating;
   final String? genderUpdateMessage;
   final bool? genderUpdateSuccess;
@@ -23,8 +21,6 @@ class HomeState extends Equatable {
     required this.activity,
     required this.diabetesType,
     this.gender,
-    this.maritalStatus,
-    this.pregnancyCount = 0,
     this.isGenderUpdating = false,
     this.genderUpdateMessage,
     this.genderUpdateSuccess,
@@ -36,8 +32,6 @@ class HomeState extends Equatable {
     int? weight,
     int? diabetesType,
     Gender? gender,
-    MaritalStatus? maritalStatus,
-    int? pregnancyCount,
     bool? isGenderUpdating,
     String? genderUpdateMessage,
     bool? genderUpdateSuccess,
@@ -50,8 +44,6 @@ class HomeState extends Equatable {
       activity: activity ?? this.activity,
       diabetesType: diabetesType ?? this.diabetesType,
       gender: gender ?? this.gender,
-      maritalStatus: maritalStatus ?? this.maritalStatus,
-      pregnancyCount: pregnancyCount ?? this.pregnancyCount,
       isGenderUpdating: isGenderUpdating ?? this.isGenderUpdating,
       genderUpdateMessage:
           clearGenderUpdate
@@ -72,8 +64,6 @@ class HomeState extends Equatable {
     weight,
     diabetesType,
     gender,
-    maritalStatus,
-    pregnancyCount,
     isGenderUpdating,
     genderUpdateMessage,
     genderUpdateSuccess,
