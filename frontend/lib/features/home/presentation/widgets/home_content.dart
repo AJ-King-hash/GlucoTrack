@@ -120,8 +120,6 @@ class HomeContent extends StatelessWidget {
                               age: state.age,
                               weight: state.weight,
                               gender: state.gender,
-                              maritalStatus: state.maritalStatus,
-                              pregnancyCount: state.pregnancyCount,
                               onAgeTap: () {
                                 showNumberPickerBottomSheet(
                                   context: context,
@@ -156,14 +154,6 @@ class HomeContent extends StatelessWidget {
                                   (g) async => await context
                                       .read<HomeCubit>()
                                       .updateGender(g),
-                              onMaritalStatusChanged:
-                                  (m) async => await context
-                                      .read<HomeCubit>()
-                                      .updateMaterialStatus(m),
-                              onPregnancyCountChanged:
-                                  (c) async => await context
-                                      .read<HomeCubit>()
-                                      .updatePregnancyCount(c),
                             ),
 
                             SizedBox(height: 32.h),
