@@ -50,7 +50,7 @@ class RiskFactor(Base):
     height=Column(Float(2))
     # divide your weight in kilograms by your height in meters squared (BMI = kg/m²)
     BMI=Column(Float(2))
-    sugar_pregnancy=Column(Integer,nullable=True)
+    sugar_pregnancy=Column(Integer)
     smoking=Column(Boolean)
     genetic_disease=Column(Boolean)
     physical_activity=Column(String)

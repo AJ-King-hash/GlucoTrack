@@ -42,17 +42,16 @@ class RiskRepoImpl implements RiskRepository {
     // the user from the authentication token. Kept for interface consistency.
     final result = await apiService.getRisk();
     return result.fold((failure) => Left(failure), (data) {
-      // Handle null response when no risk data exists
-      if (data == null) {
+      // Handle null response OR empty array when no risk data exists
+      // Backend returns [] (empty array) when no risk exists for user
+      if (data == null || (data is List && data.isEmpty)) {
         return const Right<Failure, RiskEntity?>(null);
-      }
-      // Handle case where data is not a Map
-      if (data is! Map<String, dynamic>) {
-        return Left(ServerFailure(message: "Invalid response format"));
       }
 
       try {
-        return Right<Failure, RiskEntity?>(RiskModel.fromJson(data));
+        return Right<Failure, RiskEntity?>(
+          RiskModel.fromJson(data as Map<String, dynamic>),
+        );
       } catch (e) {
         return Left(ServerFailure(message: "Failed to parse risk data: $e"));
       }

@@ -344,13 +344,15 @@ class RiskDetailsView extends StatelessWidget {
                   safeRisk.diabetesType.isEmpty ? '-' : safeRisk.diabetesType,
             ),
             const SizedBox(height: 12),
-            if (safeRisk.sugarPregnancy != null)
-              _buildInfoCard(
-                context,
-                icon: Icons.water_drop,
-                label: 'sugar_pregnancy',
-                value: safeRisk.sugarPregnancy?.toString() ?? '-',
-              ),
+            _buildInfoCard(
+              context,
+              icon: Icons.water_drop,
+              label: 'sugar_pregnancy',
+              value:
+                  safeRisk.sugarPregnancy > 0
+                      ? safeRisk.sugarPregnancy.toString()
+                      : '-',
+            ),
             const SizedBox(height: 32),
 
             // Action Buttons - Enhanced design

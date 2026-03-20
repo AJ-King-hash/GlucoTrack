@@ -20,7 +20,7 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   final _formKey = GlobalKey<FormState>();
   late int age;
   late double weight, height;
-  late int? sugarPregnancy;
+  late int sugarPregnancy;
   late bool smoking, geneticDisease;
   late String physicalActivity, diabetesType, medicineType;
   bool isLoading = false;
@@ -75,12 +75,11 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
               if (isFemale)
                 _buildTextField(
                   label: 'sugar_pregnancy',
-                  initial: sugarPregnancy?.toString() ?? '',
+                  initial: sugarPregnancy.toString(),
                   onSave:
                       (v) =>
                           sugarPregnancy =
-                              v?.isEmpty == false ? int.tryParse(v!) : null,
-                  required: false,
+                              v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
                 ),
 
               CheckboxListTile(

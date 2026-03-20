@@ -22,7 +22,7 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
-  int? sugarPregnancy;
+  int sugarPregnancy = 0;
   bool smoking = false;
   bool geneticDisease = false;
   String physicalActivity = '';
@@ -65,11 +65,11 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
               if (isFemale)
                 _buildTextFormField(
                   label: 'sugar_pregnancy',
+                  hint: 'pregnancy_count_hint',
                   onSaved:
                       (v) =>
                           sugarPregnancy =
-                              v?.isEmpty == false ? int.tryParse(v!) : null,
-                  required: false,
+                              v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
                 ),
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),

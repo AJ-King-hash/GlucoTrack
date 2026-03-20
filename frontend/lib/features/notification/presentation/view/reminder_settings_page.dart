@@ -6,6 +6,8 @@ import 'package:untitled10/core/injection_container.dart';
 import 'package:untitled10/core/localization/locale_cubit.dart';
 import 'package:untitled10/features/notification/presentation/manager/notification_cubit.dart';
 import 'package:untitled10/features/notification/presentation/manager/notification_state.dart';
+import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
+import 'package:untitled10/features/user/presentation/manager/user_state.dart';
 
 class ReminderSettingsPage extends StatefulWidget {
   const ReminderSettingsPage({super.key});
@@ -26,6 +28,60 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
     'America/New_York',
     'Europe/London',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Use addPostFrameCallback to ensure context is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSettingsFromUser();
+    });
+  }
+
+  void _loadSettingsFromUser() {
+    // Check if mounted before using context
+    if (!mounted) return;
+
+    try {
+      final userState = context.read<UserCubit>().state;
+      if (userState is UserLoaded) {
+        final user = userState.userModel;
+
+        // Parse medicine time if available
+        if (user.medicineTime != null && user.medicineTime!.isNotEmpty) {
+          final parts = user.medicineTime!.split(':');
+          if (parts.length == 2) {
+            _medicineTime = TimeOfDay(
+              hour: int.tryParse(parts[0]) ?? 0,
+              minute: int.tryParse(parts[1]) ?? 0,
+            );
+          }
+        }
+
+        // Parse gluco time if available
+        if (user.glucoTime != null && user.glucoTime!.isNotEmpty) {
+          final parts = user.glucoTime!.split(':');
+          if (parts.length == 2) {
+            _glucoTime = TimeOfDay(
+              hour: int.tryParse(parts[0]) ?? 0,
+              minute: int.tryParse(parts[1]) ?? 0,
+            );
+          }
+        }
+
+        // Set timezone if available (user model should have this field)
+        // For now we keep the default, but you can add timezone to UserModel if needed
+
+        // Trigger rebuild to display loaded values
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      // If UserCubit is not available, use defaults
+      debugPrint('Error loading settings from UserCubit: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
