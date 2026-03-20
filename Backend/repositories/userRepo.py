@@ -51,7 +51,7 @@ def update(id,request,db:Session):
             )
     
     if request.gender:
-        user.name=request.gender
+        user.gender=request.gender
     if request.name:
         user.name=request.name
     if request.email:
