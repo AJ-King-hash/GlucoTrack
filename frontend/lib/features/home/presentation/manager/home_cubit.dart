@@ -6,6 +6,8 @@ import 'package:untitled10/features/risk/domain/usecase/update_risk_usecase.dart
 import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
 import 'package:untitled10/core/api/api_service.dart';
 import 'package:untitled10/features/auth/repo/auth_repo.dart';
+import 'package:untitled10/features/auth/data/models/user_model.dart';
+import 'package:untitled10/features/auth/repo/auth_repo_impl.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRiskUsecase _getRiskUsecase;
@@ -78,6 +80,36 @@ class HomeCubit extends Cubit<HomeState> {
         return 'male';
       case Gender.female:
         return 'female';
+    }
+  }
+
+  void _updateLocalUserGender(Gender gender) {
+    try {
+      final currentUser = _authRepository.currentUser;
+      if (currentUser != null) {
+        // Create a new UserModel with updated gender
+        final updatedUser = UserModel(
+          name: currentUser.name,
+          email: currentUser.email,
+          password: currentUser.password,
+          token: currentUser.token,
+          id: currentUser.id,
+          gender: _mapGenderToString(gender),
+          glucoTime: currentUser.glucoTime,
+          medicineTime: currentUser.medicineTime,
+          sugarReminder: currentUser.sugarReminder,
+          medicineReminder: currentUser.medicineReminder,
+          timezone: currentUser.timezone,
+        );
+        // Update the current user in the repository
+        // Note: We need to access the private setter via the implementation
+        final repo = _authRepository;
+        if (repo is AuthRepoImpl) {
+          repo.updateCurrentUser(updatedUser);
+        }
+      }
+    } catch (e) {
+      // Silently fail - this is just for local cache sync
     }
   }
 
@@ -245,6 +277,9 @@ class HomeCubit extends Cubit<HomeState> {
           );
         },
         (data) {
+          // Update local user data in AuthRepository to keep it in sync
+          _updateLocalUserGender(gender);
+
           // Emit success state
           emit(
             state.copyWith(
