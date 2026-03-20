@@ -327,7 +327,7 @@ Widget _buildRiskManagementButton(BuildContext context, LocaleCubit locale) {
       ),
       icon: const Icon(Icons.warning_amber_rounded),
       label: Text(
-        locale.translate('risk_management'),
+        locale.translate('risk_factors'),
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
       ),
       onPressed: () => Navigator.pushNamed(context, AppRoutes.risk),

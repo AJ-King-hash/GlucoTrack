@@ -300,7 +300,7 @@ class RiskDetailsView extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Risk Factors Section - Enhanced design
-            _buildSectionTitle(context, 'risk_factors'),
+            _buildSectionTitle(context, 'risk_management'),
             const SizedBox(height: 16),
             _buildRiskFactorCard(
               context,
