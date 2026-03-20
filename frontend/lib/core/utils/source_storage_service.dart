@@ -9,6 +9,7 @@ class SecureStorageService {
   static const _tokenKey = "access_token";
   static const _isFirstTimeKey = "is_first_time";
   static const _userIdKey = "user_id";
+  static const _userDataKey = "user_data";
 
   /// Clears all user-related data from secure storage.
   ///
@@ -89,6 +90,35 @@ class SecureStorageService {
   static Future<bool> deleteUserId() async {
     try {
       await _storage.delete(key: _userIdKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Save user data as JSON string
+  static Future<bool> saveUserData(String userDataJson) async {
+    try {
+      await _storage.write(key: _userDataKey, value: userDataJson);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Get saved user data as JSON string
+  static Future<String?> getUserData() async {
+    try {
+      return await _storage.read(key: _userDataKey);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Delete saved user data
+  static Future<bool> deleteUserData() async {
+    try {
+      await _storage.delete(key: _userDataKey);
       return true;
     } catch (e) {
       return false;
