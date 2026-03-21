@@ -1,6 +1,8 @@
+```dart
+
 import 'package:flutter/material.dart';
 import '../../domain/entities/measurement_entity.dart';
-import 'measurement_card.dart';
+import 'measurement_card.md';
 
 class MeasurementList extends StatelessWidget {
   final List<MeasurementEntity> measurements;
@@ -18,3 +20,4 @@ class MeasurementList extends StatelessWidget {
     );
   }
 }
+```

@@ -1,3 +1,5 @@
+```dart
+
 class MeasurementEntity {
   final int id;
   final double value;
@@ -11,3 +13,4 @@ class MeasurementEntity {
     this.note,
   });
 }
+```

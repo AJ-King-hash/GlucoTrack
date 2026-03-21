@@ -1,3 +1,5 @@
+```dart
+
 import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/measurement_entity.dart';
 
@@ -35,3 +37,5 @@ class MeasurementModel extends MeasurementEntity {
     );
   }
 }
+``
+```

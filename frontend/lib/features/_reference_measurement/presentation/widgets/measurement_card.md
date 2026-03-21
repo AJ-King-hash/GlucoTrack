@@ -1,3 +1,5 @@
+```dart
+
 import 'package:flutter/material.dart';
 import '../../domain/entities/measurement_entity.dart';
 
@@ -58,3 +60,4 @@ class MeasurementCard extends StatelessWidget {
     }
   }
 }
+```

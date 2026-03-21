@@ -1,3 +1,4 @@
+```dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../domain/entities/measurement_entity.dart';
 
@@ -17,3 +18,4 @@ class MeasurementState with _$MeasurementState {
   }) = _Error;
   const factory MeasurementState.empty() = _Empty;
 }
+```

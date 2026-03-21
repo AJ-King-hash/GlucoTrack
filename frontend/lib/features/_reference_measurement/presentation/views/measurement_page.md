@@ -1,11 +1,12 @@
+```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/utils/global_refresher.dart';
 import 'package:glucotrack/core/widgets/states/empty_state.dart';
 import 'package:glucotrack/core/widgets/states/loading_state.dart';
-import '../manager/measurement_cubit.dart';
-import '../manager/measurement_state.dart';
+import '../manager/measurement_cubit.md';
+import '../manager/measurement_state.md';
 import '../widgets/measurement_list.dart';
 
 class MeasurementPage extends StatelessWidget {
@@ -77,3 +78,4 @@ class _MeasurementViewState extends State<MeasurementView> {
     );
   }
 }
+```
