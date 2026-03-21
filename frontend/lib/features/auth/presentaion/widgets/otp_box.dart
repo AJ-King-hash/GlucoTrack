@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled10/core/color/app_color.dart';
+import 'package:glucotrack/core/color/app_color.dart';
 
 class OtpBox extends StatelessWidget {
   final TextEditingController controller;
@@ -7,7 +7,8 @@ class OtpBox extends StatelessWidget {
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
 
-  const OtpBox({super.key, 
+  const OtpBox({
+    super.key,
     required this.controller,
     this.autoFocus = false,
     this.onChanged,
@@ -27,10 +28,7 @@ class OtpBox extends StatelessWidget {
         maxLength: 1,
         onChanged: onChanged,
         validator: validator,
-        style: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           counterText: "",
           filled: true,

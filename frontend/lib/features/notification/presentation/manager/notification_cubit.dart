@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/services/notification_service.dart';
-import 'package:untitled10/features/notification/presentation/manager/notification_state.dart';
+import 'package:glucotrack/core/services/notification_service.dart';
+import 'package:glucotrack/features/notification/presentation/manager/notification_state.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   final NotificationService _notificationService;

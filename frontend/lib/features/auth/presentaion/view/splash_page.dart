@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/injection_container.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/injection_container.dart';
 
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/utils/source_storage_service.dart';

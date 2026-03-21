@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/domain/usecase/create_risk_usecase.dart';
-import 'package:untitled10/features/risk/domain/usecase/delete_risk_usecase.dart';
-import 'package:untitled10/features/risk/domain/usecase/get_risk_usecase.dart';
-import 'package:untitled10/features/risk/domain/usecase/update_risk_usecase.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_state.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/domain/usecase/create_risk_usecase.dart';
+import 'package:glucotrack/features/risk/domain/usecase/delete_risk_usecase.dart';
+import 'package:glucotrack/features/risk/domain/usecase/get_risk_usecase.dart';
+import 'package:glucotrack/features/risk/domain/usecase/update_risk_usecase.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_state.dart';
 
 class RiskCubit extends Cubit<RiskState> {
   final CreateRiskUsecase _createRiskUsecase;

@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/features/auth/presentaion/view/get_started_page.dart';
-import 'package:untitled10/features/auth/presentaion/view/login_page.dart';
-import 'package:untitled10/features/auth/presentaion/view/otp_page.dart';
-import 'package:untitled10/features/auth/presentaion/view/register_page.dart';
-import 'package:untitled10/features/auth/presentaion/view/reset_password.dart';
-import 'package:untitled10/features/auth/presentaion/view/splash_page.dart';
-import 'package:untitled10/features/home/presentation/view/edit_profile_page.dart';
-import 'package:untitled10/features/home/presentation/view/home_page.dart';
-import 'package:untitled10/features/home/presentation/widgets/about_app.dart';
-import 'package:untitled10/features/risk/presentation/view/risk_page.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:untitled10/features/notification/presentation/view/reminder_settings_page.dart';
-import 'package:untitled10/features/archives/presentaiton/view/archive_page.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/features/auth/presentaion/view/get_started_page.dart';
+import 'package:glucotrack/features/auth/presentaion/view/login_page.dart';
+import 'package:glucotrack/features/auth/presentaion/view/otp_page.dart';
+import 'package:glucotrack/features/auth/presentaion/view/register_page.dart';
+import 'package:glucotrack/features/auth/presentaion/view/reset_password.dart';
+import 'package:glucotrack/features/auth/presentaion/view/splash_page.dart';
+import 'package:glucotrack/features/home/presentation/view/edit_profile_page.dart';
+import 'package:glucotrack/features/home/presentation/view/home_page.dart';
+import 'package:glucotrack/features/home/presentation/widgets/about_app.dart';
+import 'package:glucotrack/features/risk/presentation/view/risk_page.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:glucotrack/features/notification/presentation/view/reminder_settings_page.dart';
+import 'package:glucotrack/features/archives/presentaiton/view/archive_page.dart';
 
 class AppRoutes {
   static const login = "/login";

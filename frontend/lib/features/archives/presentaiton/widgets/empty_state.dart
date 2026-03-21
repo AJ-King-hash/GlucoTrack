@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled10/core/widgets/states/empty_state.dart'
+import 'package:glucotrack/core/widgets/states/empty_state.dart'
     as core_empty_state;
 
 class EmptyState extends StatelessWidget {

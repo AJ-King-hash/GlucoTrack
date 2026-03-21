@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
 
 /// A service that handles navigation without requiring a BuildContext.
 ///

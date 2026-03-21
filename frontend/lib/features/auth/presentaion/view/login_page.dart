@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../core/color/app_color.dart';
-import '../../../../core/localization/locale_cubit.dart';
-import '../../../../core/routes/app_routes.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_feild.dart';
-import '../../../../core/widgets/language_bottom_sheet.dart';
-import '../../../../core/utils/toast_utility.dart';
-import '../../../user/presentation/manager/user_cubit.dart';
-import '../manager/auth_cubit.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/widgets/app_button.dart';
+import 'package:glucotrack/core/widgets/app_text_feild.dart';
+import 'package:glucotrack/core/widgets/language_bottom_sheet.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
 class LoginPage extends StatelessWidget {

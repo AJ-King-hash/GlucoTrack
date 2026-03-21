@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.untitled10"
+    namespace = "com.ajkinghash.glucotrack"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.untitled10"
+        applicationId = "com.ajkinghash.glucotrack"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

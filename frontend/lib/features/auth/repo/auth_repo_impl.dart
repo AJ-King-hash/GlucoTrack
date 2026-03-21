@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/core/utils/source_storage_service.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/auth/repo/auth_repo.dart';
-import 'package:untitled10/features/user/repo/user_repo.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/core/utils/source_storage_service.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo.dart';
+import 'package:glucotrack/features/user/repo/user_repo.dart';
 
 class AuthRepoImpl extends AuthRepository {
   final ApiService apiService;

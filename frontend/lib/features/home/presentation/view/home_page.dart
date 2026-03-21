@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/features/home/presentation/manager/bottom_nav_cubit.dart';
-import 'package:untitled10/features/home/presentation/manager/home_cubit.dart';
-import 'package:untitled10/features/archives/presentaiton/view/archive_page.dart';
-import 'package:untitled10/features/chat/presentation/view/chat_page.dart';
-import 'package:untitled10/features/chat/presentation/manager/chat_cubit.dart';
-import 'package:untitled10/features/home/presentation/view/settings_page.dart';
-import 'package:untitled10/features/home/presentation/widgets/custom_bottom_nav.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/features/home/presentation/manager/bottom_nav_cubit.dart';
+import 'package:glucotrack/features/home/presentation/manager/home_cubit.dart';
+import 'package:glucotrack/features/archives/presentaiton/view/archive_page.dart';
+import 'package:glucotrack/features/chat/presentation/view/chat_page.dart';
+import 'package:glucotrack/features/chat/presentation/manager/chat_cubit.dart';
+import 'package:glucotrack/features/home/presentation/view/settings_page.dart';
+import 'package:glucotrack/features/home/presentation/widgets/custom_bottom_nav.dart';
 
 import '../widgets/home_content.dart';
 

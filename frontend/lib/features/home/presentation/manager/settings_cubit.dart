@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/home/presentation/manager/settings_state.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/home/presentation/manager/settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   final ApiService apiService;

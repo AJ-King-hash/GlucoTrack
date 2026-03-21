@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/base_usecase/base_usecase.dart';
-import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
+import 'package:glucotrack/core/base_usecase/base_usecase.dart';
+import 'package:glucotrack/features/chat/domain/entity/message_entity.dart';
 import '../../domain/usecase/create_conversation_usecase.dart';
 import '../../domain/usecase/delete_conversation_usecase.dart';
 import '../../domain/usecase/get_allconversation_usecase.dart';

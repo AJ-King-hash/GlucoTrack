@@ -1,13 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/features/home/presentation/manager/home_state.dart';
-import 'package:untitled10/features/risk/domain/usecase/get_risk_usecase.dart';
-import 'package:untitled10/features/risk/domain/usecase/update_risk_usecase.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/features/auth/repo/auth_repo.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/auth/repo/auth_repo_impl.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/features/home/presentation/manager/home_state.dart';
+import 'package:glucotrack/features/risk/domain/usecase/get_risk_usecase.dart';
+import 'package:glucotrack/features/risk/domain/usecase/update_risk_usecase.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo_impl.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRiskUsecase _getRiskUsecase;
@@ -35,7 +36,11 @@ class HomeCubit extends Cubit<HomeState> {
     _initializeUserData();
   }
 
+  /// Initialize user data - shows loading state
   Future<void> _initializeUserData() async {
+    // Emit loading state before API calls
+    emit(state.copyWith(isLoading: true, isError: false, errorMessage: null));
+
     try {
       // Backend uses authentication token to identify user, so id parameter is ignored
       final result = await _getRiskUsecase(0);
@@ -49,6 +54,29 @@ class HomeCubit extends Cubit<HomeState> {
 
     // Also load user data to get gender
     await _loadUserGender();
+
+    // Clear loading state
+    emit(state.copyWith(isLoading: false));
+  }
+
+  /// Refresh data after mutations - used by all update methods
+  Future<void> _refreshData() async {
+    try {
+      final result = await _getRiskUsecase(0);
+      result.fold(
+        (failure) => _handleFailure(failure),
+        (risk) => _updateStateFromRisk(risk),
+      );
+    } catch (e) {
+      _handleError(e);
+    }
+
+    await _loadUserGender();
+  }
+
+  /// Retry loading data - called when user taps retry button
+  Future<void> retryLoadData() async {
+    await _initializeUserData();
   }
 
   Future<void> _loadUserGender() async {
@@ -114,15 +142,30 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void _handleFailure(Failure failure) {
-    // Log failure
-    // We could emit a failure state if HomeState had one
-    // For now, we'll just leave the initial reasonable values
+    // Emit error state with failure message
+    emit(
+      state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage: failure.message,
+      ),
+    );
   }
 
   void _handleError(dynamic error) {
-    // Log error
-    // We could emit an error state if HomeState had one
-    // For now, we'll just leave the initial reasonable values
+    // Emit error state with generic error message
+    emit(
+      state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage: error.toString(),
+      ),
+    );
+  }
+
+  /// Clear error state
+  void clearError() {
+    emit(state.copyWith(clearError: true, isError: false));
   }
 
   void _updateStateFromRisk(RiskEntity? risk) {
@@ -223,7 +266,18 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> updateDiabetesType(int diabetesType) async {
     emit(state.copyWith(diabetesType: diabetesType));
     final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
+
+    bool updateSuccess = false;
+    final result = await _updateRisk(riskEntity);
+    result.fold((failure) => _handleFailure(failure), (risk) {
+      _updateStateFromRisk(risk);
+      updateSuccess = true;
+    });
+
+    // Refresh data only after successful mutation
+    if (updateSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> updateMealTime(int mealTime) async {
@@ -234,19 +288,52 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> updateActivity(int activity) async {
     emit(state.copyWith(activity: activity));
     final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
+
+    bool updateSuccess = false;
+    final result = await _updateRisk(riskEntity);
+    result.fold((failure) => _handleFailure(failure), (risk) {
+      _updateStateFromRisk(risk);
+      updateSuccess = true;
+    });
+
+    // Refresh data only after successful mutation
+    if (updateSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> updateAge(int value) async {
     emit(state.copyWith(age: value));
     final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
+
+    bool updateSuccess = false;
+    final result = await _updateRisk(riskEntity);
+    result.fold((failure) => _handleFailure(failure), (risk) {
+      _updateStateFromRisk(risk);
+      updateSuccess = true;
+    });
+
+    // Refresh data only after successful mutation
+    if (updateSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> updateWeight(int value) async {
     emit(state.copyWith(weight: value));
     final riskEntity = _stateToRiskEntity();
-    await _updateRisk(riskEntity);
+
+    bool updateSuccess = false;
+    final result = await _updateRisk(riskEntity);
+    result.fold((failure) => _handleFailure(failure), (risk) {
+      _updateStateFromRisk(risk);
+      updateSuccess = true;
+    });
+
+    // Refresh data only after successful mutation
+    if (updateSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> updateGender(Gender gender) async {
@@ -265,6 +352,8 @@ class HomeCubit extends Cubit<HomeState> {
         'gender': _mapGenderToString(gender),
       });
 
+      bool isSuccess = false;
+
       result.fold(
         (failure) {
           // Emit error state
@@ -275,6 +364,7 @@ class HomeCubit extends Cubit<HomeState> {
               genderUpdateSuccess: false,
             ),
           );
+          isSuccess = false;
         },
         (data) {
           // Update local user data in AuthRepository to keep it in sync
@@ -288,8 +378,14 @@ class HomeCubit extends Cubit<HomeState> {
               genderUpdateSuccess: true,
             ),
           );
+          isSuccess = true;
         },
       );
+
+      // Refresh data after successful mutation
+      if (isSuccess) {
+        await _refreshData();
+      }
     } catch (e) {
       // Emit error state
       emit(
@@ -302,19 +398,30 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> _updateRisk(RiskEntity riskEntity) async {
+  /// Update risk entity and return the result
+  /// Returns Either with failure or updated risk on success
+  Future<Either<Failure, RiskEntity?>> _updateRisk(
+    RiskEntity riskEntity,
+  ) async {
     try {
       // Use existing risk ID if available, otherwise use 0 (backend uses JWT anyway)
       final riskId = _currentRiskEntity?.id ?? 0;
       final result = await _updateRiskUsecase(
         UpdateRiskParams(id: riskId, risk: riskEntity),
       );
-      result.fold(
-        (failure) => _handleFailure(failure),
-        (risk) => _updateStateFromRisk(risk),
+      return result.fold(
+        (failure) {
+          _handleFailure(failure);
+          return Left(failure);
+        },
+        (risk) {
+          _updateStateFromRisk(risk);
+          return Right(risk);
+        },
       );
     } catch (e) {
       _handleError(e);
+      return Left(UnknownFailure(message: e.toString()));
     }
   }
 

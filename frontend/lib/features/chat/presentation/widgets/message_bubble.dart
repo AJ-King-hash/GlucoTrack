@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
+import 'package:glucotrack/features/chat/domain/entity/message_entity.dart';
 
 import '../../../../core/utils/time_formater.dart';
 import 'avatar_icon.dart';

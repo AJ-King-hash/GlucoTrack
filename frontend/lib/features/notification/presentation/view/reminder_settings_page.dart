@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/notification/presentation/manager/notification_cubit.dart';
-import 'package:untitled10/features/notification/presentation/manager/notification_state.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/notification/presentation/manager/notification_cubit.dart';
+import 'package:glucotrack/features/notification/presentation/manager/notification_state.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 
 class ReminderSettingsPage extends StatefulWidget {
   const ReminderSettingsPage({super.key});

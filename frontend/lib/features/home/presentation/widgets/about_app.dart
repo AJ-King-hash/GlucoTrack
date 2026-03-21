@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/widgets/app_logo.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/widgets/app_logo.dart';
 import '../../../../core/color/app_color.dart';
 
 class AboutAppPage extends StatelessWidget {
@@ -13,9 +13,7 @@ class AboutAppPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.backgroundNeutral,
       appBar: AppBar(
-        title:  Text(
-          context.read<LocaleCubit>().translate('about_app'),
-        ),
+        title: Text(context.read<LocaleCubit>().translate('about_app')),
         backgroundColor: AppColor.backgroundNeutral,
         centerTitle: true,
         elevation: 2,
@@ -24,10 +22,10 @@ class AboutAppPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20.h,),
+            SizedBox(height: 20.h),
 
-           AppLogo(),
-            SizedBox(height: 20.h,),
+            AppLogo(),
+            SizedBox(height: 20.h),
             Text(
               'GlucoTrack',
               style: TextStyle(
@@ -38,26 +36,22 @@ class AboutAppPage extends StatelessWidget {
             ),
             Text(
               context.read<LocaleCubit>().translate('version'),
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: AppColor.textNeutral,
-              ),
+              style: TextStyle(fontSize: 13.sp, color: AppColor.textNeutral),
             ),
 
             SizedBox(height: 24.h),
             _animatedInfoCard(
               icon: Icons.info,
-              iconColor:AppColor.info,
-              title:  context.read<LocaleCubit>().translate('s'),
-              content:
-              context.read<LocaleCubit>().translate('w'),
+              iconColor: AppColor.info,
+              title: context.read<LocaleCubit>().translate('s'),
+              content: context.read<LocaleCubit>().translate('w'),
             ),
             _animatedInfoCard(
               icon: Icons.check_circle_outline,
-              iconColor:AppColor.info,
+              iconColor: AppColor.info,
               title: context.read<LocaleCubit>().translate('a'),
               content:
-              '${context.read<LocaleCubit>().translate('q')}\n'
+                  '${context.read<LocaleCubit>().translate('q')}\n'
                   '${context.read<LocaleCubit>().translate('z')}\n'
                   '${context.read<LocaleCubit>().translate('r')}\n'
                   '${context.read<LocaleCubit>().translate('d')}\n'
@@ -65,10 +59,9 @@ class AboutAppPage extends StatelessWidget {
             ),
             _animatedInfoCard(
               icon: Icons.flag,
-              iconColor:AppColor.info,
-              title:  context.read<LocaleCubit>().translate('g'),
-              content:
-              context.read<LocaleCubit>().translate('h'),
+              iconColor: AppColor.info,
+              title: context.read<LocaleCubit>().translate('g'),
+              content: context.read<LocaleCubit>().translate('h'),
             ),
 
             SizedBox(height: 24.h),
@@ -88,7 +81,7 @@ class AboutAppPage extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                   context.read<LocaleCubit>().translate('all'),
+                    context.read<LocaleCubit>().translate('all'),
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppColor.textNeutral,

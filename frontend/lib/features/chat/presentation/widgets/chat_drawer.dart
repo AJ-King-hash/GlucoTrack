@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/chat/presentation/manager/chat_cubit.dart';
-import 'package:untitled10/features/chat/presentation/manager/chat_state.dart';
-import 'package:untitled10/features/chat/presentation/widgets/section_item.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/chat/presentation/manager/chat_cubit.dart';
+import 'package:glucotrack/features/chat/presentation/manager/chat_state.dart';
+import 'package:glucotrack/features/chat/presentation/widgets/section_item.dart';
 import 'archived_chat_item.dart';
 
 class ChatDrawer extends StatefulWidget {

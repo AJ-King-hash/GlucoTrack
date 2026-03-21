@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,8 @@ import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/show_meal_bottom_sheet.dart';
 import '../../../../core/utils/toast_utility.dart';
+import '../../../../core/widgets/states/error_state.dart';
+import '../../../../core/widgets/states/loading_state.dart';
 import '../manager/home_cubit.dart';
 import '../manager/home_state.dart';
 import '../widgets/option_card.dart';
@@ -24,9 +28,22 @@ class HomeContent extends StatelessWidget {
         // Listen to changes in gender update states
         return previous.isGenderUpdating != current.isGenderUpdating ||
             previous.genderUpdateMessage != current.genderUpdateMessage ||
-            previous.genderUpdateSuccess != current.genderUpdateSuccess;
+            previous.genderUpdateSuccess != current.genderUpdateSuccess ||
+            (previous.isError != current.isError && current.isError);
       },
       listener: (context, state) {
+        // Show error dismissible toast when error state changes to true
+        if (state.isError && state.errorMessage != null) {
+          ToastUtility.showErrorDismissibleToast(
+            context,
+            message: state.errorMessage!,
+            onDismissed: () {
+              context.read<HomeCubit>().clearError();
+            },
+          );
+        }
+
+        // Listen to changes in gender update states
         if (state.isGenderUpdating) {
           // Show loading toast
           ToastUtility.showLoadingDismissibleToast(
@@ -36,7 +53,7 @@ class HomeContent extends StatelessWidget {
               context.read<HomeCubit>().clearGenderUpdateMessage();
             },
           );
-        } else if (state.genderUpdateMessage != null) {
+        } else if (state.genderUpdateMessage != null && !state.isError) {
           // Show success or error toast based on the result
           if (state.genderUpdateSuccess == true) {
             ToastUtility.showSuccessDismissibleToast(
@@ -61,6 +78,58 @@ class HomeContent extends StatelessWidget {
         builder: (context, state) {
           final locale = context.read<LocaleCubit>();
 
+          // Show loading state with blurred background
+          if (state.isLoading) {
+            return Scaffold(
+              backgroundColor: AppColor.info,
+              appBar: AppBar(
+                title: Text(
+                  locale.translate('app_title'),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.textNeutral,
+                  ),
+                ),
+                centerTitle: true,
+                backgroundColor: AppColor.backgroundNeutral,
+                elevation: 0,
+              ),
+              body: SafeArea(child: _buildLoadingWithBlur()),
+            );
+          }
+
+          // Show error state
+          if (state.isError) {
+            return Scaffold(
+              backgroundColor: AppColor.info,
+              appBar: AppBar(
+                title: Text(
+                  locale.translate('app_title'),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.textNeutral,
+                  ),
+                ),
+                centerTitle: true,
+                backgroundColor: AppColor.backgroundNeutral,
+                elevation: 0,
+              ),
+              body: SafeArea(
+                child: ErrorState(
+                  message:
+                      state.errorMessage ??
+                      locale.translate('something_went_wrong'),
+                  onActionPressed: () {
+                    context.read<HomeCubit>().retryLoadData();
+                  },
+                ),
+              ),
+            );
+          }
+
+          // Normal content
           return Scaffold(
             backgroundColor: AppColor.info,
             appBar: AppBar(
@@ -275,6 +344,21 @@ class HomeContent extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  /// Build loading state with light blurred background
+  Widget _buildLoadingWithBlur() {
+    return Stack(
+      children: [
+        // Light blurred background
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(color: Colors.white.withValues(alpha: 0.3)),
+        ),
+        // Loading indicator in center
+        const Center(child: LoadingState(message: 'Loading...')),
+      ],
     );
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_state.dart';
-import 'package:untitled10/features/risk/presentation/widgets/create_risk_dialog.dart';
-import 'package:untitled10/features/risk/presentation/widgets/update_risk_dialog.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_state.dart';
+import 'package:glucotrack/features/risk/presentation/widgets/create_risk_dialog.dart';
+import 'package:glucotrack/features/risk/presentation/widgets/update_risk_dialog.dart';
 
 class RiskPage extends StatefulWidget {
   const RiskPage({super.key});

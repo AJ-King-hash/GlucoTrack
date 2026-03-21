@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/api/api_error.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/auth/repo/auth_repo.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
-import 'package:untitled10/features/user/repo/user_repo.dart';
+import 'package:glucotrack/core/api/api_error.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/features/user/repo/user_repo.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;

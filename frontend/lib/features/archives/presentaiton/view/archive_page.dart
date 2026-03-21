@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/widgets/states/loading_state.dart';
-import 'package:untitled10/core/widgets/states/error_state.dart';
-import 'package:untitled10/core/widgets/states/empty_state.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/widgets/states/loading_state.dart';
+import 'package:glucotrack/core/widgets/states/error_state.dart';
+import 'package:glucotrack/core/widgets/states/empty_state.dart';
 
 import '../manager/archives_cubit.dart';
 import '../manager/archives_state.dart';

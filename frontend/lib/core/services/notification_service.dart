@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:untitled10/core/api/api_service.dart';
+import 'package:glucotrack/core/api/api_service.dart';
 
 /// Notification Service for GlucoTrack
 ///

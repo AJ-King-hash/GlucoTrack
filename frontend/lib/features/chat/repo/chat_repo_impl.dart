@@ -1,7 +1,7 @@
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/core/utils/pref_helper.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/core/utils/pref_helper.dart';
 
 import '../data/conversation_model.dart';
 import '../data/message_model.dart';

@@ -1,7 +1,7 @@
 //for handle and display error message to user
 
 import 'package:dio/dio.dart';
-import 'package:untitled10/core/api/api_error.dart';
+import 'package:glucotrack/core/api/api_error.dart';
 
 class ApiExceptions {
   static ApiError handleError(DioException error) {

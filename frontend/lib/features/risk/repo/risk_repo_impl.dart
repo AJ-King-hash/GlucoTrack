@@ -1,9 +1,9 @@
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/features/risk/data/model/risk_model.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/repo/risk_repo.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/features/risk/data/model/risk_model.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/repo/risk_repo.dart';
 
 class RiskRepoImpl implements RiskRepository {
   final ApiService apiService;
