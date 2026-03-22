@@ -203,74 +203,7 @@ class _HomeContentState extends State<HomeContent> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// User Profile / Physical Stats
-                            UserInfoCard(
-                              age: state.age,
-                              weight: state.weight,
-                              gender: state.gender,
-                              onAgeTap: () {
-                                showNumberPickerBottomSheet(
-                                  context: context,
-                                  title: locale.translate('select_age'),
-                                  initialValue: state.age,
-                                  min: 5,
-                                  max: 100,
-                                  unit: locale.translate('year'),
-                                  onSave: (value) async {
-                                    await context.read<HomeCubit>().updateAge(
-                                      value,
-                                    );
-                                  },
-                                );
-                              },
-                              onWeightTap: () {
-                                showNumberPickerBottomSheet(
-                                  context: context,
-                                  title: locale.translate('select_weight'),
-                                  initialValue: state.weight,
-                                  min: 5,
-                                  max: 150,
-                                  unit: locale.translate('kg'),
-                                  onSave: (value) async {
-                                    await context
-                                        .read<HomeCubit>()
-                                        .updateWeight(value);
-                                  },
-                                );
-                              },
-                              onGenderChanged:
-                                  (g) async => await context
-                                      .read<HomeCubit>()
-                                      .updateGender(g),
-                            ),
-
-                            SizedBox(height: 32.h),
-
                             /// Diabetes Type Selection
-                            buildMedicalSection(
-                              title: locale.translate('types'),
-                              children: [
-                                OptionCard(
-                                  label: locale.translate('type1'),
-                                  icon: Icons.healing,
-                                  selected: state.diabetesType == 0,
-                                  onTap:
-                                      () async => await context
-                                          .read<HomeCubit>()
-                                          .updateDiabetesType(0),
-                                ),
-                                OptionCard(
-                                  label: locale.translate('type2'),
-                                  icon: Icons.bloodtype,
-                                  selected: state.diabetesType == 1,
-                                  onTap:
-                                      () async => await context
-                                          .read<HomeCubit>()
-                                          .updateDiabetesType(1),
-                                ),
-                              ],
-                            ),
-
                             SizedBox(height: 28.h),
 
                             /// Timing Relative to Meals
