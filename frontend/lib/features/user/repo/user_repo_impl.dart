@@ -54,15 +54,40 @@ class UserRepositoryImpl implements UserRepository {
   //function for update user data
   @override
   Future<Either<Failure, UserModel?>> updateUser(
-    String name,
-    String email,
-    String password, {
+    String? name,
+    String? email,
+    String? gender,
+    String? glucoTime,
+    String? medicineTime,
+    String? password, {
     String? oldPassword,
   }) async {
-    final data = {"name": name, "email": email, "password": password};
+    final data = {} as Map<String, dynamic>;
+
+    if (name != null) {
+      data['name'] = name;
+    }
+
+    if (email != null) {
+      data['email'] = email;
+    }
+
+    if (gender != null) {
+      data['gender'] = gender;
+    }
+
     if (oldPassword != null) {
       data["old_password"] = oldPassword;
     }
+
+    if (glucoTime != null) {
+      data['gluco_time'] = glucoTime;
+    }
+
+    if (medicineTime != null) {
+      data['medicine_time'] = medicineTime;
+    }
+
     final result = await apiService.updateUser(data);
 
     return result.fold((failure) => Left(failure), (data) {

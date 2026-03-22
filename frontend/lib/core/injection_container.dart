@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/api/api_service.dart';
 import 'package:glucotrack/core/services/notification_service.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo_impl.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo.dart';
 import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
@@ -35,6 +36,7 @@ final sl = GetIt.instance;
 Future<void> init() async {
   // Services
   sl.registerLazySingleton<ApiService>(() => ApiService());
+  sl.registerLazySingleton<GlobalRefresher>(() => GlobalRefresher.instance);
 
   // Notification Service - initialized after Firebase
   sl.registerLazySingleton<NotificationService>(
@@ -86,8 +88,8 @@ Future<void> init() async {
     () => HomeCubit(
       sl<GetRiskUsecase>(),
       sl<UpdateRiskUsecase>(),
-      sl<ApiService>(),
       sl<AuthRepository>(),
+      sl<UserCubit>(),
     ),
   );
 

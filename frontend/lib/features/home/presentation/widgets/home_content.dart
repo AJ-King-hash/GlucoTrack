@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/utils/global_refresher.dart';
 import '../../../../core/utils/show_meal_bottom_sheet.dart';
 import '../../../../core/utils/toast_utility.dart';
 import '../../../../core/widgets/states/error_state.dart';
@@ -18,8 +20,26 @@ import '../widgets/user_info_card.dart';
 import '../widgets/card_widget.dart';
 import '../widgets/picker_bottom_sheet.dart';
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
+
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  late final GlobalRefresher _refresher;
+  late final HomeCubit _homeCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _homeCubit = context.read<HomeCubit>();
+    _refresher = GetIt.I<GlobalRefresher>();
+    _refresher.refreshStream.listen((_) {
+      _homeCubit.retryLoadData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +101,6 @@ class HomeContent extends StatelessWidget {
           // Show loading state with blurred background
           if (state.isLoading) {
             return Scaffold(
-              backgroundColor: AppColor.info,
               appBar: AppBar(
                 title: Text(
                   locale.translate('app_title'),

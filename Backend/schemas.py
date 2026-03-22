@@ -6,6 +6,7 @@ class User(BaseModel):
     name:str
     email:str
     password:str
+
 class UserUpdate(BaseModel):
     name:Optional[str] = None
     email:Optional[str] = None
@@ -202,7 +203,7 @@ class ShowUserToken(BaseModel):
 
 class ShowUserWithMessageToken(BaseModel):
     message:str
-    user:ShowUserToken
+    user:ShowUser
     access_token: str
     token_type: str
     class Config():

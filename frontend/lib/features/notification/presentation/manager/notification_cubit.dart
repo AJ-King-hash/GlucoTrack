@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/services/notification_service.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/notification/presentation/manager/notification_state.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
@@ -46,6 +49,8 @@ class NotificationCubit extends Cubit<NotificationState> {
       );
 
       if (success) {
+        ToastUtility.showSuccess('Reminders updated successfully');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(ReminderSettingsUpdated('Reminders updated successfully'));
         // Load the updated settings
         emit(
@@ -56,9 +61,13 @@ class NotificationCubit extends Cubit<NotificationState> {
           ),
         );
       } else {
+        ToastUtility.showError('Failed to update reminders');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(NotificationError('Failed to update reminders'));
       }
     } catch (e) {
+      ToastUtility.showError('Error updating reminders: $e');
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       emit(NotificationError('Error updating reminders: $e'));
     }
   }
@@ -94,11 +103,17 @@ class NotificationCubit extends Cubit<NotificationState> {
       }
 
       if (success) {
+        ToastUtility.showSuccess('Reminder cleared');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(ReminderSettingsUpdated('Reminder cleared'));
       } else {
+        ToastUtility.showError('Failed to clear reminder');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(NotificationError('Failed to clear reminder'));
       }
     } catch (e) {
+      ToastUtility.showError('Error clearing reminder: $e');
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       emit(NotificationError('Error clearing reminder: $e'));
     }
   }
@@ -109,11 +124,17 @@ class NotificationCubit extends Cubit<NotificationState> {
     try {
       final success = await _notificationService.triggerReminders();
       if (success) {
+        ToastUtility.showSuccess('Reminders triggered');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(ReminderSettingsUpdated('Reminders triggered'));
       } else {
+        ToastUtility.showError('Failed to trigger reminders');
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(NotificationError('Failed to trigger reminders'));
       }
     } catch (e) {
+      ToastUtility.showError('Error triggering reminders: $e');
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       emit(NotificationError('Error triggering reminders: $e'));
     }
   }

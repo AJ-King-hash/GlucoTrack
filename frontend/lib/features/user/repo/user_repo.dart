@@ -10,9 +10,12 @@ abstract class UserRepository {
   );
   Future<Either<Failure, UserModel?>> getUser(int userId);
   Future<Either<Failure, UserModel?>> updateUser(
-    String name,
-    String email,
-    String password, {
+    String? name,
+    String? email,
+    String? gender,
+    String? password,
+    String? glucoTime,
+    String? medicineTime, {
     String? oldPassword,
   });
 }

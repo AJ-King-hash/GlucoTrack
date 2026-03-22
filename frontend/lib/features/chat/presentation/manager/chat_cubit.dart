@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/base_usecase/base_usecase.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/chat/domain/entity/message_entity.dart';
 import '../../domain/usecase/create_conversation_usecase.dart';
 import '../../domain/usecase/delete_conversation_usecase.dart';
@@ -50,11 +53,16 @@ class BotCubit extends Cubit<BotState> {
       // We use a temporary variable to capture the new ID correctly
       int? newId;
       result.fold(
-        (failure) =>
-            emit(state.copyWith(status: BotStatus.error, failure: failure)),
+        (failure) {
+          ToastUtility.showError(failure.message);
+          GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+          emit(state.copyWith(status: BotStatus.error, failure: failure));
+        },
         (conv) {
           newId = conv.id;
           // Update the conversation info but KEEP messages empty for now
+          ToastUtility.showSuccess("Conversation created successfully");
+          GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
           emit(
             state.copyWith(
               currentConversation: conv,
@@ -87,8 +95,11 @@ class BotCubit extends Cubit<BotState> {
     final sendResult = await sendMessageUseCase(userMessage);
 
     await sendResult.fold(
-      (failure) async =>
-          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (failure) async {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(state.copyWith(status: BotStatus.error, failure: failure));
+      },
       (userMessage) async {
         // 3. Send Bot Reponse
         final botMessage = MessageEntity(
@@ -101,8 +112,11 @@ class BotCubit extends Cubit<BotState> {
 
         final result = await sendMessageUseCase(botMessage);
         result.fold(
-          (failure) =>
-              emit(state.copyWith(isBotTyping: false, status: BotStatus.error)),
+          (failure) {
+            ToastUtility.showError(failure.message);
+            GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+            emit(state.copyWith(isBotTyping: false, status: BotStatus.error));
+          },
           (botResponse) async {
             await Future.delayed(const Duration(milliseconds: 500));
             final refreshResult = await getAllMessagesUseCase(id);
@@ -169,9 +183,14 @@ class BotCubit extends Cubit<BotState> {
     );
 
     result.fold(
-      (failure) =>
-          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(state.copyWith(status: BotStatus.error, failure: failure));
+      },
       (success) {
+        ToastUtility.showSuccess("Conversation deleted successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         // 2. Filter out the deleted conversation from the local list
         final updatedConversations =
             state.conversations

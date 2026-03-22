@@ -18,7 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
           if (user.id != null) {
             PrefHelper.saveUserId(user.id.toString());
           }
-          emit(AuthSuccess("Login successful", user: user));
+          emit(AuthSuccess("Login successful"));
         } else {
           emit(AuthError("Invalid credentials"));
         }

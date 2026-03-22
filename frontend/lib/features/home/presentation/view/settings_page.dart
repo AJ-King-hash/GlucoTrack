@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:glucotrack/core/api/api_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/color/app_color.dart';
 import 'package:glucotrack/core/localization/locale_cubit.dart';
 import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
 import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
 import 'package:glucotrack/features/auth/presentaion/manager/auth_state.dart';
@@ -17,14 +18,32 @@ import 'package:glucotrack/features/home/presentation/widgets/time_picker_item.d
 import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
 import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late final GlobalRefresher _refresher;
+  late final UserCubit _userCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _userCubit = context.read<UserCubit>();
+    _refresher = GetIt.I<GlobalRefresher>();
+    _refresher.refreshStream.listen((_) {
+      _userCubit.getUser();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final settingsCubit = SettingsCubit(ApiService());
+        final settingsCubit = SettingsCubit(context.read<UserCubit>());
         final userState = context.read<UserCubit>().state;
         if (userState is UserLoaded) {
           settingsCubit.loadSettings(userState.userModel);

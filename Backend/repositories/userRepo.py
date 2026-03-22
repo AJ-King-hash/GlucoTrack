@@ -3,6 +3,7 @@ from fastapi import HTTPException,status
 import models
 from hashing import Hash
 from datetime import datetime,timezone
+
 def create(request,db:Session):
     # Check password length (in bytes)
     if len(request.password.encode('utf-8')) > 72:
@@ -51,7 +52,7 @@ def update(id,request,db:Session):
             )
     
     if request.gender:
-        user.name=request.gender
+        user.gender=request.gender
     if request.name:
         user.name=request.name
     if request.email:

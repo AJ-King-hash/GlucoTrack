@@ -80,7 +80,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       await context.read<UserCubit>().updateUser(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        password: '',
       );
     } catch (e) {
       if (mounted) {

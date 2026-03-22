@@ -1,20 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/errors/failure.dart';
 import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/home/presentation/manager/home_state.dart';
 import 'package:glucotrack/features/risk/domain/usecase/get_risk_usecase.dart';
 import 'package:glucotrack/features/risk/domain/usecase/update_risk_usecase.dart';
 import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
-import 'package:glucotrack/core/api/api_service.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo.dart';
 import 'package:glucotrack/features/auth/data/models/user_model.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo_impl.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRiskUsecase _getRiskUsecase;
   final UpdateRiskUsecase _updateRiskUsecase;
-  final ApiService _apiService;
   final AuthRepository _authRepository;
+  final UserCubit _userCubit;
 
   // Store the existing risk entity to preserve fields not in HomeState
   RiskEntity? _currentRiskEntity;
@@ -22,8 +25,8 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit(
     this._getRiskUsecase,
     this._updateRiskUsecase,
-    this._apiService,
     this._authRepository,
+    this._userCubit,
   ) : super(
         const HomeState(
           mealTime: 1,
@@ -45,8 +48,13 @@ class HomeCubit extends Cubit<HomeState> {
       // Backend uses authentication token to identify user, so id parameter is ignored
       final result = await _getRiskUsecase(0);
       result.fold(
-        (failure) => _handleFailure(failure),
-        (risk) => _updateStateFromRisk(risk),
+        (failure) {
+          _handleFailure(failure);
+        },
+        (risk) {
+          _updateStateFromRisk(risk);
+          print("risk data: " + risk.toString());
+        },
       );
     } catch (e) {
       _handleError(e);
@@ -269,13 +277,23 @@ class HomeCubit extends Cubit<HomeState> {
 
     bool updateSuccess = false;
     final result = await _updateRisk(riskEntity);
-    result.fold((failure) => _handleFailure(failure), (risk) {
-      _updateStateFromRisk(risk);
-      updateSuccess = true;
-    });
+    result.fold(
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        _handleFailure(failure);
+      },
+      (risk) {
+        print("risk in home cubit: " + risk.toString());
+        _updateStateFromRisk(risk);
+        updateSuccess = true;
+      },
+    );
 
     // Refresh data only after successful mutation
     if (updateSuccess) {
+      ToastUtility.showSuccess("Diabetes type updated successfully");
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       await _refreshData();
     }
   }
@@ -291,13 +309,22 @@ class HomeCubit extends Cubit<HomeState> {
 
     bool updateSuccess = false;
     final result = await _updateRisk(riskEntity);
-    result.fold((failure) => _handleFailure(failure), (risk) {
-      _updateStateFromRisk(risk);
-      updateSuccess = true;
-    });
+    result.fold(
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        _handleFailure(failure);
+      },
+      (risk) {
+        _updateStateFromRisk(risk);
+        updateSuccess = true;
+      },
+    );
 
     // Refresh data only after successful mutation
     if (updateSuccess) {
+      ToastUtility.showSuccess("Activity level updated successfully");
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       await _refreshData();
     }
   }
@@ -308,13 +335,22 @@ class HomeCubit extends Cubit<HomeState> {
 
     bool updateSuccess = false;
     final result = await _updateRisk(riskEntity);
-    result.fold((failure) => _handleFailure(failure), (risk) {
-      _updateStateFromRisk(risk);
-      updateSuccess = true;
-    });
+    result.fold(
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        _handleFailure(failure);
+      },
+      (risk) {
+        _updateStateFromRisk(risk);
+        updateSuccess = true;
+      },
+    );
 
     // Refresh data only after successful mutation
     if (updateSuccess) {
+      ToastUtility.showSuccess("Age updated successfully");
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       await _refreshData();
     }
   }
@@ -325,13 +361,22 @@ class HomeCubit extends Cubit<HomeState> {
 
     bool updateSuccess = false;
     final result = await _updateRisk(riskEntity);
-    result.fold((failure) => _handleFailure(failure), (risk) {
-      _updateStateFromRisk(risk);
-      updateSuccess = true;
-    });
+    result.fold(
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        _handleFailure(failure);
+      },
+      (risk) {
+        _updateStateFromRisk(risk);
+        updateSuccess = true;
+      },
+    );
 
     // Refresh data only after successful mutation
     if (updateSuccess) {
+      ToastUtility.showSuccess("Weight updated successfully");
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       await _refreshData();
     }
   }
@@ -347,47 +392,29 @@ class HomeCubit extends Cubit<HomeState> {
     );
 
     try {
-      // Call API to update gender
-      final result = await _apiService.updateUser({
-        'gender': _mapGenderToString(gender),
-      });
+      // Use UserCubit to update gender
+      await _userCubit.updateUser(gender: _mapGenderToString(gender));
 
-      bool isSuccess = false;
+      // Update local user data in AuthRepository to keep it in sync
+      _updateLocalUserGender(gender);
 
-      result.fold(
-        (failure) {
-          // Emit error state
-          emit(
-            state.copyWith(
-              isGenderUpdating: false,
-              genderUpdateMessage: failure.message,
-              genderUpdateSuccess: false,
-            ),
-          );
-          isSuccess = false;
-        },
-        (data) {
-          // Update local user data in AuthRepository to keep it in sync
-          _updateLocalUserGender(gender);
-
-          // Emit success state
-          emit(
-            state.copyWith(
-              isGenderUpdating: false,
-              genderUpdateMessage: 'Gender updated successfully',
-              genderUpdateSuccess: true,
-            ),
-          );
-          isSuccess = true;
-        },
+      // Emit success state
+      ToastUtility.showSuccess('Gender updated successfully');
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+      emit(
+        state.copyWith(
+          isGenderUpdating: false,
+          genderUpdateMessage: 'Gender updated successfully',
+          genderUpdateSuccess: true,
+        ),
       );
 
       // Refresh data after successful mutation
-      if (isSuccess) {
-        await _refreshData();
-      }
+      await _refreshData();
     } catch (e) {
       // Emit error state
+      ToastUtility.showError('Failed to update gender');
+      GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       emit(
         state.copyWith(
           isGenderUpdating: false,

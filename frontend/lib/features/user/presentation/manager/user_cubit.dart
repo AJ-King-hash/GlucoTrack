@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glucotrack/core/api/api_error.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/auth/data/models/user_model.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo.dart';
 import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
@@ -24,20 +27,31 @@ class UserCubit extends Cubit<UserState> {
     emit(UserLoading());
     try {
       final result = await userRepository.createUser(name, email, password);
-      result.fold((failure) => emit(UserError(failure.message)), (user) {
-        if (user != null) {
-          emit(UserSuccess("Register successful"));
-        } else {
-          emit(UserError("User creation failed"));
-        }
-      });
+      result.fold(
+        (failure) {
+          ToastUtility.showError(failure.message);
+          emit(UserError(failure.message));
+        },
+        (user) {
+          if (user != null) {
+            ToastUtility.showSuccess("Register successful");
+            emit(UserSuccess("Register successful"));
+          } else {
+            ToastUtility.showError("User creation failed");
+            emit(UserError("User creation failed"));
+          }
+        },
+      );
     } catch (e) {
       String errMsg = "Error in Register";
       if (e is ApiError) {
         errMsg = e.message;
       }
+      ToastUtility.showError(errMsg);
       emit(UserError(errMsg));
     }
+
+    GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
   }
 
   //function for get user data
@@ -70,9 +84,12 @@ class UserCubit extends Cubit<UserState> {
 
   //function for update user data
   Future<void> updateUser({
-    required String name,
-    required String email,
-    required String password,
+    String? name,
+    String? email,
+    String? gender,
+    String? glucoTime,
+    String? medicineTime,
+    String? password,
     String? oldPassword,
   }) async {
     emit(UserLoading());
@@ -80,24 +97,37 @@ class UserCubit extends Cubit<UserState> {
       final result = await userRepository.updateUser(
         name,
         email,
+        gender,
+        glucoTime,
+        medicineTime,
         password,
         oldPassword: oldPassword,
       );
-      result.fold((failure) => emit(UserError(failure.message)), (user) {
-        if (user != null) {
-          // Emit UserSuccess for update, then reload user data
-          emit(UserSuccess("Profile updated successfully"));
-          emit(UserLoaded(user));
-        } else {
-          emit(UserError("Failed to update profile"));
-        }
-      });
+      result.fold(
+        (failure) {
+          ToastUtility.showError(failure.message);
+          emit(UserError(failure.message));
+        },
+        (user) {
+          if (user != null) {
+            // Emit UserSuccess for update, then reload user data
+            ToastUtility.showSuccess("Profile updated successfully");
+            emit(UserSuccess("Profile updated successfully"));
+            emit(UserLoaded(user));
+          } else {
+            ToastUtility.showError("Failed to update profile");
+            emit(UserError("Failed to update profile"));
+          }
+        },
+      );
     } catch (e) {
       String errorMsg = "Error in Update Profile";
       if (e is ApiError) {
         errorMsg = e.message;
       }
+      ToastUtility.showError(errorMsg);
       emit(UserError(errorMsg));
     }
+    GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
   }
 }
