@@ -47,11 +47,9 @@ class BotCubit extends Cubit<BotState> {
     if (id == 0) {
       // Clear old messages immediately so the UI doesn't show "ghost" data
       emit(state.copyWith(status: BotStatus.loading, messages: []));
-
       final result = await createConversationUseCase(text);
 
       // We use a temporary variable to capture the new ID correctly
-      int? newId;
       result.fold(
         (failure) {
           ToastUtility.showError(failure.message);
@@ -59,7 +57,6 @@ class BotCubit extends Cubit<BotState> {
           emit(state.copyWith(status: BotStatus.error, failure: failure));
         },
         (conv) {
-          newId = conv.id;
           // Update the conversation info but KEEP messages empty for now
           ToastUtility.showSuccess("Conversation created successfully");
           GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
@@ -73,11 +70,9 @@ class BotCubit extends Cubit<BotState> {
         },
       );
 
-      if (newId == null) return; // Stop if creation failed
-      id = newId!;
-
       // Refresh the drawer list in the background
       await getAllConversations();
+      return;
     }
 
     // 2. Prepare User Message
@@ -104,8 +99,8 @@ class BotCubit extends Cubit<BotState> {
         // 3. Send Bot Reponse
         final botMessage = MessageEntity(
           id: DateTime.now().millisecondsSinceEpoch,
-          conversationId: conversationId,
-          message: '', // Backend will populate this with the bot's response
+          conversationId: id,
+          message: text,
           createdAt: DateTime.now().toIso8601String(),
           senderType: 'bot',
         );
@@ -118,7 +113,6 @@ class BotCubit extends Cubit<BotState> {
             emit(state.copyWith(isBotTyping: false, status: BotStatus.error));
           },
           (botResponse) async {
-            await Future.delayed(const Duration(milliseconds: 500));
             final refreshResult = await getAllMessagesUseCase(id);
             refreshResult.fold(
               (failure) => emit(state.copyWith(isBotTyping: false)),

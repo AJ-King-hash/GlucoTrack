@@ -107,5 +107,9 @@
   "medicine_reminder_time": "Medicine Time",
   "set_time": "Set Time",
   "select_time": "Select Time",
-  "save": "Save"
+  "save": "Save",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "select_gender": "Select Gender"
 }

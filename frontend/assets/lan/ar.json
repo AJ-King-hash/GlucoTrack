@@ -108,5 +108,9 @@
   "medicine_reminder_time": "وقت الدواء",
   "set_time": "ضبط الوقت",
   "select_time": "اختيار الوقت",
-  "save": "حفظ"
+  "save": "حفظ",
+  "gender": "الجنس",
+  "male": "ذكر",
+  "female": "أنثى",
+  "select_gender": "اختر الجنس"
 }
