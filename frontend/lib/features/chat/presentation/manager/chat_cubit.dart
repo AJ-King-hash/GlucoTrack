@@ -169,8 +169,28 @@ class BotCubit extends Cubit<BotState> {
   }
 
   Future<void> deleteConversation(int conversationId) async {
-    // 1. Emit loading but keep existing data to prevent UI flicker
-    emit(state.copyWith(status: BotStatus.loading));
+    // update the state before the async/await operation (special way for (dismissible)
+    final updatedConversations =
+        state.conversations.where((conv) => conv.id != conversationId).toList();
+
+    // 3. If the user deleted the current active conversation, reset the chat view
+    if (state.currentConversation?.id == conversationId) {
+      emit(
+        state.copyWith(
+          conversations: updatedConversations,
+          clearCurrentConversation: true,
+          messages: [],
+          status: BotStatus.loading,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          conversations: updatedConversations,
+          status: BotStatus.loading,
+        ),
+      );
+    }
 
     final result = await deleteConversationUseCase(
       DeleteConversationParams(conversationId),
@@ -183,32 +203,9 @@ class BotCubit extends Cubit<BotState> {
         emit(state.copyWith(status: BotStatus.error, failure: failure));
       },
       (success) {
+        emit(state.copyWith(status: BotStatus.loaded));
         ToastUtility.showSuccess("Conversation deleted successfully");
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
-        // 2. Filter out the deleted conversation from the local list
-        final updatedConversations =
-            state.conversations
-                .where((conv) => conv.id != conversationId)
-                .toList();
-
-        // 3. If the user deleted the current active conversation, reset the chat view
-        if (state.currentConversation?.id == conversationId) {
-          emit(
-            state.copyWith(
-              conversations: updatedConversations,
-              clearCurrentConversation: true,
-              messages: [],
-              status: BotStatus.loaded,
-            ),
-          );
-        } else {
-          emit(
-            state.copyWith(
-              conversations: updatedConversations,
-              status: BotStatus.loaded,
-            ),
-          );
-        }
       },
     );
   }

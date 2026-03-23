@@ -33,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _userCubit = context.read<UserCubit>();
+    _userCubit.getUser();
     _refresher = GetIt.I<GlobalRefresher>();
     _refresher.refreshStream.listen((_) {
       _userCubit.getUser();
@@ -82,56 +83,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           // Listen to SettingsCubit changes - show toast-based error feedback
           // Note: Error banner UI was removed; errors are now handled via toast with retry functionality
-          BlocListener<SettingsCubit, SettingsState>(
-            listener: (context, state) async {
-              if (state is SettingsFailure) {
-                // Show error toast with retry functionality
-                ToastUtility.showErrorWithRetryToast(
-                  context,
-                  message: state.message,
-                  onRetry: () {
-                    // Retry the failed setting
-                    final failedSetting = state.failedSetting;
-                    switch (failedSetting) {
-                      case FailedSetting.sugarReminder:
-                        context.read<SettingsCubit>().toggleSugarReminder(
-                          state.sugarReminder,
-                        );
-                        break;
-                      case FailedSetting.medicineReminder:
-                        context.read<SettingsCubit>().toggleMedicineReminder(
-                          state.medicineReminder,
-                        );
-                        break;
-                      case FailedSetting.none:
-                        // Reset to initial state
-                        context.read<SettingsCubit>().toggleSugarReminder(
-                          state.sugarReminder,
-                        );
-                    }
-                  },
-                );
-              } else if (state is SettingsInitial && state.isSuccess) {
-                // Capture references before async call to avoid context issues
-                final userCubit = context.read<UserCubit>();
-
-                // Re-fetch user data from backend to ensure UI shows correct values after update
-                // This provides proper revalidation of the settings state
-                try {
-                  await userCubit.getUser();
-                } catch (e) {
-                  // Silently handle - settings already updated locally in cubit
-                }
-                // Show success message using ToastUtility (using captured context)
-                if (context.mounted) {
-                  ToastUtility.showSuccessDismissibleToast(
-                    context,
-                    message: 'Settings updated successfully!',
-                  );
-                }
-              }
-            },
-          ),
         ],
         child: Scaffold(
           appBar: AppBar(

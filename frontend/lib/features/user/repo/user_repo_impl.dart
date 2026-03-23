@@ -62,7 +62,7 @@ class UserRepositoryImpl implements UserRepository {
     String? password, {
     String? oldPassword,
   }) async {
-    final data = {} as Map<String, dynamic>;
+    final Map<String, dynamic> data = {};
 
     if (name != null) {
       data['name'] = name;
@@ -86,6 +86,10 @@ class UserRepositoryImpl implements UserRepository {
 
     if (medicineTime != null) {
       data['medicine_time'] = medicineTime;
+    }
+
+    if (password != null) {
+      data['password'] = password;
     }
 
     final result = await apiService.updateUser(data);

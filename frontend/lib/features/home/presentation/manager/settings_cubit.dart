@@ -49,6 +49,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> toggleSugarReminder(bool value) async {
+    print("toggle value: " + value.toString());
     // Save the current state before emitting loading
     final currentState = state;
     if (currentState is! SettingsInitial) return;
@@ -63,13 +64,13 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
 
     try {
-      final newGlucoTime = value ? (currentState.glucoTime ?? '08:00') : '';
+      final newGlucoTime = value ? '08:00' : null;
 
       final updated = currentState.copyWith(
         sugarReminder: value,
-        glucoTime: value ? (currentState.glucoTime ?? '08:00') : null,
-        clearGlucoTime: !value,
+        glucoTime: newGlucoTime,
       );
+
       emit(updated);
 
       await userCubit.updateUser(glucoTime: newGlucoTime);

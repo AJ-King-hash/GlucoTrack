@@ -24,18 +24,19 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
-  String? selectedGender;
+  String? selectedGender = 'male';
   StreamSubscription? _userSubscription;
 
   @override
   void initState() {
+    context.read<UserCubit>().getUser();
     super.initState();
     if (widget.userModel != null) {
       nameController.text = widget.userModel!.name;
       emailController.text = widget.userModel!.email;
       selectedGender = widget.userModel!.gender;
+      print("selectedGender: " + selectedGender!);
     } else {
-      context.read<UserCubit>().getUser();
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
         if (state is UserLoaded) {
           final user = state.userModel;

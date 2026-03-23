@@ -110,9 +110,8 @@ class UserCubit extends Cubit<UserState> {
         },
         (user) {
           if (user != null) {
-            // Emit UserSuccess for update, then reload user data
+            // Profile updated successfully - emit only UserLoaded to avoid double rebuild
             ToastUtility.showSuccess("Profile updated successfully");
-            emit(UserSuccess("Profile updated successfully"));
             emit(UserLoaded(user));
           } else {
             ToastUtility.showError("Failed to update profile");
