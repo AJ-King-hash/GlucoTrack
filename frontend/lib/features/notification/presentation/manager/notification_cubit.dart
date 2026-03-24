@@ -51,8 +51,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       if (success) {
         ToastUtility.showSuccess('Reminders updated successfully');
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
-        emit(ReminderSettingsUpdated('Reminders updated successfully'));
-        // Load the updated settings
+        // Delay to allow UI to show success state before loading new state
         emit(
           ReminderSettingsLoaded(
             glucoTime: glucoTime,

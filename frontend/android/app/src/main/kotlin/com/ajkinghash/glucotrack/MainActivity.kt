@@ -1,4 +1,4 @@
-package com.example.untitled10
+package com.ajkinghash.glucotrack
 
 import io.flutter.embedding.android.FlutterActivity
 

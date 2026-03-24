@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 
 class UserModel {
+  final int? id;
   final String name;
   final String email;
   final String? password;
   final String? token;
-  final int? id;
   final String? gender;
 
   // Reminder settings fields

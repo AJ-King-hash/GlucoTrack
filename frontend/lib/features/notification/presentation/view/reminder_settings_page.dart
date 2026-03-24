@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucotrack/core/color/app_color.dart';
 import 'package:glucotrack/core/injection_container.dart';
 import 'package:glucotrack/core/localization/locale_cubit.dart';
@@ -41,6 +40,9 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
   void _loadSettingsFromUser() {
     // Check if mounted before using context
     if (!mounted) return;
+
+    // load the user.
+    context.read<UserCubit>().getUser();
 
     try {
       final userState = context.read<UserCubit>().state;
@@ -87,23 +89,7 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<NotificationCubit>(),
-      child: BlocConsumer<NotificationCubit, NotificationState>(
-        listener: (context, state) {
-          if (state is ReminderSettingsUpdated) {
-            Fluttertoast.showToast(
-              msg: state.message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-            );
-          } else if (state is NotificationError) {
-            Fluttertoast.showToast(
-              msg: state.message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-            );
-          }
-        },
+      child: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
           final locale = context.read<LocaleCubit>();
           return Scaffold(
@@ -143,7 +129,7 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
                     onClear: () => setState(() => _glucoTime = null),
                   ),
                   const SizedBox(height: 24),
-                  _buildSectionTitle('Timezone'),
+                  _buildSectionTitle(locale.translate('timezone')),
                   const SizedBox(height: 8),
                   _buildTimezoneSelector(),
                   const SizedBox(height: 32),

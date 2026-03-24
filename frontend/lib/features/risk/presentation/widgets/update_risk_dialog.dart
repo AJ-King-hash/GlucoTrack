@@ -43,9 +43,6 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
-    final userCubit = context.read<UserCubit>();
-    final user = (userCubit.state as UserLoaded?)?.userModel;
-    final isFemale = user?.gender == 'female';
 
     return AlertDialog(
       title: Text(locale.translate('update_risk')),
@@ -72,15 +69,14 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
               ),
 
               // Sugar Pregnancy - only show for female
-              if (isFemale)
-                _buildTextField(
-                  label: 'sugar_pregnancy',
-                  initial: sugarPregnancy.toString(),
-                  onSave:
-                      (v) =>
-                          sugarPregnancy =
-                              v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
-                ),
+              _buildTextField(
+                label: 'sugar_pregnancy',
+                initial: sugarPregnancy.toString(),
+                onSave:
+                    (v) =>
+                        sugarPregnancy =
+                            v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
+              ),
 
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),
