@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:untitled10/core/api/auth_interceptor.dart';
-import 'package:untitled10/core/services/navigation_service.dart';
+import 'package:glucotrack/core/api/auth_interceptor.dart';
+import 'package:glucotrack/core/services/navigation_service.dart';
 
 class DioClient {
   DioClient._internal();
@@ -9,7 +9,7 @@ class DioClient {
   // Use String.fromEnvironment for build-time configuration
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
-    defaultValue: 'http://192.168.26.73:8000',
+    defaultValue: 'http://192.168.1.2:8000',
   );
   static final DioClient _instance = DioClient._internal();
 

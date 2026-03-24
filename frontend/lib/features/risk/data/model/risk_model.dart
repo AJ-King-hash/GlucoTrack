@@ -1,4 +1,4 @@
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
 
 class RiskModel extends RiskEntity {
   RiskModel({

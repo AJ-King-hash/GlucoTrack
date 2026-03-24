@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/features/auth/presentaion/manager/auth_ui_state.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_ui_state.dart';
 
-class AuthUiCubit extends Cubit<AuthUiState>{
-  AuthUiCubit(): super(const AuthUiState());
+class AuthUiCubit extends Cubit<AuthUiState> {
+  AuthUiCubit() : super(const AuthUiState());
 
-  void togglePasswordVisibility(){
+  void togglePasswordVisibility() {
     emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../data/model/archives_model.dart';

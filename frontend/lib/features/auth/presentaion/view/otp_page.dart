@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/widgets/app_button.dart';
-import 'package:untitled10/core/widgets/app_logo.dart';
-import 'package:untitled10/core/widgets/auth_background.dart';
-import 'package:untitled10/core/utils/toast_utility.dart';
-import 'package:untitled10/features/auth/presentaion/widgets/otp_box.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/widgets/app_button.dart';
+import 'package:glucotrack/core/widgets/app_logo.dart';
+import 'package:glucotrack/core/widgets/auth_background.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/auth/presentaion/widgets/otp_box.dart';
 
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';

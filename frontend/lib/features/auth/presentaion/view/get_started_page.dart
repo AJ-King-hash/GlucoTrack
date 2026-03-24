@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
 
 import '../../../../core/localization/locale_cubit.dart';
 

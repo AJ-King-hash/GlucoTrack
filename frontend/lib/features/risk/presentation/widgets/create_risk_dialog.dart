@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:untitled10/features/home/presentation/widgets/dropdown.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
-// import 'package:untitled10/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:glucotrack/features/home/presentation/widgets/dropdown.dart';
 
 class CreateRiskDialog extends StatefulWidget {
   const CreateRiskDialog({super.key});
@@ -22,7 +19,7 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
-  int? sugarPregnancy;
+  int sugarPregnancy = 0;
   bool smoking = false;
   bool geneticDisease = false;
   String physicalActivity = '';
@@ -33,9 +30,6 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
-    final userCubit = context.read<UserCubit>();
-    final user = (userCubit.state as UserLoaded?)?.userModel;
-    final isFemale = user?.gender == 'female';
 
     return AlertDialog(
       title: Text(locale.translate('create_new_risk')),
@@ -62,15 +56,14 @@ class _CreateRiskDialogState extends State<CreateRiskDialog> {
                 onSaved: (v) => height = double.tryParse(v!) ?? 0.0,
               ),
               // Sugar Pregnancy - only show for female
-              if (isFemale)
-                _buildTextFormField(
-                  label: 'sugar_pregnancy',
-                  onSaved:
-                      (v) =>
-                          sugarPregnancy =
-                              v?.isEmpty == false ? int.tryParse(v!) : null,
-                  required: false,
-                ),
+              _buildTextFormField(
+                label: 'sugar_pregnancy',
+                hint: 'pregnancy_count_hint',
+                onSaved:
+                    (v) =>
+                        sugarPregnancy =
+                            v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
+              ),
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),
                 value: smoking,

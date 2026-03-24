@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/api/api_error.dart';
-import 'package:untitled10/features/auth/presentaion/manager/auth_state.dart';
-import 'package:untitled10/features/auth/repo/auth_repo.dart';
-import 'package:untitled10/core/utils/pref_helper.dart';
+import 'package:glucotrack/core/api/api_error.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_state.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo.dart';
+import 'package:glucotrack/core/utils/pref_helper.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository authRepository;
@@ -18,7 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
           if (user.id != null) {
             PrefHelper.saveUserId(user.id.toString());
           }
-          emit(AuthSuccess("Login successful", user: user));
+          emit(AuthSuccess("Login successful"));
         } else {
           emit(AuthError("Invalid credentials"));
         }

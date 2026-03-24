@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/features/home/presentation/manager/bottom_nav_cubit.dart';
+import 'package:glucotrack/features/home/presentation/manager/bottom_nav_cubit.dart';
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 
@@ -34,7 +34,7 @@ class CustomBottomNav extends StatelessWidget {
                 icon: Icons.home,
                 iconColor: AppColor.info,
                 activeIconColor: AppColor.textNeutral,
-                label:  context.read<LocaleCubit>().translate('home'),
+                label: context.read<LocaleCubit>().translate('home'),
                 isActive: index == 0,
                 onTap: () => context.read<BottomNavCubit>().changeIndex(0),
               ),
@@ -43,7 +43,7 @@ class CustomBottomNav extends StatelessWidget {
                 icon: Icons.message,
                 iconColor: AppColor.info,
                 activeIconColor: AppColor.textNeutral,
-                label:  context.read<LocaleCubit>().translate('chat_gpt'),
+                label: context.read<LocaleCubit>().translate('chat_gpt'),
                 isActive: index == 1,
                 onTap: () => context.read<BottomNavCubit>().changeIndex(1),
               ),
@@ -52,7 +52,7 @@ class CustomBottomNav extends StatelessWidget {
                 icon: Icons.layers,
                 iconColor: AppColor.info,
                 activeIconColor: AppColor.textNeutral,
-                label:  context.read<LocaleCubit>().translate('archives'),
+                label: context.read<LocaleCubit>().translate('archives'),
                 isActive: index == 2,
                 onTap: () => context.read<BottomNavCubit>().changeIndex(2),
               ),
@@ -61,7 +61,7 @@ class CustomBottomNav extends StatelessWidget {
                 icon: Icons.settings,
                 iconColor: AppColor.info,
                 activeIconColor: AppColor.textNeutral,
-                label:  context.read<LocaleCubit>().translate('settings'),
+                label: context.read<LocaleCubit>().translate('settings'),
                 isActive: index == 3,
                 onTap: () => context.read<BottomNavCubit>().changeIndex(3),
               ),
@@ -76,44 +76,41 @@ class CustomBottomNav extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     required bool isActive,
-   required Color iconColor,
-   required Color activeIconColor,
+    required Color iconColor,
+    required Color activeIconColor,
     required VoidCallback onTap,
     String label = '',
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: isActive
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 48.w,
-                  width: 48.w,
-                  decoration: BoxDecoration(
-                    color: AppColor.info,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: AppColor.textNeutral, size: 24.sp),
-                ),
-                if (label.isNotEmpty) ...[
-                  SizedBox(height: 4.h),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColor.textNeutral,
-                      fontWeight: FontWeight.w600,
+      child:
+          isActive
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 48.w,
+                    width: 48.w,
+                    decoration: BoxDecoration(
+                      color: AppColor.info,
+                      shape: BoxShape.circle,
                     ),
+                    child: Icon(icon, color: AppColor.textNeutral, size: 24.sp),
                   ),
+                  if (label.isNotEmpty) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColor.textNeutral,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            )
-          : Icon(
-              icon,
-              color: AppColor.info,
-              size: 26.sp,
-            ),
+              )
+              : Icon(icon, color: AppColor.info, size: 26.sp),
     );
   }
 }

@@ -1,7 +1,7 @@
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/features/archives/data/model/meal_model.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/features/archives/data/model/meal_model.dart';
 
 abstract class MealRepository {
   Future<Either<Failure, MealModel?>> getLastMeal();

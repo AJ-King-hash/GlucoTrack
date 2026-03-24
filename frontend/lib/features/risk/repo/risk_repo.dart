@@ -1,6 +1,6 @@
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
 
 abstract class RiskRepository {
   Future<Either<Failure, RiskEntity>> createRisk(RiskEntity risk);

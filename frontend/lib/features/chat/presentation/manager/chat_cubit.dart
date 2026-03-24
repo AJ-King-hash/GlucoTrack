@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/base_usecase/base_usecase.dart';
-import 'package:untitled10/features/chat/domain/entity/message_entity.dart';
+import 'package:get_it/get_it.dart';
+import 'package:glucotrack/core/base_usecase/base_usecase.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/chat/domain/entity/message_entity.dart';
 import '../../domain/usecase/create_conversation_usecase.dart';
 import '../../domain/usecase/delete_conversation_usecase.dart';
 import '../../domain/usecase/get_allconversation_usecase.dart';
@@ -44,17 +47,19 @@ class BotCubit extends Cubit<BotState> {
     if (id == 0) {
       // Clear old messages immediately so the UI doesn't show "ghost" data
       emit(state.copyWith(status: BotStatus.loading, messages: []));
-
       final result = await createConversationUseCase(text);
 
       // We use a temporary variable to capture the new ID correctly
-      int? newId;
       result.fold(
-        (failure) =>
-            emit(state.copyWith(status: BotStatus.error, failure: failure)),
+        (failure) {
+          ToastUtility.showError(failure.message);
+          GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+          emit(state.copyWith(status: BotStatus.error, failure: failure));
+        },
         (conv) {
-          newId = conv.id;
           // Update the conversation info but KEEP messages empty for now
+          ToastUtility.showSuccess("Conversation created successfully");
+          GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
           emit(
             state.copyWith(
               currentConversation: conv,
@@ -65,11 +70,9 @@ class BotCubit extends Cubit<BotState> {
         },
       );
 
-      if (newId == null) return; // Stop if creation failed
-      id = newId!;
-
       // Refresh the drawer list in the background
       await getAllConversations();
+      return;
     }
 
     // 2. Prepare User Message
@@ -87,24 +90,29 @@ class BotCubit extends Cubit<BotState> {
     final sendResult = await sendMessageUseCase(userMessage);
 
     await sendResult.fold(
-      (failure) async =>
-          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (failure) async {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(state.copyWith(status: BotStatus.error, failure: failure));
+      },
       (userMessage) async {
         // 3. Send Bot Reponse
         final botMessage = MessageEntity(
           id: DateTime.now().millisecondsSinceEpoch,
-          conversationId: conversationId,
-          message: '', // Backend will populate this with the bot's response
+          conversationId: id,
+          message: text,
           createdAt: DateTime.now().toIso8601String(),
           senderType: 'bot',
         );
 
         final result = await sendMessageUseCase(botMessage);
         result.fold(
-          (failure) =>
-              emit(state.copyWith(isBotTyping: false, status: BotStatus.error)),
+          (failure) {
+            ToastUtility.showError(failure.message);
+            GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+            emit(state.copyWith(isBotTyping: false, status: BotStatus.error));
+          },
           (botResponse) async {
-            await Future.delayed(const Duration(milliseconds: 500));
             final refreshResult = await getAllMessagesUseCase(id);
             refreshResult.fold(
               (failure) => emit(state.copyWith(isBotTyping: false)),
@@ -161,41 +169,43 @@ class BotCubit extends Cubit<BotState> {
   }
 
   Future<void> deleteConversation(int conversationId) async {
-    // 1. Emit loading but keep existing data to prevent UI flicker
-    emit(state.copyWith(status: BotStatus.loading));
+    // update the state before the async/await operation (special way for (dismissible)
+    final updatedConversations =
+        state.conversations.where((conv) => conv.id != conversationId).toList();
+
+    // 3. If the user deleted the current active conversation, reset the chat view
+    if (state.currentConversation?.id == conversationId) {
+      emit(
+        state.copyWith(
+          conversations: updatedConversations,
+          clearCurrentConversation: true,
+          messages: [],
+          status: BotStatus.loading,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          conversations: updatedConversations,
+          status: BotStatus.loading,
+        ),
+      );
+    }
 
     final result = await deleteConversationUseCase(
       DeleteConversationParams(conversationId),
     );
 
     result.fold(
-      (failure) =>
-          emit(state.copyWith(status: BotStatus.error, failure: failure)),
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(state.copyWith(status: BotStatus.error, failure: failure));
+      },
       (success) {
-        // 2. Filter out the deleted conversation from the local list
-        final updatedConversations =
-            state.conversations
-                .where((conv) => conv.id != conversationId)
-                .toList();
-
-        // 3. If the user deleted the current active conversation, reset the chat view
-        if (state.currentConversation?.id == conversationId) {
-          emit(
-            state.copyWith(
-              conversations: updatedConversations,
-              clearCurrentConversation: true,
-              messages: [],
-              status: BotStatus.loaded,
-            ),
-          );
-        } else {
-          emit(
-            state.copyWith(
-              conversations: updatedConversations,
-              status: BotStatus.loaded,
-            ),
-          );
-        }
+        emit(state.copyWith(status: BotStatus.loaded));
+        ToastUtility.showSuccess("Conversation deleted successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       },
     );
   }

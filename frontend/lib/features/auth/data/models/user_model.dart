@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 
 class UserModel {
+  final int? id;
   final String name;
   final String email;
   final String? password;
   final String? token;
-  final int? id;
   final String? gender;
 
   // Reminder settings fields
@@ -40,15 +40,9 @@ class UserModel {
         parsedSugarReminder = true;
       } catch (e) {
         // If parsing fails, check if gluco_time string exists
-        if (map['gluco_time'] != null) {
-          parsedGlucoTime = map['gluco_time'];
-          parsedSugarReminder = true;
-        }
+        parsedGlucoTime = null;
+        parsedSugarReminder = true;
       }
-    } else if (map['gluco_time'] != null) {
-      // Fallback: check for gluco_time string field
-      parsedGlucoTime = map['gluco_time'];
-      parsedSugarReminder = true;
     }
 
     // Parse medicine_reminder (DateTime) to extract time string
@@ -61,23 +55,17 @@ class UserModel {
         parsedMedicineReminder = true;
       } catch (e) {
         // If parsing fails, check if medicine_time string exists
-        if (map['medicine_time'] != null) {
-          parsedMedicineTime = map['medicine_time'];
-          parsedMedicineReminder = true;
-        }
+        parsedMedicineTime = null;
+        parsedMedicineReminder = true;
       }
-    } else if (map['medicine_time'] != null) {
-      // Fallback: check for medicine_time string field
-      parsedMedicineTime = map['medicine_time'];
-      parsedMedicineReminder = true;
     }
 
     return UserModel(
+      id: map['id'],
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       password: map['password'],
       token: map['token'],
-      id: map['id'],
       gender: map['gender'],
       glucoTime: parsedGlucoTime,
       medicineTime: parsedMedicineTime,

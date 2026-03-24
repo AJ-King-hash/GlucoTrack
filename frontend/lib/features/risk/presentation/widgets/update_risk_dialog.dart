@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
-import 'package:untitled10/features/home/presentation/widgets/dropdown.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/features/home/presentation/widgets/dropdown.dart';
 
 class UpdateRiskDialog extends StatefulWidget {
   final RiskEntity risk;
@@ -20,7 +20,7 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   final _formKey = GlobalKey<FormState>();
   late int age;
   late double weight, height;
-  late int? sugarPregnancy;
+  late int sugarPregnancy;
   late bool smoking, geneticDisease;
   late String physicalActivity, diabetesType, medicineType;
   bool isLoading = false;
@@ -43,9 +43,6 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
-    final userCubit = context.read<UserCubit>();
-    final user = (userCubit.state as UserLoaded?)?.userModel;
-    final isFemale = user?.gender == 'female';
 
     return AlertDialog(
       title: Text(locale.translate('update_risk')),
@@ -72,16 +69,14 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
               ),
 
               // Sugar Pregnancy - only show for female
-              if (isFemale)
-                _buildTextField(
-                  label: 'sugar_pregnancy',
-                  initial: sugarPregnancy?.toString() ?? '',
-                  onSave:
-                      (v) =>
-                          sugarPregnancy =
-                              v?.isEmpty == false ? int.tryParse(v!) : null,
-                  required: false,
-                ),
+              _buildTextField(
+                label: 'sugar_pregnancy',
+                initial: sugarPregnancy.toString(),
+                onSave:
+                    (v) =>
+                        sugarPregnancy =
+                            v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
+              ),
 
               CheckboxListTile(
                 title: Text(locale.translate('smoking')),

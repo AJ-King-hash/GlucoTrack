@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// A reusable empty state widget that can be customized for different use cases.

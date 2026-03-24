@@ -10,26 +10,18 @@ class UserInfoCard extends StatelessWidget {
   final int age;
   final int weight;
   final Gender? gender;
-  final MaritalStatus? maritalStatus;
-  final int pregnancyCount;
   final VoidCallback onAgeTap;
   final VoidCallback onWeightTap;
   final ValueChanged<Gender> onGenderChanged;
-  final ValueChanged<MaritalStatus> onMaritalStatusChanged;
-  final ValueChanged<int> onPregnancyCountChanged;
 
   const UserInfoCard({
     super.key,
     required this.age,
     required this.weight,
     required this.gender,
-    required this.maritalStatus,
-    required this.pregnancyCount,
     required this.onAgeTap,
     required this.onWeightTap,
     required this.onGenderChanged,
-    required this.onMaritalStatusChanged,
-    required this.onPregnancyCountChanged,
   });
 
   @override
@@ -108,48 +100,6 @@ class UserInfoCard extends StatelessWidget {
           SizedBox(height: 16.h),
 
           /// Marital Status (Only if female)
-          if (gender == Gender.female)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ChoiceChip(
-                  label: Text(locale.translate('single')),
-                  selected: maritalStatus == MaritalStatus.single,
-                  onSelected:
-                      (_) => onMaritalStatusChanged(MaritalStatus.single),
-                ),
-                SizedBox(width: 10.w),
-                ChoiceChip(
-                  label: Text(locale.translate('married')),
-                  selected: maritalStatus == MaritalStatus.married,
-                  onSelected:
-                      (_) => onMaritalStatusChanged(MaritalStatus.married),
-                ),
-              ],
-            ),
-
-          SizedBox(height: 16.h),
-
-          /// Pregnancy Count (Only if married female)
-          if (gender == Gender.female && maritalStatus == MaritalStatus.married)
-            Row(
-              children: [
-                Text('${locale.translate('pregnancy_count')}: $pregnancyCount'),
-                SizedBox(width: 10.w),
-                IconButton(
-                  onPressed: () => onPregnancyCountChanged(pregnancyCount + 1),
-                  icon: Icon(Icons.add),
-                ),
-                IconButton(
-                  onPressed: () {
-                    if (pregnancyCount > 0) {
-                      onPregnancyCountChanged(pregnancyCount - 1);
-                    }
-                  },
-                  icon: Icon(Icons.remove),
-                ),
-              ],
-            ),
         ],
       ),
     );

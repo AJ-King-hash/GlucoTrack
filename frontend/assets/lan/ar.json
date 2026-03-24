@@ -27,7 +27,8 @@
   "age": "العمر",
   "weight": "الوزن (كجم)",
   "height": "الطول (م)",
-  "sugar_pregnancy": "سكر الحمل",
+  "sugar_pregnancy": "عدد مرات السكر",
+  "pregnancy_count_hint": "عدد المرات التي أصبت فيها بالسكر ",
   "smoking": "التدخين",
   "genetic_disease": "مرض جيني",
   "physical_activity": "النشاط البدني",
@@ -107,5 +108,9 @@
   "medicine_reminder_time": "وقت الدواء",
   "set_time": "ضبط الوقت",
   "select_time": "اختيار الوقت",
-  "save": "حفظ"
+  "save": "حفظ",
+  "gender": "الجنس",
+  "male": "ذكر",
+  "female": "أنثى",
+  "select_gender": "اختر الجنس"
 }

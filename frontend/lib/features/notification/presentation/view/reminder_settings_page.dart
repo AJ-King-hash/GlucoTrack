@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/notification/presentation/manager/notification_cubit.dart';
-import 'package:untitled10/features/notification/presentation/manager/notification_state.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/notification/presentation/manager/notification_cubit.dart';
+import 'package:glucotrack/features/notification/presentation/manager/notification_state.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 
 class ReminderSettingsPage extends StatefulWidget {
   const ReminderSettingsPage({super.key});
@@ -28,26 +29,67 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Use addPostFrameCallback to ensure context is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSettingsFromUser();
+    });
+  }
+
+  void _loadSettingsFromUser() {
+    // Check if mounted before using context
+    if (!mounted) return;
+
+    // load the user.
+    context.read<UserCubit>().getUser();
+
+    try {
+      final userState = context.read<UserCubit>().state;
+      if (userState is UserLoaded) {
+        final user = userState.userModel;
+
+        // Parse medicine time if available
+        if (user.medicineTime != null && user.medicineTime!.isNotEmpty) {
+          final parts = user.medicineTime!.split(':');
+          if (parts.length == 2) {
+            _medicineTime = TimeOfDay(
+              hour: int.tryParse(parts[0]) ?? 0,
+              minute: int.tryParse(parts[1]) ?? 0,
+            );
+          }
+        }
+
+        // Parse gluco time if available
+        if (user.glucoTime != null && user.glucoTime!.isNotEmpty) {
+          final parts = user.glucoTime!.split(':');
+          if (parts.length == 2) {
+            _glucoTime = TimeOfDay(
+              hour: int.tryParse(parts[0]) ?? 0,
+              minute: int.tryParse(parts[1]) ?? 0,
+            );
+          }
+        }
+
+        // Set timezone if available (user model should have this field)
+        // For now we keep the default, but you can add timezone to UserModel if needed
+
+        // Trigger rebuild to display loaded values
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      // If UserCubit is not available, use defaults
+      debugPrint('Error loading settings from UserCubit: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<NotificationCubit>(),
-      child: BlocConsumer<NotificationCubit, NotificationState>(
-        listener: (context, state) {
-          if (state is ReminderSettingsUpdated) {
-            Fluttertoast.showToast(
-              msg: state.message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-            );
-          } else if (state is NotificationError) {
-            Fluttertoast.showToast(
-              msg: state.message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-            );
-          }
-        },
+      child: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
           final locale = context.read<LocaleCubit>();
           return Scaffold(
@@ -87,7 +129,7 @@ class _ReminderSettingsPageState extends State<ReminderSettingsPage> {
                     onClear: () => setState(() => _glucoTime = null),
                   ),
                   const SizedBox(height: 24),
-                  _buildSectionTitle('Timezone'),
+                  _buildSectionTitle(locale.translate('timezone')),
                   const SizedBox(height: 8),
                   _buildTimezoneSelector(),
                   const SizedBox(height: 32),

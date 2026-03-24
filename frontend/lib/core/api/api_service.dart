@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:untitled10/core/api/dio_client.dart';
-import 'package:untitled10/core/api/end_point.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/utils/either.dart';
+import 'package:glucotrack/core/api/dio_client.dart';
+import 'package:glucotrack/core/api/end_point.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/utils/either.dart';
 
 /// Unified API Service for GlucoTrack Application
 ///
