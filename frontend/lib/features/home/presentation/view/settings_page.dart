@@ -96,14 +96,14 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             centerTitle: true,
             backgroundColor: AppColor.backgroundNeutral,
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.notifications);
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, AppRoutes.notifications);
+            //     },
+            //   ),
+            // ],
           ),
           backgroundColor: AppColor.backgroundNeutral,
           body: BlocBuilder<SettingsCubit, SettingsState>(
