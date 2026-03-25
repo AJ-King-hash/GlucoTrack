@@ -6,6 +6,10 @@ def get_all(user_id:int,db:Session):
     analysis=db.query(models.PrevAnalyse).where(models.PrevAnalyse.user_id==user_id).all()
     return analysis
 
+def get(arc_id:int,db:Session):
+    analyse=db.query(models.PrevAnalyse).where(models.PrevAnalyse.id==arc_id).first()
+    return analyse
+
 def delete(id:int,db:Session):
     analyse=db.query(models.PrevAnalyse).filter(models.PrevAnalyse.id==id).first()
     if not analyse:

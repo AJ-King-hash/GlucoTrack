@@ -9,7 +9,7 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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")
+        api_key="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")
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
@@ -127,9 +127,9 @@ class GlucoBot():
             return fallback_response
 
 
-glucoBot=GlucoBot() 
-# print(glucoBot.chat(
-#     " i need apps in android to edit the video for the background and sounds in videos "
+# glucoBot=GlucoBot() 
+# print(glucoBot.chatAsJSON(
+    # "two kg of meat and salmon with cheese and 2 kg of sugar"
 # ))
 # res=glucoBot.chatAsJSON("tow cup of milks")
 
