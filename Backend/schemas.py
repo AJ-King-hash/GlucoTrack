@@ -56,15 +56,17 @@ class MealBase(BaseModel):
     meal_type:str
     meal_time:datetime
     user_id:int
-    
-class MealAll(MealBase):
-    id:int
-    user_id:int
-    title:str
     created_at:datetime
     updated_at:Optional[datetime] = None
-    class Config():
-        from_attributes=True
+    
+# class MealAll(MealBase):
+#     id:int
+#     user_id:int
+#     title:str
+#     created_at:datetime
+#     updated_at:Optional[datetime] = None
+#     class Config():
+#         from_attributes=True
 
 class AnalyseShow(AnalyseBase):
     id:int

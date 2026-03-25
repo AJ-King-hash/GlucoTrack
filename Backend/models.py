@@ -24,6 +24,8 @@ class Meal(Base):
     meal_type=Column(String)
     meal_time=Column(DateTime(timezone=True))
     description=Column(String,nullable=True)
+    created_at=Column(DateTime(timezone=True),default=datetime.now(timezone.utc))
+    updated_at=Column(DateTime(timezone=True),nullable=True) 
     creator=relationship("User",back_populates="meals")
     analyse=relationship("PrevAnalyse",back_populates="meal")
 

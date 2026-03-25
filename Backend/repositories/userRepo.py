@@ -66,14 +66,14 @@ def update(id,request,db:Session):
     if request.gluco_time:
         user.gluco_reminder = parse_time_to_datetime(request.gluco_time)
         print(parse_time_to_datetime(request.gluco_time))
-    elif request.gluco_time is None and hasattr(request, 'gluco_time'):
-        # Allow clearing the reminder
-        user.gluco_reminder = None
+    # elif request.gluco_time is None and hasattr(request, 'gluco_time'):
+    #     # Allow clearing the reminder
+    #     user.gluco_reminder = None
     
     if request.medicine_time:
         user.medicine_reminder = parse_time_to_datetime(request.medicine_time)
-    elif request.medicine_time is None and hasattr(request, 'medicine_time'):
-        user.medicine_reminder = None
+    # elif request.medicine_time is None and hasattr(request, 'medicine_time'):
+    #     user.medicine_reminder = None
     
     # Update FCM token if provided
     if request.fcm_token:
