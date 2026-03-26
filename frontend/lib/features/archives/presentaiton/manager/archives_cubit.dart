@@ -138,6 +138,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         );
       },
       (newArchive) {
+        print("newArchive: " + newArchive.toString());
         ToastUtility.showSuccess("Archive created successfully");
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList = [...state.archives, newArchive];

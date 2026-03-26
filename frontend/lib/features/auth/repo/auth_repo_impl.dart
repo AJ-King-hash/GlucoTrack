@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:glucotrack/core/services/notification_service.dart';
 import 'package:glucotrack/core/utils/either.dart';
 import 'package:glucotrack/core/errors/failure.dart';
 import 'package:glucotrack/core/api/api_service.dart';
@@ -12,8 +13,9 @@ class AuthRepoImpl extends AuthRepository {
   final ApiService apiService;
   UserModel? _currentUser;
   final UserRepository? userRepository;
+  final NotificationService _notificationService;
 
-  AuthRepoImpl(this.apiService, this.userRepository);
+  AuthRepoImpl(this.apiService, this.userRepository, this._notificationService);
   //Login method
 
   @override
@@ -53,6 +55,8 @@ class AuthRepoImpl extends AuthRepository {
         await SecureStorageService.saveIsFirstTime(false);
         // Save user data to secure storage for offline access
         await _saveUserData(user);
+
+        await _notificationService.registerFcmTokenAfterLogin();
         return Right(user);
       }
       return Left(

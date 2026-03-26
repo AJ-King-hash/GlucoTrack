@@ -45,7 +45,11 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepoImpl(sl<ApiService>(), sl<UserRepository>()),
+    () => AuthRepoImpl(
+      sl<ApiService>(),
+      sl<UserRepository>(),
+      sl<NotificationService>(),
+    ),
   );
 
   sl.registerLazySingleton<UserRepository>(

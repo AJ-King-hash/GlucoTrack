@@ -8,14 +8,14 @@ from datetime import datetime,timedelta
 import pytz
 
 def update_fcm_token( user_id: int, fcm_token: str,db: Session = Depends(get_db)):
-    user = userRepo.show(db, user_id)
+    user = userRepo.show(user_id,db)
     if user:
         user.fcm_token = fcm_token
         db.commit()
         db.refresh(user)
     return user
 def update_reminders( user_id: int, gluco_time: str = None, medicine_time: str = None, timezone: str = "UTC",db:Session=Depends(get_db)):
-    user = userRepo.show(db, user_id)
+    user = userRepo.show(user_id,db)
     if not user:
         return None
     

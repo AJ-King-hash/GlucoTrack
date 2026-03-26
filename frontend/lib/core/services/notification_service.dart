@@ -27,6 +27,13 @@ class NotificationService {
 
   NotificationService(this._apiService);
 
+  Future<void> registerFcmTokenAfterLogin() async {
+    final token = await _messaging?.getToken();
+    if (token != null) {
+      await _apiService.updateFcmToken(token);
+    }
+  }
+
   /// Initialize Firebase and notification services
   Future<void> initialize() async {
     try {

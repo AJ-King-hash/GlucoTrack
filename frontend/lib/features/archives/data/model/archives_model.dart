@@ -18,7 +18,7 @@ class ArchiveModel {
   factory ArchiveModel.fromJson(Map<String, dynamic> json) {
     return ArchiveModel(
       id: json['id'],
-      glucoPercent: (json['gluco_percent'] as num).toDouble(),
+      glucoPercent: (json['gluco_percent']),
       analysedAt: DateTime.parse(json['analysed_at']),
       riskResult: json['risk_result'],
       meal: MealModel.fromJson(json['meal']),
