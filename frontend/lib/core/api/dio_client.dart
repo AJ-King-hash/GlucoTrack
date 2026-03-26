@@ -9,7 +9,7 @@ class DioClient {
   // Use String.fromEnvironment for build-time configuration
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
-    defaultValue: 'http://192.168.1.2:8000',
+    defaultValue: 'http://192.168.33.24:8000',
   );
   static final DioClient _instance = DioClient._internal();
 

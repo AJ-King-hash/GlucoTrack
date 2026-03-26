@@ -56,7 +56,6 @@ class MealBase(BaseModel):
     meal_type:str
     meal_time:datetime
     user_id:int
-    created_at:datetime
     updated_at:Optional[datetime] = None
     
 # class MealAll(MealBase):

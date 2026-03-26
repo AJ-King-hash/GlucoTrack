@@ -112,5 +112,9 @@
   "gender": "الجنس",
   "male": "ذكر",
   "female": "أنثى",
-  "select_gender": "اختر الجنس"
+  "select_gender": "اختر الجنس",
+  "welcome_message": "مرحباً",
+  "ayah_text": "و نفس وما سواها",
+  "ayah_reference": "سورة الشمس 91:7",
+  "check_sugar_message": "حان وقت قياس مستوى السكر"
 }
