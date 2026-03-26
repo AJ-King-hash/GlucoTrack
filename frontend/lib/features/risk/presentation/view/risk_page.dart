@@ -107,9 +107,10 @@ class _RiskPageState extends State<RiskPage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCreateRiskDialog(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: BlocBuilder<RiskCubit, RiskState>(
+        builder: (context, state) {
+          return _buildFloatingActionButton(context, state);
+        },
       ),
     );
   }
@@ -123,6 +124,18 @@ class _RiskPageState extends State<RiskPage> {
             child: const CreateRiskDialog(),
           ),
     );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context, RiskState state) {
+    // Only show the add button when no risk exists for the user
+    if (state is RiskLoaded && state.risk == null) {
+      return FloatingActionButton(
+        onPressed: () => _showCreateRiskDialog(context),
+        child: const Icon(Icons.add),
+      );
+    }
+    // Hide the button when a risk already exists
+    return const SizedBox.shrink();
   }
 }
 
