@@ -6,6 +6,7 @@ class User(BaseModel):
     name:str
     email:str
     password:str
+    fcm_token:Optional[str]=None
 class UserUpdate(BaseModel):
     name:Optional[str] = None
     email:Optional[str] = None

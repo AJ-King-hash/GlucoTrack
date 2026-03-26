@@ -116,7 +116,7 @@ class ArchiveDetailsPage extends StatelessWidget {
                 height: 120,
                 width: 120,
                 child: CircularProgressIndicator(
-                  value: archive.glucoPercent / 100,
+                  value: archive.glucoPercent,
                   strokeWidth: 10,
                   color: statusColor,
                   backgroundColor: statusColor.withValues(alpha: 0.1),
