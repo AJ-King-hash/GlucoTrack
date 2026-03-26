@@ -51,15 +51,17 @@ async def send_reminders():
         logger.warning("Skipping reminders: Firebase is not initialized")
         return
 
-    now = datetime.now(timezone.utc)
+    # now = datetime.now(timezone.utc)
+    now = datetime.now()
     db = SessionLocal()
-
+    # print("compare offf:",now)
+    # 2026-03-26 14:00:00.000000
     try:
         logger.info(f"Starting reminder check at {now}")
 
         # ==================== MEDICINE REMINDERS ====================
         medicine_users = db.query(models.User).filter(
-            # models.User.medicine_reminder <= now,
+            models.User.medicine_reminder <= now,
             models.User.medicine_reminder.isnot(None),
             models.User.fcm_token.isnot(None)
         ).all()
@@ -89,7 +91,7 @@ async def send_reminders():
 
         # ==================== GLUCOSE REMINDERS ====================
         gluco_users = db.query(models.User).filter(
-            # models.User.gluco_reminder <= now,
+            models.User.gluco_reminder <= now,
             models.User.gluco_reminder.isnot(None),
             models.User.fcm_token.isnot(None)
         ).all()
