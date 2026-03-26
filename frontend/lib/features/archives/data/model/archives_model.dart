@@ -5,6 +5,8 @@ class ArchiveModel {
   final double glucoPercent;
   final DateTime analysedAt;
   final String riskResult;
+  final String? recommendations;
+  final String? mealTips;
   final MealModel meal;
 
   ArchiveModel({
@@ -12,6 +14,8 @@ class ArchiveModel {
     required this.glucoPercent,
     required this.analysedAt,
     required this.riskResult,
+    this.recommendations,
+    this.mealTips,
     required this.meal,
   });
 
@@ -21,6 +25,8 @@ class ArchiveModel {
       glucoPercent: (json['gluco_percent']),
       analysedAt: DateTime.parse(json['analysed_at']),
       riskResult: json['risk_result'],
+      recommendations: json['recommendations'],
+      mealTips: json['meal_tips'],
       meal: MealModel.fromJson(json['meal']),
     );
   }
@@ -43,6 +49,8 @@ class ArchiveModel {
       'gluco_percent': glucoPercent,
       'analysed_at': analysedAt.toIso8601String(),
       'risk_result': riskResult,
+      "recommendations": recommendations,
+      "meal_tips": mealTips,
       'meal': meal.toJson(),
     };
   }

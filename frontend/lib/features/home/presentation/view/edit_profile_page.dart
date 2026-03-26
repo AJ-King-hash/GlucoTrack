@@ -29,7 +29,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
-    context.read<UserCubit>().getUser();
     super.initState();
     if (widget.userModel != null) {
       print("user exist: " + widget.userModel.toString());
@@ -37,15 +36,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
       emailController.text = widget.userModel!.email;
       selectedGender = widget.userModel!.gender;
     } else {
+      // Check if user data is already loaded in the Cubit
+      final currentState = context.read<UserCubit>().state;
+      if (currentState is UserLoaded) {
+        final user = currentState.userModel;
+        nameController.text = user.name;
+        emailController.text = user.email;
+        selectedGender = user.gender;
+      }
+      // Also listen for future updates
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
-        if (state is UserLoaded && state.userModel != null) {
+        if (state is UserLoaded) {
           final user = state.userModel;
-          print("user fetched: " + user.toString());
           nameController.text = user.name;
           emailController.text = user.email;
-          selectedGender = user.gender;
+          setState(() {
+            selectedGender = user.gender;
+          });
         }
       });
+      // Fetch user data if not already loaded
+      if (currentState is! UserLoaded) {
+        context.read<UserCubit>().getUser();
+      }
     }
   }
 

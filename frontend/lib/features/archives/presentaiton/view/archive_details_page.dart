@@ -31,10 +31,13 @@ class ArchiveDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(locale.translate('analysis_details')),
         elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
-        // Best practice to prevent overflow
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(20),
+
         child: Column(
           children: [
             // 1. The Hero Percentage Header
@@ -42,7 +45,28 @@ class ArchiveDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 2. Meal Information Section
+            // 1. NEW: Proactive Meal Tips
+            _buildInsightSection(
+              title: locale.translate('meal_tips'),
+              content: archive.mealTips ?? 'No specific tips for this meal',
+              icon: Icons.lightbulb_outline,
+              accentColor: Colors.orange,
+            ),
+
+            const SizedBox(height: 20),
+
+            // 2. NEW: Health Recommendations (AI Insight)
+            _buildInsightSection(
+              title: locale.translate('recommendations'),
+              content:
+                  archive.recommendations ?? 'No recommendations available',
+              icon: Icons.auto_awesome, // Represents AI/Smart insight
+              accentColor: AppColor.info,
+            ),
+
+            const SizedBox(height: 20),
+
+            // 4. Meal Information Section
             _buildInfoSection(
               title: locale.translate('meal_details'),
               icon: Icons.restaurant,
@@ -60,7 +84,7 @@ class ArchiveDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 3. Time and Metadata Section
+            // 5. Time and Metadata Section
             _buildInfoSection(
               title: locale.translate('report_metadata'),
               icon: Icons.history,
@@ -78,12 +102,74 @@ class ArchiveDetailsPage extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
+  // Modern Insight Section for Recommendations and Tips
+  Widget _buildInsightSection({
+    required String title,
+    required String content,
+    required IconData icon,
+    required Color accentColor,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: accentColor.withOpacity(0.1), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: accentColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            content,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.blueGrey[800],
+              height: 1.5, // Better readability for long text
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Rest of your existing helper methods (_buildHeroHeader, _buildInfoSection, etc.)
   Widget _buildHeroHeader(Color statusColor, LocaleCubit locale) {
     return Container(
       width: double.infinity,
@@ -92,10 +178,7 @@ class ArchiveDetailsPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
         ],
       ),
       child: Column(
@@ -108,7 +191,6 @@ class ArchiveDetailsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          // Circular visual indicator
           Stack(
             alignment: Alignment.center,
             children: [
@@ -116,14 +198,16 @@ class ArchiveDetailsPage extends StatelessWidget {
                 height: 120,
                 width: 120,
                 child: CircularProgressIndicator(
-                  value: archive.glucoPercent,
+                  // Note: Ensure archive.glucoPercent is 0.0 to 1.0 for the indicator
+                  // If it's a raw number like 1300, you need to normalize it
+                  value: archive.glucoPercent / 100,
                   strokeWidth: 10,
                   color: statusColor,
-                  backgroundColor: statusColor.withValues(alpha: 0.1),
+                  backgroundColor: statusColor.withOpacity(0.1),
                 ),
               ),
               Text(
-                "${archive.glucoPercent.toStringAsFixed(1)}%",
+                "${archive.glucoPercent.toStringAsFixed(1)}",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
