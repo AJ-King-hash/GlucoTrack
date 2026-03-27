@@ -34,10 +34,8 @@ class UserCubit extends Cubit<UserState> {
         },
         (user) {
           if (user != null) {
-            ToastUtility.showSuccess("Register successful");
             emit(UserSuccess("Register successful"));
           } else {
-            ToastUtility.showError("User creation failed");
             emit(UserError("User creation failed"));
           }
         },
