@@ -190,7 +190,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "update_risk": "Update Risk",
       "weight": "Weight (kg)",
       "height": "High Activity",
-      "sugar_pregnancy": "",
+      "sugar_pregnancy": "Diabetes Occurrences",
       "smoking": "Smoking",
       "genetic_disease": "Genetic Disease",
       "physical_activity": "Physical Activity",
