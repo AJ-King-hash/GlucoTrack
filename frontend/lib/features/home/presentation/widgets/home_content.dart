@@ -170,7 +170,7 @@ class _HomeContentState extends State<HomeContent> {
                                         .updateActivity(1),
                               ),
                               OptionCard(
-                                label: locale.translate('height'),
+                                label: locale.translate('high_activity'),
                                 icon: Icons.directions_run,
                                 selected: state.activity == 2,
                                 onTap:
