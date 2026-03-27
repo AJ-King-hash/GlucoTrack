@@ -48,8 +48,6 @@ class UserCubit extends Cubit<UserState> {
       ToastUtility.showError(errMsg);
       emit(UserError(errMsg));
     }
-
-    GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
   }
 
   //function for get user data
