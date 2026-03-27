@@ -24,8 +24,8 @@ class UserRepositoryImpl implements UserRepository {
 
     return result.fold((failure) => Left(failure), (data) {
       final responseData = data as Map<String, dynamic>;
-      if (responseData['data'] != null) {
-        final user = UserModel.fromJson(responseData['data']);
+      if (responseData['user'] != null) {
+        final user = UserModel.fromJson(responseData['user']);
         if (user.token != null) {
           SecureStorageService.saveToken(user.token!);
         }

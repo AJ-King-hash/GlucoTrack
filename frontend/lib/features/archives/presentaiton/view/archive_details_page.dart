@@ -200,7 +200,7 @@ class ArchiveDetailsPage extends StatelessWidget {
                 child: CircularProgressIndicator(
                   // Note: Ensure archive.glucoPercent is 0.0 to 1.0 for the indicator
                   // If it's a raw number like 1300, you need to normalize it
-                  value: archive.glucoPercent / 100,
+                  value: archive.glucoPercent,
                   strokeWidth: 10,
                   color: statusColor,
                   backgroundColor: statusColor.withOpacity(0.1),
