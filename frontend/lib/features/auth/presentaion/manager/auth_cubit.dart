@@ -10,26 +10,18 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
-    try {
-      final result = await authRepository.login(email, password);
-      result.fold((failure) => emit(AuthError(failure.message)), (user) {
-        if (user != null) {
-          // Save user ID to secure storage
-          if (user.id != null) {
-            PrefHelper.saveUserId(user.id.toString());
-          }
-          emit(AuthSuccess("Login successful"));
-        } else {
-          emit(AuthError("Invalid credentials"));
+    final result = await authRepository.login(email, password);
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      if (user != null) {
+        // Save user ID to secure storage
+        if (user.id != null) {
+          PrefHelper.saveUserId(user.id.toString());
         }
-      });
-    } catch (e) {
-      String errMsg = "Error in Login";
-      if (e is ApiError) {
-        errMsg = e.message;
+        emit(AuthSuccess("Login successful"));
+      } else {
+        emit(AuthError("Invalid credentials"));
       }
-      emit(AuthError(errMsg));
-    }
+    });
   }
 
   Future<void> logout() async {
