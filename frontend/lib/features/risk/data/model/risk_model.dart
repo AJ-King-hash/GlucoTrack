@@ -20,7 +20,7 @@ class RiskModel extends RiskEntity {
   factory RiskModel.fromJson(Map<String, dynamic> json) {
     return RiskModel(
       id: json['id'] as int?,
-      age: json['age'] as int,
+      age: (json['age'] == null ? 30 : json['age'] as int),
       weight: (json['weight'] as num).toDouble(),
       height: (json['height'] as num).toDouble(),
       bmi: (json['BMI'] as num).toDouble(),

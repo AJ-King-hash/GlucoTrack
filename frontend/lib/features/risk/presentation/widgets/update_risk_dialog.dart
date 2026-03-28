@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glucotrack/core/localization/locale_cubit.dart';
 import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
 import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
-import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_state.dart';
 import 'package:glucotrack/features/home/presentation/widgets/dropdown.dart';
 
 class UpdateRiskDialog extends StatefulWidget {
@@ -44,110 +43,116 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
 
-    return AlertDialog(
-      title: Text(locale.translate('update_risk')),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField(
-                label: 'age',
-                initial: age.toString(),
-                onSave: (v) => age = int.parse(v!),
-              ),
-              _buildTextField(
-                label: 'weight',
-                initial: weight.toString(),
-                onSave: (v) => weight = double.parse(v!),
-              ),
-              _buildTextField(
-                label: 'height',
-                initial: height.toString(),
-                onSave: (v) => height = double.parse(v!),
-              ),
+    return BlocListener<RiskCubit, RiskState>(
+      listener: (context, state) {
+        if (state is RiskUpdated || state is RiskFailure) {
+          Navigator.pop(context);
+        }
+      },
+      child: AlertDialog(
+        title: Text(locale.translate('update_risk')),
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTextField(
+                  label: 'age',
+                  initial: age.toString(),
+                  onSave: (v) => age = int.parse(v!),
+                ),
+                _buildTextField(
+                  label: 'weight',
+                  initial: weight.toString(),
+                  onSave: (v) => weight = double.parse(v!),
+                ),
+                _buildTextField(
+                  label: 'height',
+                  initial: height.toString(),
+                  onSave: (v) => height = double.parse(v!),
+                ),
 
-              // Sugar Pregnancy - only show for female
-              _buildTextField(
-                label: 'sugar_pregnancy',
-                initial: sugarPregnancy.toString(),
-                onSave:
-                    (v) =>
-                        sugarPregnancy =
-                            v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
-              ),
+                // Sugar Pregnancy - only show for female
+                _buildTextField(
+                  label: 'sugar_pregnancy',
+                  initial: sugarPregnancy.toString(),
+                  onSave:
+                      (v) =>
+                          sugarPregnancy =
+                              v?.isEmpty == false ? int.tryParse(v!) ?? 0 : 0,
+                ),
 
-              CheckboxListTile(
-                title: Text(locale.translate('smoking')),
-                value: smoking,
-                onChanged: (v) => setState(() => smoking = v!),
-              ),
+                CheckboxListTile(
+                  title: Text(locale.translate('smoking')),
+                  value: smoking,
+                  onChanged: (v) => setState(() => smoking = v!),
+                ),
 
-              CheckboxListTile(
-                title: Text(locale.translate('genetic_disease')),
-                value: geneticDisease,
-                onChanged: (v) => setState(() => geneticDisease = v!),
-              ),
+                CheckboxListTile(
+                  title: Text(locale.translate('genetic_disease')),
+                  value: geneticDisease,
+                  onChanged: (v) => setState(() => geneticDisease = v!),
+                ),
 
-              _buildTextField(
-                label: 'physical_activity',
-                initial: physicalActivity,
-                onSave: (v) => physicalActivity = v!,
-                keyboardType: TextInputType.text,
-              ),
+                _buildTextField(
+                  label: 'physical_activity',
+                  initial: physicalActivity,
+                  onSave: (v) => physicalActivity = v!,
+                  keyboardType: TextInputType.text,
+                ),
 
-              Dropdown(
-                label: locale.translate('diabetes_type'),
-                items: const ['d1', 'd2'],
-                initialValue: diabetesType.isNotEmpty ? diabetesType : null,
-                onChanged: (v) => setState(() => diabetesType = v ?? ''),
-                validator:
-                    (v) =>
-                        v == null || v.isEmpty
-                            ? locale.translate('please_select_diabetes_type')
-                            : null,
-              ),
-              const SizedBox(height: 16),
-              Dropdown(
-                label: locale.translate('medicine_type'),
-                items: const ['Insuline', 'MouthSugarLower'],
-                initialValue: medicineType.isNotEmpty ? medicineType : null,
-                onChanged: (v) => setState(() => medicineType = v ?? ''),
-                validator:
-                    (v) =>
-                        v == null || v.isEmpty
-                            ? locale.translate('please_select_medicine_type')
-                            : null,
-              ),
-            ],
+                Dropdown(
+                  label: locale.translate('diabetes_type'),
+                  items: const ['d1', 'd2'],
+                  initialValue: diabetesType.isNotEmpty ? diabetesType : null,
+                  onChanged: (v) => setState(() => diabetesType = v ?? ''),
+                  validator:
+                      (v) =>
+                          v == null || v.isEmpty
+                              ? locale.translate('please_select_diabetes_type')
+                              : null,
+                ),
+                const SizedBox(height: 16),
+                Dropdown(
+                  label: locale.translate('medicine_type'),
+                  items: const ['Insuline', 'MouthSugarLower'],
+                  initialValue: medicineType.isNotEmpty ? medicineType : null,
+                  onChanged: (v) => setState(() => medicineType = v ?? ''),
+                  validator:
+                      (v) =>
+                          v == null || v.isEmpty
+                              ? locale.translate('please_select_medicine_type')
+                              : null,
+                ),
+              ],
+            ),
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(locale.translate('cancel')),
+          ),
+          ElevatedButton(
+            onPressed: isLoading ? null : _submit,
+            child:
+                isLoading
+                    ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : Text(locale.translate('update')),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(locale.translate('cancel')),
-        ),
-        ElevatedButton(
-          onPressed: isLoading ? null : _submit,
-          child:
-              isLoading
-                  ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                  : Text(locale.translate('update')),
-        ),
-      ],
     );
   }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      setState(() => isLoading = true);
 
       final bmi = height > 0 ? weight / (height * height) : 0.0;
 
@@ -169,7 +174,6 @@ class _UpdateRiskDialogState extends State<UpdateRiskDialog> {
           updatedAt: DateTime.now(),
         ),
       );
-      Navigator.pop(context);
     }
   }
 

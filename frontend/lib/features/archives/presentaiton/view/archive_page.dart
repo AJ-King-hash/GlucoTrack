@@ -53,15 +53,7 @@ class ArchivesPage extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               centerTitle: true,
-              actions: [
-                _buildFilterButton(
-                  context,
-                  state,
-                  cubit,
-                  locale,
-                  hasActiveFilter,
-                ),
-              ],
+              actions: [],
             ),
             body: _buildBody(context, state, cubit, locale),
           );

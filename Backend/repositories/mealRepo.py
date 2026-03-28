@@ -24,10 +24,11 @@ def create(request,db:Session,current_user):
         ).order_by(models.Meal.meal_time.desc()).first()
         
         if prev_meal:
-            res_dict=gluco_bot.chatAsJSON("notice:I am analyse this gl of meal_type of: "+request.meal_type+ "Right Now!, but my last meal was:"+prev_meal.description+"in: "+str(prev_meal.meal_time))
+            # Use the meal description for analysis
+            res_dict=gluco_bot.chatAsJSON(request.description)
         else:
             # No previous meal - analyze without context
-            res_dict=gluco_bot.chatAsJSON("notice:I am analyse this gl of meal_type of: "+request.meal_type+ "Right Now! This is the user's first meal record.")
+            res_dict=gluco_bot.chatAsJSON(request.description)
     if request.meal_type == "After Meal":
         res_dict=gluco_bot.chatAsJSON(request.description)
     new_meal=models.Meal(

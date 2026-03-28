@@ -56,17 +56,6 @@ class _RiskPageState extends State<RiskPage> {
                 ),
               ),
             );
-          } else if (state is RiskDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.read<LocaleCubit>().translate(
-                    'risk_deleted_successfully',
-                  ),
-                ),
-              ),
-            );
-            selectedRiskId = null;
           }
         },
         builder: (context, state) {
@@ -683,7 +672,11 @@ class RiskDetailsView extends StatelessWidget {
   void _showUpdateRiskDialog(BuildContext context, RiskEntity risk) {
     showDialog(
       context: context,
-      builder: (context) => UpdateRiskDialog(risk: risk),
+      builder:
+          (_) => BlocProvider.value(
+            value: context.read<RiskCubit>(),
+            child: UpdateRiskDialog(risk: risk),
+          ),
     );
   }
 }
