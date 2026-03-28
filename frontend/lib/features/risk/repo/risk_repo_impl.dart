@@ -32,7 +32,9 @@ class RiskRepoImpl implements RiskRepository {
 
     return result.fold(
       (failure) => Left(failure),
-      (data) => Right(RiskModel.fromJson(data as Map<String, dynamic>)),
+      (data) => Right(
+        RiskModel.fromJson(data['risk_factors'] as Map<String, dynamic>),
+      ),
     );
   }
 
@@ -85,7 +87,9 @@ class RiskRepoImpl implements RiskRepository {
 
     return result.fold(
       (failure) => Left(failure),
-      (data) => Right(RiskModel.fromJson(data as Map<String, dynamic>)),
+      (data) => Right(
+        RiskModel.fromJson(data['updated_risk'] as Map<String, dynamic>),
+      ),
     );
   }
 

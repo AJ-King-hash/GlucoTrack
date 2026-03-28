@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucotrack/core/api/api_service.dart';
+import "package:glucotrack/firebase_options.dart";
 
 /// Notification Service for GlucoTrack
 ///
@@ -26,11 +27,20 @@ class NotificationService {
 
   NotificationService(this._apiService);
 
+  Future<void> registerFcmTokenAfterLogin() async {
+    final token = await _messaging?.getToken();
+    if (token != null) {
+      await _apiService.updateFcmToken(token);
+    }
+  }
+
   /// Initialize Firebase and notification services
   Future<void> initialize() async {
     try {
       // Initialize Firebase
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       // Initialize Firebase Messaging
       _messaging = FirebaseMessaging.instance;

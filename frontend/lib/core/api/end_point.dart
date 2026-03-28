@@ -35,8 +35,8 @@ class ApiEndpoints {
 
   // ==================== MEAL ====================
   static const String meal = "/meal/";
-  static String mealById(int id) => "/meal/$id";
-  static const String allMeals = "/meal/all/";
+  static String mealById(int id) => "/analyse/$id";
+  static const String allMeals = "/analyse/all/";
 
   // ==================== ANALYSIS ====================
   static const String allAnalysis = "/analyse/all/";

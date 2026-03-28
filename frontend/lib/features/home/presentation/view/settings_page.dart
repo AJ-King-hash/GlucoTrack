@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late final GlobalRefresher _refresher;
   late final UserCubit _userCubit;
+  late final StreamSubscription _refreshSubscription;
 
   @override
   void initState() {
@@ -35,9 +38,15 @@ class _SettingsPageState extends State<SettingsPage> {
     _userCubit = context.read<UserCubit>();
     _userCubit.getUser();
     _refresher = GetIt.I<GlobalRefresher>();
-    _refresher.refreshStream.listen((_) {
+    _refreshSubscription = _refresher.refreshStream.listen((_) {
       _userCubit.getUser();
     });
+  }
+
+  @override
+  void dispose() {
+    _refreshSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -86,6 +95,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Text(
               context.read<LocaleCubit>().translate('app_title'),
               style: TextStyle(
@@ -96,14 +106,14 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             centerTitle: true,
             backgroundColor: AppColor.backgroundNeutral,
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.notifications);
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, AppRoutes.notifications);
+            //     },
+            //   ),
+            // ],
           ),
           backgroundColor: AppColor.backgroundNeutral,
           body: BlocBuilder<SettingsCubit, SettingsState>(

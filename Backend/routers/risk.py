@@ -23,7 +23,7 @@ def get_risk(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2
 @router.put("/")
 def update_risk(request:schemas.RiskBase,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     
-    return {"message": "Risk updated successfully", "user": riskRepo.update(current_user.id,request,db)}
+    return {"message": "Risk updated successfully", "updated_risk": riskRepo.update(current_user.id,request,db)}
 
 @router.delete("/")
 def delete_risk(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):

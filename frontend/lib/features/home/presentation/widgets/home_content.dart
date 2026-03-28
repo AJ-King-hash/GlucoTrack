@@ -22,12 +22,9 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
-  late final HomeCubit _homeCubit;
-
   @override
   void initState() {
     super.initState();
-    _homeCubit = context.read<HomeCubit>();
   }
 
   @override
@@ -60,6 +57,7 @@ class _HomeContentState extends State<HomeContent> {
         return Scaffold(
           backgroundColor: AppColor.info,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Text(
               locale.translate('app_title'),
               style: TextStyle(
@@ -71,14 +69,14 @@ class _HomeContentState extends State<HomeContent> {
             centerTitle: true,
             backgroundColor: AppColor.backgroundNeutral,
             elevation: 0,
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.notifications);
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, AppRoutes.notifications);
+            //     },
+            //   ),
+            // ],
           ),
           body: SafeArea(
             child: Column(
@@ -173,7 +171,7 @@ class _HomeContentState extends State<HomeContent> {
                                         .updateActivity(1),
                               ),
                               OptionCard(
-                                label: locale.translate('height'),
+                                label: locale.translate('high_activity'),
                                 icon: Icons.directions_run,
                                 selected: state.activity == 2,
                                 onTap:

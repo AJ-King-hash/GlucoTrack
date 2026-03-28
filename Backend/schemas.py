@@ -6,7 +6,7 @@ class User(BaseModel):
     name:str
     email:str
     password:str
-
+    fcm_token:Optional[str]=None
 class UserUpdate(BaseModel):
     name:Optional[str] = None
     email:Optional[str] = None
@@ -37,7 +37,7 @@ class RiskShow(RiskBase):
     weight:float
     height:float
     BMI:float
-    sugar_pregnancy:Optional[int] = None
+    sugar_pregnancy:int
     smoking:bool
     genetic_disease:bool
     diabetes_type:str
@@ -57,20 +57,23 @@ class MealBase(BaseModel):
     meal_type:str
     meal_time:datetime
     user_id:int
-    
-class MealAll(MealBase):
-    id:int
-    user_id:int
-    title:str
-    created_at:datetime
     updated_at:Optional[datetime] = None
-    class Config():
-        from_attributes=True
+    
+# class MealAll(MealBase):
+#     id:int
+#     user_id:int
+#     title:str
+#     created_at:datetime
+#     updated_at:Optional[datetime] = None
+#     class Config():
+#         from_attributes=True
 
 class AnalyseShow(AnalyseBase):
     id:int
     gluco_percent:float
     risk_result:str
+    recommendations:str
+    meal_tips:str
     analysed_at:datetime
     meal:MealBase    
     class Config():
@@ -203,7 +206,7 @@ class ShowUserToken(BaseModel):
 
 class ShowUserWithMessageToken(BaseModel):
     message:str
-    user:ShowUser
+    user:ShowUserToken
     access_token: str
     token_type: str
     class Config():

@@ -27,7 +27,6 @@ class SettingsCubit extends Cubit<SettingsState> {
           ),
         );
       } else if (userState is UserSuccess) {
-        // UserCubit update succeeded, trigger refresh
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       }
     });
@@ -64,7 +63,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
 
     try {
-      final newGlucoTime = value ? '08:00' : null;
+      final newGlucoTime = value ? '08:00' : "";
 
       final updated = currentState.copyWith(
         sugarReminder: value,
@@ -73,7 +72,10 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       emit(updated);
 
-      await userCubit.updateUser(glucoTime: newGlucoTime);
+      await userCubit.updateUser(
+        glucoTime: newGlucoTime,
+        medicineTime: currentState.medicineTime,
+      );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(
@@ -117,7 +119,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       emit(updated);
 
       // Call API to update medicine reminder via user endpoint
-      await userCubit.updateUser(medicineTime: newMedicineTime);
+      await userCubit.updateUser(
+        medicineTime: newMedicineTime,
+        glucoTime: currentState.glucoTime,
+      );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(
@@ -151,7 +156,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
 
     try {
-      final updated = currentState.copyWith(glucoTime: timeString);
+      final updated = currentState.copyWith(
+        glucoTime: timeString,
+        medicineTime: currentState.medicineTime,
+      );
       emit(updated);
 
       await userCubit.updateUser(glucoTime: timeString);
@@ -191,7 +199,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       final updated = currentState.copyWith(medicineTime: timeString);
       emit(updated);
 
-      await userCubit.updateUser(medicineTime: timeString);
+      await userCubit.updateUser(
+        medicineTime: timeString,
+        glucoTime: currentState.glucoTime,
+      );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(

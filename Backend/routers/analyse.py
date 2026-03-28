@@ -37,6 +37,10 @@ router=APIRouter(
 def get_all_analysis(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return AnalyseRepo.get_all(current_user.id,db)
 
+@router.get("/{id}",response_model=schemas.AnalyseShow)
+def get_analyse(id,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
+    return AnalyseRepo.get(id,db)
+
 
 @router.delete("/{id}")
 def delete_analyse(id:int,db:Session=Depends(get_db)):

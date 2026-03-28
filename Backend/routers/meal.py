@@ -19,7 +19,7 @@ def create_meal(request:schemas.MealBase,db:Session=Depends(get_db),current_user
 def show_meal(id:int,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return mealRepo.show(id,db)
 
-@router.get("/all/",response_model=List[schemas.MealAll])
+@router.get("/all/",response_model=List[schemas.MealBase])
 def all_meals(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return mealRepo.get_all(current_user.id,db)
 

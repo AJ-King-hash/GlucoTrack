@@ -25,10 +25,10 @@ class SettingsItem extends StatelessWidget {
     return Card(
       margin: EdgeInsets.only(bottom: 8.h),
       child: ListTile(
-        leading: Icon(icon,color: Colors.blue,),
-        title: Text(title),
-        subtitle: subTitle != null ? Text(subTitle!) : null,
-        trailing: const Icon(Icons.arrow_forward,size: 16,),
+        leading: Icon(icon, color: iconColor ?? Colors.blue),
+        title: Text(title, style: TextStyle(color: titleColor)),
+        subtitle: subTitle != null ? Text(subTitle!, style: TextStyle(color: subTitleColor)) : null,
+        trailing: const Icon(Icons.arrow_forward, size: 16),
         onTap: onTap,
       ),
     );

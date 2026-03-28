@@ -24,6 +24,8 @@ class Meal(Base):
     meal_type=Column(String)
     meal_time=Column(DateTime(timezone=True))
     description=Column(String,nullable=True)
+    created_at=Column(DateTime(timezone=True),default=datetime.now(timezone.utc))
+    updated_at=Column(DateTime(timezone=True),nullable=True) 
     creator=relationship("User",back_populates="meals")
     analyse=relationship("PrevAnalyse",back_populates="meal")
 
@@ -50,7 +52,7 @@ class RiskFactor(Base):
     height=Column(Float(2))
     # divide your weight in kilograms by your height in meters squared (BMI = kg/m²)
     BMI=Column(Float(2))
-    sugar_pregnancy=Column(Integer)
+    sugar_pregnancy=Column(Integer,nullable=True)
     smoking=Column(Boolean)
     genetic_disease=Column(Boolean)
     physical_activity=Column(String)

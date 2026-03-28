@@ -40,8 +40,8 @@ class RiskCubit extends Cubit<RiskState> {
       (createdRisk) async {
         ToastUtility.showSuccess("Risk created successfully");
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
-        // Auto-fetch after creation to ensure data is fresh from server
-        await getRisk(0);
+        // Emit the created risk directly without fetching again
+        emit(RiskCreated(createdRisk));
       },
     );
   }
@@ -73,10 +73,11 @@ class RiskCubit extends Cubit<RiskState> {
         emit(RiskFailure(_mapFailureToMessage(failure)));
       },
       (updatedRisk) async {
+        print("updated risk: " + updatedRisk.age.toString());
         ToastUtility.showSuccess("Risk updated successfully");
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
-        // Auto-fetch after update to ensure data is fresh from server
-        await getRisk(0);
+        // Emit the updated risk directly without fetching again
+        emit(RiskUpdated(updatedRisk));
       },
     );
   }

@@ -4,6 +4,7 @@ import 'package:glucotrack/core/api/api_error.dart';
 import 'package:glucotrack/core/utils/global_refresher.dart';
 import 'package:glucotrack/core/utils/toast_utility.dart';
 import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
 import 'package:glucotrack/features/auth/repo/auth_repo.dart';
 import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 import 'package:glucotrack/features/user/repo/user_repo.dart';
@@ -11,7 +12,10 @@ import 'package:glucotrack/features/user/repo/user_repo.dart';
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
   final AuthRepository authRepository;
-  UserCubit(this.userRepository, this.authRepository) : super(UserInitial());
+  final AuthCubit _authCubit;
+
+  UserCubit(this.userRepository, this.authRepository, this._authCubit)
+    : super(UserInitial());
 
   /// Set user data directly (e.g., from login response) without API call
   void setUser(UserModel user) {
@@ -34,10 +38,8 @@ class UserCubit extends Cubit<UserState> {
         },
         (user) {
           if (user != null) {
-            ToastUtility.showSuccess("Register successful");
             emit(UserSuccess("Register successful"));
           } else {
-            ToastUtility.showError("User creation failed");
             emit(UserError("User creation failed"));
           }
         },
@@ -50,8 +52,6 @@ class UserCubit extends Cubit<UserState> {
       ToastUtility.showError(errMsg);
       emit(UserError(errMsg));
     }
-
-    GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
   }
 
   //function for get user data
@@ -92,6 +92,8 @@ class UserCubit extends Cubit<UserState> {
     String? password,
     String? oldPassword,
   }) async {
+    print("object");
+
     emit(UserLoading());
     try {
       final result = await userRepository.updateUser(
@@ -113,9 +115,15 @@ class UserCubit extends Cubit<UserState> {
             // Profile updated successfully - emit only UserLoaded to avoid double rebuild
             ToastUtility.showSuccess("Profile updated successfully");
             emit(UserLoaded(user));
+            if (oldPassword != null) {
+              _authCubit.logout();
+            } else {
+              GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+            }
           } else {
             ToastUtility.showError("Failed to update profile");
             emit(UserError("Failed to update profile"));
+            GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
           }
         },
       );
@@ -127,6 +135,5 @@ class UserCubit extends Cubit<UserState> {
       ToastUtility.showError(errorMsg);
       emit(UserError(errorMsg));
     }
-    GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
   }
 }

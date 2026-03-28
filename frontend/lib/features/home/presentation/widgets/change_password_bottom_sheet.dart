@@ -27,6 +27,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
   bool _isLoading = false;
 
   bool _validatePasswords() {
+    // Validate old password is not empty
     if (_oldPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
