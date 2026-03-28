@@ -7,6 +7,7 @@ import 'package:glucotrack/features/user/repo/user_repo.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final ApiService apiService;
+
   UserRepositoryImpl(this.apiService);
 
   //function for create user

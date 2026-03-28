@@ -41,7 +41,7 @@ class RiskCubit extends Cubit<RiskState> {
         ToastUtility.showSuccess("Risk created successfully");
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         // Emit the created risk directly without fetching again
-        emit(RiskLoaded(createdRisk));
+        emit(RiskCreated(createdRisk));
       },
     );
   }
