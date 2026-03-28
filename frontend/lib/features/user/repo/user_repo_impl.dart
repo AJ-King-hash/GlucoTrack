@@ -81,17 +81,23 @@ class UserRepositoryImpl implements UserRepository {
       data["old_password"] = oldPassword;
     }
 
-    if (glucoTime != null) {
+    if (glucoTime != null && glucoTime != "") {
       data['gluco_time'] = glucoTime;
+    } else if (glucoTime == "") {
+      data['gluco_time'] = null;
     }
 
-    if (medicineTime != null) {
+    if (medicineTime != null && medicineTime != "") {
       data['medicine_time'] = medicineTime;
+    } else if (medicineTime == "") {
+      data['medicine_time'] = null;
     }
 
     if (password != null) {
       data['password'] = password;
     }
+
+    print("data: " + data.toString());
 
     final result = await apiService.updateUser(data);
 

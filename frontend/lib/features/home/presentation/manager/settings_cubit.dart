@@ -27,7 +27,6 @@ class SettingsCubit extends Cubit<SettingsState> {
           ),
         );
       } else if (userState is UserSuccess) {
-        // UserCubit update succeeded, trigger refresh
         GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       }
     });
@@ -64,13 +63,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
 
     try {
-      final newGlucoTime = value ? '08:00' : null;
-
-      await userCubit.updateUser(glucoTime: newGlucoTime);
+      final newGlucoTime = value ? '08:00' : "";
 
       final updated = currentState.copyWith(
         sugarReminder: value,
         glucoTime: newGlucoTime,
+      );
+
+      emit(updated);
+
+      await userCubit.updateUser(
+        glucoTime: newGlucoTime,
+        medicineTime: currentState.medicineTime,
       );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
@@ -107,13 +111,17 @@ class SettingsCubit extends Cubit<SettingsState> {
       final newMedicineTime =
           value ? (currentState.medicineTime ?? '20:00') : '';
 
-      // Call API to update medicine reminder via user endpoint
-      await userCubit.updateUser(medicineTime: newMedicineTime);
-
       final updated = currentState.copyWith(
         medicineReminder: value,
         medicineTime: value ? (currentState.medicineTime ?? '20:00') : null,
         clearMedicineTime: !value,
+      );
+      emit(updated);
+
+      // Call API to update medicine reminder via user endpoint
+      await userCubit.updateUser(
+        medicineTime: newMedicineTime,
+        glucoTime: currentState.glucoTime,
       );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
@@ -148,7 +156,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
 
     try {
-      final updated = currentState.copyWith(glucoTime: timeString);
+      final updated = currentState.copyWith(
+        glucoTime: timeString,
+        medicineTime: currentState.medicineTime,
+      );
       emit(updated);
 
       await userCubit.updateUser(glucoTime: timeString);
@@ -188,7 +199,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       final updated = currentState.copyWith(medicineTime: timeString);
       emit(updated);
 
-      await userCubit.updateUser(medicineTime: timeString);
+      await userCubit.updateUser(
+        medicineTime: timeString,
+        glucoTime: currentState.glucoTime,
+      );
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(

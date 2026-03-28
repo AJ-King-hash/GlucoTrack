@@ -92,8 +92,9 @@ class UserCubit extends Cubit<UserState> {
     String? password,
     String? oldPassword,
   }) async {
+    print("object");
+
     emit(UserLoading());
-    print("glucoTime: " + glucoTime!);
     try {
       final result = await userRepository.updateUser(
         name,

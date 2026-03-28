@@ -57,6 +57,7 @@ class _HomeContentState extends State<HomeContent> {
         return Scaffold(
           backgroundColor: AppColor.info,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Text(
               locale.translate('app_title'),
               style: TextStyle(

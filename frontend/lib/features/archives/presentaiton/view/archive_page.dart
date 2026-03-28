@@ -41,6 +41,7 @@ class ArchivesPage extends StatelessWidget {
               0xFFF8FAFC,
             ), // Soft health-tech background
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: Text(
                 locale.translate('archives_page_title'),
                 style: const TextStyle(
