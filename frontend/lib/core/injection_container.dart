@@ -107,8 +107,7 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => AuthCubit(sl<AuthRepository>()));
   sl.registerFactory(
-    () =>
-        UserCubit(sl<UserRepository>(), sl<AuthRepository>(), sl<AuthCubit>()),
+    () => UserCubit(sl<UserRepository>(), sl<AuthRepository>()),
   );
   sl.registerFactory(
     () => BotCubit(

@@ -148,16 +148,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 color: AppColor.textNeutral,
               ),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  CupertinoIcons.bell,
-                  color: AppColor.info,
-                  size: 22.sp,
-                ),
-                onPressed: () {},
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: Icon(
+            //       CupertinoIcons.bell,
+            //       color: AppColor.info,
+            //       size: 22.sp,
+            //     ),
+            //     onPressed: () {},
+            //   ),
+            // ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
