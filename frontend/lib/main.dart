@@ -47,12 +47,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => LocaleCubit()),
         BlocProvider(create: (context) => AuthCubit(sl<AuthRepository>())),
         BlocProvider(
-          create:
-              (_) => UserCubit(
-                sl<UserRepository>(),
-                sl<AuthRepository>(),
-                sl<AuthCubit>(),
-              ),
+          create: (_) => UserCubit(sl<UserRepository>(), sl<AuthRepository>()),
         ),
       ],
       child: BlocBuilder<LocaleCubit, LocaleState>(
