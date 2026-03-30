@@ -72,10 +72,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       emit(updated);
 
-      await userCubit.updateUser(
-        glucoTime: newGlucoTime,
-        medicineTime: currentState.medicineTime,
-      );
+      await userCubit.updateUser(glucoTime: newGlucoTime);
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(
@@ -119,10 +116,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       emit(updated);
 
       // Call API to update medicine reminder via user endpoint
-      await userCubit.updateUser(
-        medicineTime: newMedicineTime,
-        glucoTime: currentState.glucoTime,
-      );
+      await userCubit.updateUser(medicineTime: newMedicineTime);
       emit(updated.copyWith(isSuccess: true));
     } catch (e) {
       emit(
