@@ -17,20 +17,36 @@ def create(request,db:Session,current_user):
    
     if request.meal_type not in ["Fast","Before Meal","After Meal"]:
         raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Meal type Not Found,it can be only: 'Fast','Before Meal', 'After Meal")
-    if request.meal_type in ["Fast","Before Meal"]:
-        # Get the user's last meal, if any
-        prev_meal=db.query(models.Meal).filter(
-            models.Meal.user_id == current_user.id
-        ).order_by(models.Meal.meal_time.desc()).first()
-        
-        if prev_meal:
-            # Use the meal description for analysis
+    
+    # Default fallback response in case GlucoBot API fails or times out
+    current_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    fallback_response = {
+        'risk': 'Medium',
+        'gluco_percent': 10.0,
+        'analysed_at': current_time,
+        'recommendations': 'Analysis pending - please check back later',
+        'meal_tips': 'Consider pairing with protein or fiber'
+    }
+    
+    try:
+        if request.meal_type in ["Fast","Before Meal"]:
+            # Get the user's last meal, if any
+            prev_meal=db.query(models.Meal).filter(
+                models.Meal.user_id == current_user.id
+            ).order_by(models.Meal.meal_time.desc()).first()
+            
+            if prev_meal:
+                # Use the meal description for analysis
+                res_dict=gluco_bot.chatAsJSON(request.description)
+            else:
+                # No previous meal - analyze without context
+                res_dict=gluco_bot.chatAsJSON(request.description)
+        if request.meal_type == "After Meal":
             res_dict=gluco_bot.chatAsJSON(request.description)
-        else:
-            # No previous meal - analyze without context
-            res_dict=gluco_bot.chatAsJSON(request.description)
-    if request.meal_type == "After Meal":
-        res_dict=gluco_bot.chatAsJSON(request.description)
+    except Exception as e:
+        # Catch all exceptions (API errors, timeout errors, etc.) and use fallback
+        print(f"GlucoBot API error: {str(e)}")
+        res_dict = fallback_response
     new_meal=models.Meal(
         description=request.description,
         meal_type=request.meal_type,
