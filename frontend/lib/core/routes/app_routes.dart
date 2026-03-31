@@ -6,6 +6,7 @@ import 'package:glucotrack/features/auth/presentaion/view/login_page.dart';
 import 'package:glucotrack/features/auth/presentaion/view/otp_page.dart';
 import 'package:glucotrack/features/auth/presentaion/view/register_page.dart';
 import 'package:glucotrack/features/auth/presentaion/view/reset_password.dart';
+import 'package:glucotrack/features/auth/presentaion/view/new_password_page.dart';
 import 'package:glucotrack/features/auth/presentaion/view/splash_page.dart';
 import 'package:glucotrack/features/home/presentation/view/edit_profile_page.dart';
 import 'package:glucotrack/features/home/presentation/view/home_page.dart';
@@ -20,6 +21,7 @@ class AppRoutes {
   static const started = "/started";
   static const register = "/register";
   static const resetPassword = "/reset-password";
+  static const newPassword = "/new-password";
   static const home = "/home";
   static const otp = "/otp";
   static const editProfile = "/editprofile";
@@ -33,6 +35,10 @@ class AppRoutes {
     login: (context) => LoginPage(),
     register: (context) => RegisterPage(),
     resetPassword: (context) => ResetPasswordPage(),
+    newPassword: (context) {
+      final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
+      return NewPasswordPage(email: email);
+    },
     otp: (context) => OtpPage(),
     home: (context) => HomePage(),
     started: (context) => GetStartedPage(),

@@ -13,10 +13,12 @@ import '../../../../core/utils/toast_utility.dart';
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
-class ResetPasswordPage extends StatelessWidget {
-  ResetPasswordPage({super.key});
+class NewPasswordPage extends StatelessWidget {
+  final String email;
+  NewPasswordPage({super.key, required this.email});
 
-  final emailController = TextEditingController();
+  final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -33,10 +35,10 @@ class ResetPasswordPage extends StatelessWidget {
           // Navigate after delay to allow toast to show
           Future.delayed(const Duration(milliseconds: 3500), () {
             if (context.mounted) {
-              Navigator.pushNamed(
+              Navigator.pushNamedAndRemoveUntil(
                 context,
-                AppRoutes.otp,
-                arguments: emailController.text.trim(),
+                AppRoutes.login,
+                (route) => false,
               );
             }
           });
@@ -71,7 +73,7 @@ class ResetPasswordPage extends StatelessWidget {
 
                         Text(
                           context.read<LocaleCubit>().translate(
-                            'reset_password',
+                            'reset_your_password',
                           ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -85,7 +87,7 @@ class ResetPasswordPage extends StatelessWidget {
 
                         Text(
                           context.read<LocaleCubit>().translate(
-                            'enter_email_for_otp',
+                            'enter_new_password_desc',
                           ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -97,20 +99,45 @@ class ResetPasswordPage extends StatelessWidget {
                         SizedBox(height: 40.h),
 
                         AppTextField(
-                          controller: emailController,
-                          label: context.read<LocaleCubit>().translate('email'),
-                          icon: Icons.email,
+                          controller: newPasswordController,
+                          label: context.read<LocaleCubit>().translate(
+                            'new_password',
+                          ),
+                          icon: Icons.lock,
+                          obscure: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return context.read<LocaleCubit>().translate(
-                                'email_required',
+                                'please_enter_new_password',
                               );
                             }
-                            if (!RegExp(
-                              r'^[^@]+@[^@]+\.[^@]+',
-                            ).hasMatch(value)) {
+                            if (value.length < 6) {
                               return context.read<LocaleCubit>().translate(
-                                'invalid_email',
+                                'password_too_short',
+                              );
+                            }
+                            return null;
+                          },
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        AppTextField(
+                          controller: confirmPasswordController,
+                          label: context.read<LocaleCubit>().translate(
+                            'confirm_password',
+                          ),
+                          icon: Icons.lock_outline,
+                          obscure: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return context.read<LocaleCubit>().translate(
+                                'please_confirm_password',
+                              );
+                            }
+                            if (value != newPasswordController.text) {
+                              return context.read<LocaleCubit>().translate(
+                                'passwords_do_not_match',
                               );
                             }
                             return null;
@@ -121,17 +148,18 @@ class ResetPasswordPage extends StatelessWidget {
 
                         AppButton(
                           loading: state is AuthLoading,
-                          icon: Icons.send,
+                          icon: Icons.lock_reset,
                           iconColor: AppColor.info,
                           text: context.read<LocaleCubit>().translate(
-                            'send_code',
+                            'password_reset_button',
                           ),
                           backgroundColor: AppColor.positive,
                           textColor: AppColor.textNeutral,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read<AuthCubit>().forgotPassword(
-                                emailController.text.trim(),
+                              context.read<AuthCubit>().resetPassword(
+                                email,
+                                newPasswordController.text.trim(),
                               );
                             }
                           },
@@ -141,7 +169,11 @@ class ResetPasswordPage extends StatelessWidget {
 
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              AppRoutes.login,
+                              (route) => false,
+                            );
                           },
                           child: Text(
                             context.read<LocaleCubit>().translate(

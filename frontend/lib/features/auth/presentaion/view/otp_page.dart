@@ -54,7 +54,11 @@ class _OtpPageState extends State<OtpPage> {
           // Navigate after a brief delay
           Future.delayed(const Duration(milliseconds: 3500), () {
             if (context.mounted) {
-              Navigator.pushReplacementNamed(context, AppRoutes.home);
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.newPassword,
+                arguments: widget.email,
+              );
             }
           });
         }
