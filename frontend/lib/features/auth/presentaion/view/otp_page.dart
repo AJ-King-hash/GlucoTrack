@@ -28,7 +28,7 @@ class _OtpPageState extends State<OtpPage> {
   late List<TextEditingController> controllers;
   @override
   void initState() {
-    controllers = List.generate(4, (_) => TextEditingController());
+    controllers = List.generate(6, (_) => TextEditingController());
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class _OtpPageState extends State<OtpPage> {
             message: state.message,
           );
           // Navigate after a brief delay
-          Future.delayed(const Duration(milliseconds: 3500), () {
+          Future.delayed(const Duration(milliseconds: 2000), () {
             if (context.mounted) {
               Navigator.pushReplacementNamed(
                 context,
@@ -68,9 +68,17 @@ class _OtpPageState extends State<OtpPage> {
             context,
             message: state.message,
             onRetry: () {
-              if (_formKey.currentState!.validate()) {
+              final allFilled = controllers.every((c) => c.text.isNotEmpty);
+              if (allFilled) {
                 final otp = controllers.map((e) => e.text).join();
                 cubit.verifyOtp(widget.email!, otp);
+              } else {
+                ToastUtility.showErrorDismissibleToast(
+                  context,
+                  message: context.read<LocaleCubit>().translate(
+                    'please_fill_all_fields',
+                  ),
+                );
               }
             },
           );
@@ -124,14 +132,14 @@ class _OtpPageState extends State<OtpPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: List.generate(
-                                  4,
+                                  6,
                                   (index) => SizedBox(
-                                    width: 65.w,
+                                    width: 55.w,
                                     child: OtpBox(
                                       controller: controllers[index],
                                       autoFocus: index == 0,
                                       onChanged: (value) {
-                                        if (value.length == 1 && index < 3) {
+                                        if (value.length == 1 && index < 5) {
                                           FocusScope.of(context).nextFocus();
                                         }
                                       },
@@ -158,6 +166,14 @@ class _OtpPageState extends State<OtpPage> {
                                     final otp =
                                         controllers.map((e) => e.text).join();
                                     cubit.verifyOtp(widget.email!, otp);
+                                  } else {
+                                    // Show validation error toast
+                                    ToastUtility.showErrorDismissibleToast(
+                                      context,
+                                      message: context
+                                          .read<LocaleCubit>()
+                                          .translate('please_fill_all_fields'),
+                                    );
                                   }
                                 },
                               ),
@@ -172,7 +188,7 @@ class _OtpPageState extends State<OtpPage> {
                           child: Text(
                             context.read<LocaleCubit>().translate('resend_otp'),
                             style: TextStyle(
-                              color: AppColor.warning,
+                              color: AppColor.info,
                               fontSize: 15.sp,
                               fontWeight: FontWeight.bold,
                             ),

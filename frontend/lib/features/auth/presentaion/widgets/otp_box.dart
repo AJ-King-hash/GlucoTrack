@@ -18,26 +18,57 @@ class OtpBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60,
+      width: 50,
       height: 60,
-      child: TextFormField(
-        controller: controller,
-        autofocus: autoFocus,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        maxLength: 1,
-        onChanged: onChanged,
-        validator: validator,
-        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          counterText: "",
-          filled: true,
-          fillColor: AppColor.backgroundNeutral,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-        ),
+      child: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: controller,
+        builder: (context, value, child) {
+          return TextFormField(
+            controller: controller,
+            autofocus: autoFocus,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            maxLength: 1,
+            onChanged: onChanged,
+            validator: validator,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              counterText: "",
+              filled: true,
+              fillColor:
+                  value.text.isNotEmpty
+                      ? AppColor.lightBlueBackground
+                      : AppColor.backgroundNeutral,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(
+                  color: AppColor.borderNeutral,
+                  width: 1.5,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(
+                  color: AppColor.borderNeutral,
+                  width: 1.5,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColor.info, width: 2.0),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColor.negative, width: 1.5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColor.negative, width: 2.0),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          );
+        },
       ),
     );
   }

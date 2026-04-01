@@ -31,7 +31,7 @@ class ResetPasswordPage extends StatelessWidget {
           );
 
           // Navigate after delay to allow toast to show
-          Future.delayed(const Duration(milliseconds: 3500), () {
+          Future.delayed(const Duration(milliseconds: 2000), () {
             if (context.mounted) {
               Navigator.pushNamed(
                 context,
@@ -42,10 +42,17 @@ class ResetPasswordPage extends StatelessWidget {
           });
         }
         if (state is AuthError) {
-          // Show error toast
-          ToastUtility.showErrorDismissibleToast(
+          // Show error toast with retry action
+          ToastUtility.showErrorWithRetryToast(
             context,
             message: state.message,
+            onRetry: () {
+              if (_formKey.currentState!.validate()) {
+                context.read<AuthCubit>().forgotPassword(
+                  emailController.text.trim(),
+                );
+              }
+            },
           );
         }
       },
@@ -133,6 +140,14 @@ class ResetPasswordPage extends StatelessWidget {
                               context.read<AuthCubit>().forgotPassword(
                                 emailController.text.trim(),
                               );
+                            } else {
+                              // Show validation error toast
+                              ToastUtility.showErrorDismissibleToast(
+                                context,
+                                message: context.read<LocaleCubit>().translate(
+                                  'please_fill_all_fields',
+                                ),
+                              );
                             }
                           },
                         ),
@@ -149,7 +164,7 @@ class ResetPasswordPage extends StatelessWidget {
                             ),
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: AppColor.warning,
+                              color: AppColor.info,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
