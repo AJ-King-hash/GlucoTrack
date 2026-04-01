@@ -146,42 +146,7 @@ class _HomeContentState extends State<HomeContent> {
                             ],
                           ),
 
-                          SizedBox(height: 28.h),
-
                           /// Activity Level
-                          buildMedicalSection(
-                            title: locale.translate('physical'),
-                            children: [
-                              OptionCard(
-                                label: locale.translate('low'),
-                                icon: Icons.bed,
-                                selected: state.activity == 0,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(0),
-                              ),
-                              OptionCard(
-                                label: locale.translate('medarate'),
-                                icon: Icons.directions_walk,
-                                selected: state.activity == 1,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(1),
-                              ),
-                              OptionCard(
-                                label: locale.translate('high_activity'),
-                                icon: Icons.directions_run,
-                                selected: state.activity == 2,
-                                onTap:
-                                    () async => await context
-                                        .read<HomeCubit>()
-                                        .updateActivity(2),
-                              ),
-                            ],
-                          ),
-
                           SizedBox(height: 24.h),
                           _buildAnalyzeButton(context, locale),
 

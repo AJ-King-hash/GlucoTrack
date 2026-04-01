@@ -7,6 +7,8 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, void>> verifyOtp(String email, String otp);
   Future<Either<Failure, UserModel?>> autoLogin();
+  Future<Either<Failure, void>> forgotPassword(String email);
+  Future<Either<Failure, void>> resetPassword(String email, String newPassword);
 
   UserModel? get currentUser;
   bool get isLoggedIn;

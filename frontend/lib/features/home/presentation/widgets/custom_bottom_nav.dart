@@ -89,13 +89,13 @@ class CustomBottomNav extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: 48.w,
-                    width: 48.w,
+                    height: 48.h,
+                    width: 48.h,
                     decoration: BoxDecoration(
                       color: AppColor.info,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: AppColor.textNeutral, size: 24.sp),
+                    child: Icon(icon, color: AppColor.textNeutral, size: 22.sp),
                   ),
                   if (label.isNotEmpty) ...[
                     SizedBox(height: 4.h),

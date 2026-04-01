@@ -58,4 +58,38 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(errMsg));
     }
   }
+
+  Future<void> forgotPassword(String email) async {
+    emit(AuthLoading());
+    try {
+      final result = await authRepository.forgotPassword(email);
+      result.fold(
+        (failure) => emit(AuthError(failure.message)),
+        (_) => emit(AuthSuccess("OTP sent to your email")),
+      );
+    } catch (e) {
+      String errMsg = "Error sending OTP";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      emit(AuthError(errMsg));
+    }
+  }
+
+  Future<void> resetPassword(String email, String newPassword) async {
+    emit(AuthLoading());
+    try {
+      final result = await authRepository.resetPassword(email, newPassword);
+      result.fold(
+        (failure) => emit(AuthError(failure.message)),
+        (_) => emit(AuthSuccess("Password reset successfully")),
+      );
+    } catch (e) {
+      String errMsg = "Error resetting password";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      emit(AuthError(errMsg));
+    }
+  }
 }

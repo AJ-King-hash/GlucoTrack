@@ -30,6 +30,20 @@ class DioClient {
       ),
     );
 
+    // Add interceptor to increase timeout for meal creation endpoint
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // Increase timeout for meal creation endpoint
+          if (options.path.contains('/meal')) {
+            options.connectTimeout = const Duration(seconds: 60);
+            options.receiveTimeout = const Duration(seconds: 60);
+          }
+          handler.next(options);
+        },
+      ),
+    );
+
     // AuthInterceptor handles token attachment and 401 errors
     dio.interceptors.add(
       AuthInterceptor(navigationService: NavigationService()),

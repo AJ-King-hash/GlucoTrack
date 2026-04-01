@@ -7,8 +7,4 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> updateMealTime(int mealTime) async {
     emit(state.copyWith(mealTime: mealTime));
   }
-
-  Future<void> updateActivity(int activity) async {
-    emit(state.copyWith(activity: activity));
-  }
 }
