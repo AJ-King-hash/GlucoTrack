@@ -39,7 +39,10 @@ class AppRoutes {
       final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
       return NewPasswordPage(email: email);
     },
-    otp: (context) => OtpPage(),
+    otp: (context) {
+      final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
+      return OtpPage(email: email);
+    },
     home: (context) => HomePage(),
     started: (context) => GetStartedPage(),
     editProfile: (context) => EditProfilePage(),

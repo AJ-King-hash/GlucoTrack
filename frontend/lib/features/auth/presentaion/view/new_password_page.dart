@@ -35,6 +35,7 @@ class NewPasswordPage extends StatelessWidget {
           // Navigate after delay to allow toast to show
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (context.mounted) {
+              context.read<AuthCubit>().logout();
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 AppRoutes.login,
