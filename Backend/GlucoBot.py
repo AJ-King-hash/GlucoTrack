@@ -9,7 +9,9 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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")
+        api_key="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",
+        timeout=20.0,
+        max_retries=1)
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
@@ -83,7 +85,8 @@ class GlucoBot():
               "role": "user",
             "content": analysis_prompt
            }
-           ])
+           ],
+           timeout=15.0)
             result = completion.choices[0].message.content
             
             # Parse the JSON response

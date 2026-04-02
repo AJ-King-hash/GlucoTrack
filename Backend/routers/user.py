@@ -2,7 +2,7 @@ from fastapi import APIRouter,responses
 from StartingPackages import *
 
 from repositories import userRepo
-from JwtToken import timedelta,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
+from JwtToken import timedelta,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token,DeleteToken
 import oauth2
 router=APIRouter(
 prefix="/user",
@@ -23,8 +23,16 @@ def get_user(id:int,db:Session=Depends(get_db)):
     return {"message": "User has successfully Found!", "user": userRepo.show(id,db)}
 
 @router.put("/",response_model=schemas.ShowUserWithMessage)
-def update_user(request:schemas.UserUpdate,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
-
+def update_user(request:schemas.UserUpdate,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user),current_token:str=Depends(oauth2.get_current_token)):
+    # If password is being changed, invalidate the token
+    if request.password and request.old_password:
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not Authorized",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        DeleteToken(current_token, credentials_exception)
+    
     return {"message": "User updated successfully", "user": userRepo.update(current_user.id,request,db)}
 
 

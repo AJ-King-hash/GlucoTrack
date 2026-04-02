@@ -28,8 +28,8 @@ class _OtpPageState extends State<OtpPage> {
   late List<TextEditingController> controllers;
   @override
   void initState() {
-    controllers = List.generate(6, (_) => TextEditingController());
     super.initState();
+    controllers = List.generate(6, (_) => TextEditingController());
   }
 
   @override
