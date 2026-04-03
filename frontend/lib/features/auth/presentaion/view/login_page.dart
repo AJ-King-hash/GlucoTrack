@@ -118,21 +118,17 @@ class LoginPage extends StatelessWidget {
                       SizedBox(height: 24.h),
                       BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
-                          if (state is AuthSuccess) {
-                            // Show success toast
+                          // FIX: Only react to Login Success here
+                          if (state is AuthLoginSuccess) {
                             ToastUtility.showSuccessDismissibleToast(
                               context,
                               message: state.message,
                             );
-                            // Set user data in UserCubit so change password works
+
                             if (state.user != null) {
-                              try {
-                                context.read<UserCubit>().setUser(state.user!);
-                              } catch (e) {
-                                debugPrint('Error setting user: $e');
-                              }
+                              context.read<UserCubit>().setUser(state.user!);
                             }
-                            // Navigate after a brief delay to allow toast to show
+
                             Future.delayed(
                               const Duration(milliseconds: 3500),
                               () {
@@ -145,8 +141,8 @@ class LoginPage extends StatelessWidget {
                               },
                             );
                           }
+
                           if (state is AuthError) {
-                            // Show error toast with retry action
                             ToastUtility.showErrorWithRetryToast(
                               context,
                               message: state.message,

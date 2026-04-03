@@ -86,7 +86,8 @@ def verify_otp(request: VerifySchema,db:Session=Depends(get_db)):
     check_otp = (
         db.query(models.Otp)
         .filter(models.Otp.email == email)
-        .first()                          # ← THIS IS MISSING! Add .first()
+        .order_by(models.Otp.expires.desc())  # Add this
+        .first()
     )
 
     if not check_otp:
