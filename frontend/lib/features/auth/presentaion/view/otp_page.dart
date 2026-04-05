@@ -183,6 +183,9 @@ class _OtpPageState extends State<OtpPage> {
                         TextButton(
                           onPressed: () {
                             cubit.close();
+                            context.read<AuthCubit>().forgotPassword(
+                              email: email,
+                            );
                           },
                           child: Text(
                             context.read<LocaleCubit>().translate('resend_otp'),
