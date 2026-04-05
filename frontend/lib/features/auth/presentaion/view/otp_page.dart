@@ -54,8 +54,20 @@ class _OtpPageState extends State<OtpPage> {
             message: state.message,
           );
 
-          // Move to New Password Page
           Navigator.pushNamed(context, AppRoutes.newPassword, arguments: email);
+        }
+
+        if (state is AuthOtpSentSuccess) {
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: state.message,
+          );
+          for (var controller in controllers) {
+            controller.clear();
+          }
+          if (controllers.isNotEmpty) {
+            FocusScope.of(context).requestFocus();
+          }
         }
 
         if (state is AuthError) {
@@ -158,7 +170,6 @@ class _OtpPageState extends State<OtpPage> {
                                 textColor: Colors.white,
                                 backgroundColor: AppColor.positive,
                                 onPressed: () {
-                                  print("validating...");
                                   if (_formKey.currentState!.validate() &&
                                       email.isNotEmpty) {
                                     final otp =
@@ -180,22 +191,37 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                         ),
                         SizedBox(height: 24.h),
-                        TextButton(
-                          onPressed: () {
-                            cubit.close();
-                            context.read<AuthCubit>().forgotPassword(
-                              email: email,
-                            );
-                          },
-                          child: Text(
-                            context.read<LocaleCubit>().translate('resend_otp'),
-                            style: TextStyle(
-                              color: AppColor.info,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.bold,
+                        if (state is AuthLoading)
+                          const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColor.info,
+                              ),
+                            ),
+                          )
+                        else
+                          TextButton(
+                            onPressed: email.isEmpty
+                                ? null
+                                : () {
+                                    context.read<AuthCubit>().forgotPassword(
+                                          email: email,
+                                        );
+                                  },
+                            child: Text(
+                              context.read<LocaleCubit>().translate('resend_otp'),
+                              style: TextStyle(
+                                color: email.isEmpty
+                                    ? AppColor.textNeutral.withValues(alpha: 0.5)
+                                    : AppColor.info,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     );
                   },
