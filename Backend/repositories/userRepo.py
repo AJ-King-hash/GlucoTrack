@@ -49,6 +49,8 @@ def update(id,request,db:Session):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect old password"
             )
+        
+    print(request)
     
     if request.gender:
         user.gender=request.gender
