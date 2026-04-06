@@ -92,8 +92,8 @@ class ShowUser(BaseModel):
     name:str
     email:str
     gender:Optional[str]=None
-    gluco_reminder:Optional[datetime]=None
-    medicine_reminder:Optional[datetime]=None
+    gluco_reminder:Optional[datetime|bool]=None
+    medicine_reminder:Optional[datetime|bool]=None
     # otps:List[Otp]=[]
     class Config():
         from_attributes=True
