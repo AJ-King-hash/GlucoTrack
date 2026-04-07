@@ -1,9 +1,11 @@
+import math
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,status
 import models
 from hashing import Hash
 from datetime import datetime,timezone
 from GlucoBot import GlucoBot
+import FuzzyTraining.Fuzzy as Fuzzy
 import pandas as pd
 gluco_bot=GlucoBot()
 
@@ -52,26 +54,38 @@ def create(request,db:Session,current_user):
         meal_type=request.meal_type,
         meal_time=request.meal_time,
         user_id=current_user.id,
-        GL=float(res_dict["gluco_percent"]))
+        GL=round(float(res_dict["gluco_percent"]),2))
     
     db.add(new_meal)
     db.commit()
     db.refresh(new_meal)
-    new_archive=models.PrevAnalyse(
-        user_id=current_user.id,
-        meal_id=new_meal.id,
-        gluco_percent=float(res_dict["gluco_percent"]),
-        risk_result=res_dict["risk"],
-        analysed_at=pd.to_datetime(res_dict["analysed_at"]),
-        recommendations=res_dict["recommendations"],
-        meal_tips=res_dict["meal_tips"]
-        )
+    checking=db.query(models.Meal).filter(models.Meal.user_id==current_user.id)
     
-    db.add(new_archive)
-    db.commit()
-    db.refresh(new_archive,attribute_names=["meal"])
-    # , attribute_names=["creator"]
-    return {"message":"Meal created successfully","archive":new_archive}
+    if checking.count()>3:
+            Qq=checking.with_entities(models.Meal.GL).all()
+            mean_gluco_columns=sum([q[0] for q in Qq])/len([q[0] for q in Qq])
+            Fuzzy.fuzzy_sim.input["glycemic_load"]=round(float(mean_gluco_columns),2)
+            Fuzzy.fuzzy_sim.input["physical_activity"]=db.query(models.RiskFactor).filter(models.RiskFactor.user_id==current_user.id).first().BMI
+            Fuzzy.fuzzy_sim.compute()
+
+            new_archive=models.PrevAnalyse(
+                user_id=current_user.id,
+                meal_id=new_meal.id,
+                gluco_percent=round(float(mean_gluco_columns),2),
+                hba1c=round(float(Fuzzy.fuzzy_sim.output["hba1c"]),2),
+                risk_result=res_dict["risk"],
+                analysed_at=pd.to_datetime(res_dict["analysed_at"]),
+                recommendations=res_dict["recommendations"],
+                meal_tips=res_dict["meal_tips"]
+                )
+            db.add(new_archive)
+
+            db.query(models.Meal).filter(models.Meal.user_id==new_archive.user_id,models.Meal.id!=new_archive.meal_id).delete()
+            db.commit()
+            db.refresh(new_archive,attribute_names=["meal"])
+
+            return {"message":"Analysis Arrived!","archive":new_archive}
+    return {"message":"Meal created successfully ","archive":checking.first()}
 
 def show(id:int,db:Session):
     meal=db.query(models.Meal).filter(models.Meal.id==id).first()

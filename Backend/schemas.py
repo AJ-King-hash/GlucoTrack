@@ -19,6 +19,7 @@ class UserUpdate(BaseModel):
 
 class AnalyseBase(BaseModel):
     gluco_percent:float
+    hba1c:Optional[float] = None
     analysed_at:datetime
 class RiskBase(BaseModel):
     age:int
@@ -71,6 +72,7 @@ class MealBase(BaseModel):
 class AnalyseShow(AnalyseBase):
     id:int
     gluco_percent:float
+    hba1c:Optional[float] = None
     risk_result:str
     recommendations:str
     meal_tips:str
