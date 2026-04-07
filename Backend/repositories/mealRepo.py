@@ -85,7 +85,22 @@ def create(request,db:Session,current_user):
             db.refresh(new_archive,attribute_names=["meal"])
 
             return {"message":"Analysis Arrived!","archive":new_archive}
-    return {"message":"Meal created successfully ","archive":checking.first()}
+    else:
+            new_archive=models.PrevAnalyse(
+                user_id=current_user.id,
+                meal_id=new_meal.id,
+                gluco_percent=round(float(res_dict["gluco_percent"]),2),
+                hba1c=None,
+                risk_result=res_dict["risk"],
+                analysed_at=pd.to_datetime(res_dict["analysed_at"]),
+                recommendations=res_dict["recommendations"],
+                meal_tips=res_dict["meal_tips"]
+                )
+            db.add(new_archive)
+            db.commit()
+            db.refresh(new_archive,attribute_names=["meal"])
+
+    return {"message":"Meal created successfully ","archive":new_archive}
 
 def show(id:int,db:Session):
     meal=db.query(models.Meal).filter(models.Meal.id==id).first()
