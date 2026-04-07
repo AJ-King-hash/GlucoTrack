@@ -1,4 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
 import '../../repo/archive_repository.dart';
 import '../../data/model/archives_model.dart';
 import 'archives_state.dart';
@@ -124,13 +127,20 @@ class ArchiveCubit extends Cubit<ArchiveState> {
     final result = await repository.createArchive(archive);
 
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: ArchiveStatus.error,
-          errorMessage: failure.message,
-        ),
-      ),
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(
+          state.copyWith(
+            status: ArchiveStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
       (newArchive) {
+        print("newArchive: " + newArchive.toString());
+        ToastUtility.showSuccess("Archive created successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList = [...state.archives, newArchive];
         emit(
           state.copyWith(
@@ -149,13 +159,19 @@ class ArchiveCubit extends Cubit<ArchiveState> {
     final result = await repository.updateArchive(id, archive);
 
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: ArchiveStatus.error,
-          errorMessage: failure.message,
-        ),
-      ),
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(
+          state.copyWith(
+            status: ArchiveStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
       (updatedArchive) {
+        ToastUtility.showSuccess("Archive updated successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList =
             state.archives.map((a) => a.id == id ? updatedArchive : a).toList();
         emit(
@@ -171,13 +187,19 @@ class ArchiveCubit extends Cubit<ArchiveState> {
     final result = await repository.deleteArchive(archiveId);
 
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: ArchiveStatus.error,
-          errorMessage: failure.message,
-        ),
-      ),
+      (failure) {
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
+        emit(
+          state.copyWith(
+            status: ArchiveStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
       (_) {
+        ToastUtility.showSuccess("Archive deleted successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList =
             state.archives.where((archive) => archive.id != archiveId).toList();
 

@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../core/color/app_color.dart';
-import '../../../../core/localization/locale_cubit.dart';
-import '../../../../core/routes/app_routes.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_feild.dart';
-import '../../../../core/widgets/language_bottom_sheet.dart';
-import '../../../../core/utils/toast_utility.dart';
-import '../../../user/presentation/manager/user_cubit.dart';
-import '../manager/auth_cubit.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/widgets/app_button.dart';
+import 'package:glucotrack/core/widgets/app_text_feild.dart';
+import 'package:glucotrack/core/widgets/language_bottom_sheet.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
 
 class LoginPage extends StatelessWidget {
@@ -118,21 +118,17 @@ class LoginPage extends StatelessWidget {
                       SizedBox(height: 24.h),
                       BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
-                          if (state is AuthSuccess) {
-                            // Show success toast
+                          // FIX: Only react to Login Success here
+                          if (state is AuthLoginSuccess) {
                             ToastUtility.showSuccessDismissibleToast(
                               context,
                               message: state.message,
                             );
-                            // Set user data in UserCubit so change password works
+
                             if (state.user != null) {
-                              try {
-                                context.read<UserCubit>().setUser(state.user!);
-                              } catch (e) {
-                                debugPrint('Error setting user: $e');
-                              }
+                              context.read<UserCubit>().setUser(state.user!);
                             }
-                            // Navigate after a brief delay to allow toast to show
+
                             Future.delayed(
                               const Duration(milliseconds: 3500),
                               () {
@@ -145,8 +141,8 @@ class LoginPage extends StatelessWidget {
                               },
                             );
                           }
+
                           if (state is AuthError) {
-                            // Show error toast with retry action
                             ToastUtility.showErrorWithRetryToast(
                               context,
                               message: state.message,

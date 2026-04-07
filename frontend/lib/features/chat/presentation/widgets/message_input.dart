@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled10/core/color/app_color.dart';
+import 'package:glucotrack/core/color/app_color.dart';
 
 class MessageInput extends StatefulWidget {
   final Function(String) onSend;

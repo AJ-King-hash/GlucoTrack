@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routes/app_routes.dart';

@@ -27,7 +27,8 @@
   "age": "Age",
   "weight": "Weight (kg)",
   "height": "Height (m)",
-  "sugar_pregnancy": "Sugar Pregnancy",
+  "sugar_pregnancy": "Sugar Count",
+  "pregnancy_count_hint": "Number of times with sugar",
   "smoking": "Smoking",
   "genetic_disease": "Genetic Disease",
   "physical_activity": "Physical Activity",
@@ -106,5 +107,13 @@
   "medicine_reminder_time": "Medicine Time",
   "set_time": "Set Time",
   "select_time": "Select Time",
-  "save": "Save"
+  "save": "Save",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "select_gender": "Select Gender",
+  "welcome_message": "Welcome",
+  "ayah_text": "And [by] the soul and He who proportioned it",
+  "ayah_reference": "Surah Ash-Shams 91:7",
+  "check_sugar_message": "It's time to check your blood sugar level"
 }

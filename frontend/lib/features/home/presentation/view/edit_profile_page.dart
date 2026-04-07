@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
@@ -24,24 +24,41 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  String? selectedGender;
   StreamSubscription? _userSubscription;
 
   @override
   void initState() {
     super.initState();
     if (widget.userModel != null) {
+      print("user exist: " + widget.userModel.toString());
       nameController.text = widget.userModel!.name;
       emailController.text = widget.userModel!.email;
+      selectedGender = widget.userModel!.gender;
     } else {
-      context.read<UserCubit>().getUser();
+      // Check if user data is already loaded in the Cubit
+      final currentState = context.read<UserCubit>().state;
+      if (currentState is UserLoaded) {
+        final user = currentState.userModel;
+        nameController.text = user.name;
+        emailController.text = user.email;
+        selectedGender = user.gender;
+      }
+      // Also listen for future updates
       _userSubscription = context.read<UserCubit>().stream.listen((state) {
         if (state is UserLoaded) {
           final user = state.userModel;
-          debugPrint("user: $user");
           nameController.text = user.name;
           emailController.text = user.email;
+          setState(() {
+            selectedGender = user.gender;
+          });
         }
       });
+      // Fetch user data if not already loaded
+      if (currentState is! UserLoaded) {
+        context.read<UserCubit>().getUser();
+      }
     }
   }
 
@@ -80,7 +97,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       await context.read<UserCubit>().updateUser(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        password: '',
+        gender: selectedGender,
       );
     } catch (e) {
       if (mounted) {
@@ -131,16 +148,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 color: AppColor.textNeutral,
               ),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  CupertinoIcons.bell,
-                  color: AppColor.info,
-                  size: 22.sp,
-                ),
-                onPressed: () {},
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: Icon(
+            //       CupertinoIcons.bell,
+            //       color: AppColor.info,
+            //       size: 22.sp,
+            //     ),
+            //     onPressed: () {},
+            //   ),
+            // ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -189,6 +206,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           labelColor: AppColor.textNeutral,
                         ),
                         SizedBox(height: 18.h),
+
+                        /// Gender Selector
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.read<LocaleCubit>().translate('gender'),
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColor.textNeutral,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _GenderOption(
+                                    label: context
+                                        .read<LocaleCubit>()
+                                        .translate('male'),
+                                    value: "male",
+                                    isSelected: selectedGender == 'male',
+                                    onTap: () {
+                                      setState(() {
+                                        selectedGender = 'male';
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: _GenderOption(
+                                    label: context
+                                        .read<LocaleCubit>()
+                                        .translate('female'),
+                                    value: 'female',
+                                    isSelected: selectedGender == 'female',
+                                    onTap: () {
+                                      setState(() {
+                                        selectedGender = 'female';
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -211,6 +277,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Gender option widget for the selector
+class _GenderOption extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _GenderOption({
+    required this.label,
+    required this.value,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? AppColor.positive.withValues(alpha: 0.15)
+                  : Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: isSelected ? AppColor.positive : AppColor.borderNeutral,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                value == 'male' ? Icons.male : Icons.female,
+                color: isSelected ? AppColor.positive : AppColor.textNeutral,
+                size: 20.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? AppColor.positive : AppColor.textNeutral,
+                ),
+              ),
+            ],
           ),
         ),
       ),

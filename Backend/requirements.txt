@@ -35,3 +35,9 @@ pytz
 psycopg2-binary
 
 python-dotenv
+
+scikit-fuzzy
+
+scipy
+
+matplotlib

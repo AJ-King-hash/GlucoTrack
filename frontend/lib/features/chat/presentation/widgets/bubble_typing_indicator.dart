@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled10/features/chat/presentation/widgets/typing_indicator.dart';
+import 'package:glucotrack/features/chat/presentation/widgets/typing_indicator.dart';
 
 class BotTypingBubble extends StatelessWidget {
   const BotTypingBubble({super.key});

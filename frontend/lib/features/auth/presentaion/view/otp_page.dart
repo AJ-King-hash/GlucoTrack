@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/widgets/app_button.dart';
-import 'package:untitled10/core/widgets/app_logo.dart';
-import 'package:untitled10/core/widgets/auth_background.dart';
-import 'package:untitled10/core/utils/toast_utility.dart';
-import 'package:untitled10/features/auth/presentaion/widgets/otp_box.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/widgets/app_button.dart';
+import 'package:glucotrack/core/widgets/app_logo.dart';
+import 'package:glucotrack/core/widgets/auth_background.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/auth/presentaion/widgets/otp_box.dart';
 
 import '../manager/auth_cubit.dart';
 import '../manager/auth_state.dart';
@@ -28,7 +28,7 @@ class _OtpPageState extends State<OtpPage> {
   late List<TextEditingController> controllers;
   @override
   void initState() {
-    controllers = List.generate(4, (_) => TextEditingController());
+    controllers = List.generate(6, (_) => TextEditingController());
     super.initState();
   }
 
@@ -43,30 +43,50 @@ class _OtpPageState extends State<OtpPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
+    final Object? args = ModalRoute.of(context)?.settings.arguments;
+    final String email = args is String ? args : '';
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          // Show success toast
+        if (state is AuthOtpVerifiedSuccess) {
           ToastUtility.showSuccessDismissibleToast(
             context,
             message: state.message,
           );
-          // Navigate after a brief delay
-          Future.delayed(const Duration(milliseconds: 3500), () {
-            if (context.mounted) {
-              Navigator.pushReplacementNamed(context, AppRoutes.home);
-            }
-          });
+
+          Navigator.pushNamed(context, AppRoutes.newPassword, arguments: email);
         }
+
+        if (state is AuthOtpSentSuccess) {
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: state.message,
+          );
+          for (var controller in controllers) {
+            controller.clear();
+          }
+          if (controllers.isNotEmpty) {
+            FocusScope.of(context).requestFocus();
+          }
+        }
+
         if (state is AuthError) {
           // Show error toast with retry action
           ToastUtility.showErrorWithRetryToast(
             context,
             message: state.message,
             onRetry: () {
-              if (_formKey.currentState!.validate()) {
+              final allFilled = controllers.every((c) => c.text.isNotEmpty);
+              if (allFilled && email.isNotEmpty) {
                 final otp = controllers.map((e) => e.text).join();
-                cubit.verifyOtp(widget.email!, otp);
+                cubit.verifyOtp(email: email, otp: otp);
+              } else {
+                ToastUtility.showErrorDismissibleToast(
+                  context,
+                  message: context.read<LocaleCubit>().translate(
+                    'please_fill_all_fields',
+                  ),
+                );
               }
             },
           );
@@ -120,14 +140,14 @@ class _OtpPageState extends State<OtpPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: List.generate(
-                                  4,
+                                  6,
                                   (index) => SizedBox(
-                                    width: 65.w,
+                                    width: 40.w,
                                     child: OtpBox(
                                       controller: controllers[index],
                                       autoFocus: index == 0,
                                       onChanged: (value) {
-                                        if (value.length == 1 && index < 3) {
+                                        if (value.length == 1 && index < 5) {
                                           FocusScope.of(context).nextFocus();
                                         }
                                       },
@@ -150,10 +170,20 @@ class _OtpPageState extends State<OtpPage> {
                                 textColor: Colors.white,
                                 backgroundColor: AppColor.positive,
                                 onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
+                                  if (_formKey.currentState!.validate() &&
+                                      email.isNotEmpty) {
                                     final otp =
                                         controllers.map((e) => e.text).join();
-                                    cubit.verifyOtp(widget.email!, otp);
+
+                                    cubit.verifyOtp(email: email, otp: otp);
+                                  } else {
+                                    // Show validation error toast
+                                    ToastUtility.showErrorDismissibleToast(
+                                      context,
+                                      message: context
+                                          .read<LocaleCubit>()
+                                          .translate('please_fill_all_fields'),
+                                    );
                                   }
                                 },
                               ),
@@ -161,19 +191,37 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                         ),
                         SizedBox(height: 24.h),
-                        TextButton(
-                          onPressed: () {
-                            cubit.close();
-                          },
-                          child: Text(
-                            context.read<LocaleCubit>().translate('resend_otp'),
-                            style: TextStyle(
-                              color: AppColor.warning,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.bold,
+                        if (state is AuthLoading)
+                          const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColor.info,
+                              ),
+                            ),
+                          )
+                        else
+                          TextButton(
+                            onPressed: email.isEmpty
+                                ? null
+                                : () {
+                                    context.read<AuthCubit>().forgotPassword(
+                                          email: email,
+                                        );
+                                  },
+                            child: Text(
+                              context.read<LocaleCubit>().translate('resend_otp'),
+                              style: TextStyle(
+                                color: email.isEmpty
+                                    ? AppColor.textNeutral.withValues(alpha: 0.5)
+                                    : AppColor.info,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     );
                   },

@@ -1,12 +1,13 @@
-import 'package:untitled10/core/utils/either.dart';
-import 'package:untitled10/core/errors/failure.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/core/utils/source_storage_service.dart';
-import 'package:untitled10/features/auth/data/models/user_model.dart';
-import 'package:untitled10/features/user/repo/user_repo.dart';
+import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/core/errors/failure.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import 'package:glucotrack/core/utils/source_storage_service.dart';
+import 'package:glucotrack/features/auth/data/models/user_model.dart';
+import 'package:glucotrack/features/user/repo/user_repo.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final ApiService apiService;
+
   UserRepositoryImpl(this.apiService);
 
   //function for create user
@@ -24,8 +25,8 @@ class UserRepositoryImpl implements UserRepository {
 
     return result.fold((failure) => Left(failure), (data) {
       final responseData = data as Map<String, dynamic>;
-      if (responseData['data'] != null) {
-        final user = UserModel.fromJson(responseData['data']);
+      if (responseData['user'] != null) {
+        final user = UserModel.fromJson(responseData['user']);
         if (user.token != null) {
           SecureStorageService.saveToken(user.token!);
         }
@@ -54,15 +55,44 @@ class UserRepositoryImpl implements UserRepository {
   //function for update user data
   @override
   Future<Either<Failure, UserModel?>> updateUser(
-    String name,
-    String email,
-    String password, {
+    String? name,
+    String? email,
+    String? gender,
+    String? glucoTime,
+    String? medicineTime,
+    String? password, {
     String? oldPassword,
   }) async {
-    final data = {"name": name, "email": email, "password": password};
+    final Map<String, dynamic> data = {};
+
+    if (name != null) {
+      data['name'] = name;
+    }
+
+    if (email != null) {
+      data['email'] = email;
+    }
+
+    if (gender != null) {
+      data['gender'] = gender;
+    }
+
     if (oldPassword != null) {
       data["old_password"] = oldPassword;
     }
+
+    if (glucoTime != null && glucoTime.isNotEmpty) {
+      data['gluco_time'] = glucoTime;
+    }
+
+    if (medicineTime != null && medicineTime.isNotEmpty) {
+      data['medicine_time'] = medicineTime;
+    }
+
+    if (password != null) {
+      data['password'] = password;
+    }
+
     final result = await apiService.updateUser(data);
 
     return result.fold((failure) => Left(failure), (data) {

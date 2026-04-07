@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/injection_container.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/chat/presentation/manager/chat_state.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/injection_container.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/chat/presentation/manager/chat_state.dart';
 
 import '../manager/chat_cubit.dart';
 import '../widgets/chat_drawer.dart';

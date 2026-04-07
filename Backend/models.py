@@ -35,6 +35,7 @@ class PrevAnalyse(Base):
     user_id=Column(Integer,ForeignKey("users.id"))
     meal_id=Column(Integer,ForeignKey("meals.id"))
     gluco_percent=Column(Float(2))
+    hba1c=Column(Float(2),nullable=True)
     # Low,Medium,High
     risk_result=Column(String)
     recommendations=Column(String)

@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:untitled10/core/api/api_service.dart';
+import 'package:glucotrack/core/api/api_service.dart';
+import "package:glucotrack/firebase_options.dart";
 
 /// Notification Service for GlucoTrack
 ///
@@ -24,11 +27,20 @@ class NotificationService {
 
   NotificationService(this._apiService);
 
+  Future<void> registerFcmTokenAfterLogin() async {
+    final token = await _messaging?.getToken();
+    if (token != null) {
+      await _apiService.updateFcmToken(token);
+    }
+  }
+
   /// Initialize Firebase and notification services
   Future<void> initialize() async {
     try {
       // Initialize Firebase
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       // Initialize Firebase Messaging
       _messaging = FirebaseMessaging.instance;
@@ -42,6 +54,9 @@ class NotificationService {
 
       // Get FCM token
       await _registerFcmToken();
+
+      // Set up token refresh listener for when FCM token changes
+      await refreshToken();
 
       // Set up foreground message handling
       _setupForegroundHandler();
@@ -196,7 +211,7 @@ class NotificationService {
       title,
       body,
       notificationDetails,
-      payload: payload?.toString(),
+      payload: payload != null ? jsonEncode(payload) : null,
     );
 
     // Also show toast for immediate feedback
@@ -214,8 +229,15 @@ class NotificationService {
   /// Handle notification tap
   void _onNotificationTapped(NotificationResponse response) {
     if (onNotificationTapped != null && response.payload != null) {
-      // Parse payload and call callback
-      onNotificationTapped!({'payload': response.payload});
+      // Parse JSON payload and call callback
+      try {
+        final decodedPayload =
+            jsonDecode(response.payload!) as Map<String, dynamic>;
+        onNotificationTapped!(decodedPayload);
+      } catch (e) {
+        // If parsing fails, pass as-is
+        onNotificationTapped!({'payload': response.payload});
+      }
     }
   }
 

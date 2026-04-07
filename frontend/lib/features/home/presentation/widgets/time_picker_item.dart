@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/color/app_color.dart';
+import '../../../../core/localization/locale_cubit.dart';
 
 class TimePickerItem extends StatelessWidget {
   final IconData icon;
@@ -160,7 +162,7 @@ class TimePickerItem extends StatelessWidget {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Cancel',
+                        context.read<LocaleCubit>().translate('cancel'),
                         style: TextStyle(
                           color: AppColor.textNeutral,
                           fontSize: 16.sp,
@@ -168,7 +170,7 @@ class TimePickerItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Select Time',
+                      context.read<LocaleCubit>().translate('select_time'),
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
@@ -181,7 +183,7 @@ class TimePickerItem extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        'Save',
+                        context.read<LocaleCubit>().translate('save'),
                         style: TextStyle(
                           color: AppColor.positive,
                           fontSize: 16.sp,

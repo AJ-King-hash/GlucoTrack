@@ -3,21 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:untitled10/core/injection_container.dart';
+import 'package:glucotrack/core/injection_container.dart';
 
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/localization/locale_state.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/services/notification_service.dart';
-import 'package:untitled10/core/services/navigation_service.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/localization/locale_state.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/services/notification_service.dart';
+import 'package:glucotrack/core/services/navigation_service.dart';
 
-import 'package:untitled10/features/auth/presentaion/manager/auth_cubit.dart';
-import 'package:untitled10/features/auth/repo/auth_repo.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
+import 'package:glucotrack/features/auth/repo/auth_repo.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/repo/user_repo.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/repo/user_repo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

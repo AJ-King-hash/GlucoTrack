@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum FailedSetting { none, sugarReminder, medicineReminder }
+enum FailedSetting { none, sugarReminder, medicineReminder, changePassword }
 
 abstract class SettingsState extends Equatable {
   final bool sugarReminder;

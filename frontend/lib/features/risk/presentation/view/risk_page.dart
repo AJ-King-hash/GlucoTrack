@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/features/risk/domain/entity/risk_entity.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_cubit.dart';
-import 'package:untitled10/features/risk/presentation/manager/risk_state.dart';
-import 'package:untitled10/features/risk/presentation/widgets/create_risk_dialog.dart';
-import 'package:untitled10/features/risk/presentation/widgets/update_risk_dialog.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/features/risk/domain/entity/risk_entity.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_cubit.dart';
+import 'package:glucotrack/features/risk/presentation/manager/risk_state.dart';
+import 'package:glucotrack/features/risk/presentation/widgets/create_risk_dialog.dart';
+import 'package:glucotrack/features/risk/presentation/widgets/update_risk_dialog.dart';
 
 class RiskPage extends StatefulWidget {
   const RiskPage({super.key});
@@ -56,17 +56,6 @@ class _RiskPageState extends State<RiskPage> {
                 ),
               ),
             );
-          } else if (state is RiskDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.read<LocaleCubit>().translate(
-                    'risk_deleted_successfully',
-                  ),
-                ),
-              ),
-            );
-            selectedRiskId = null;
           }
         },
         builder: (context, state) {
@@ -107,9 +96,10 @@ class _RiskPageState extends State<RiskPage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCreateRiskDialog(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: BlocBuilder<RiskCubit, RiskState>(
+        builder: (context, state) {
+          return _buildFloatingActionButton(context, state);
+        },
       ),
     );
   }
@@ -123,6 +113,18 @@ class _RiskPageState extends State<RiskPage> {
             child: const CreateRiskDialog(),
           ),
     );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context, RiskState state) {
+    // Only show the add button when no risk exists for the user
+    if (state is RiskLoaded && state.risk == null) {
+      return FloatingActionButton(
+        onPressed: () => _showCreateRiskDialog(context),
+        child: const Icon(Icons.add),
+      );
+    }
+    // Hide the button when a risk already exists
+    return const SizedBox.shrink();
   }
 }
 
@@ -300,7 +302,7 @@ class RiskDetailsView extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Risk Factors Section - Enhanced design
-            _buildSectionTitle(context, 'risk_factors'),
+            _buildSectionTitle(context, 'risk_management'),
             const SizedBox(height: 16),
             _buildRiskFactorCard(
               context,
@@ -344,13 +346,15 @@ class RiskDetailsView extends StatelessWidget {
                   safeRisk.diabetesType.isEmpty ? '-' : safeRisk.diabetesType,
             ),
             const SizedBox(height: 12),
-            if (safeRisk.sugarPregnancy != null)
-              _buildInfoCard(
-                context,
-                icon: Icons.water_drop,
-                label: 'sugar_pregnancy',
-                value: safeRisk.sugarPregnancy?.toString() ?? '-',
-              ),
+            _buildInfoCard(
+              context,
+              icon: Icons.water_drop,
+              label: 'sugar_pregnancy',
+              value:
+                  safeRisk.sugarPregnancy > 0
+                      ? safeRisk.sugarPregnancy.toString()
+                      : '-',
+            ),
             const SizedBox(height: 32),
 
             // Action Buttons - Enhanced design
@@ -668,7 +672,11 @@ class RiskDetailsView extends StatelessWidget {
   void _showUpdateRiskDialog(BuildContext context, RiskEntity risk) {
     showDialog(
       context: context,
-      builder: (context) => UpdateRiskDialog(risk: risk),
+      builder:
+          (_) => BlocProvider.value(
+            value: context.read<RiskCubit>(),
+            child: UpdateRiskDialog(risk: risk),
+          ),
     );
   }
 }

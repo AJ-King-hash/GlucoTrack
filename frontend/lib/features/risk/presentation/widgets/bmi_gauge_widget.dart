@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/utils/bmi_ui_logic.dart';
-import 'package:untitled10/core/utils/health_utils.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/utils/bmi_ui_logic.dart';
+import 'package:glucotrack/core/utils/health_utils.dart';
 
 class BmiGaugeWidget extends StatelessWidget {
   final double bmi;

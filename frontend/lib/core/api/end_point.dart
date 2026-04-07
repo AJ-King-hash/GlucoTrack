@@ -35,8 +35,8 @@ class ApiEndpoints {
 
   // ==================== MEAL ====================
   static const String meal = "/meal/";
-  static String mealById(int id) => "/meal/$id";
-  static const String allMeals = "/meal/all/";
+  static String mealById(int id) => "/analyse/$id";
+  static const String allMeals = "/analyse/all/";
 
   // ==================== ANALYSIS ====================
   static const String allAnalysis = "/analyse/all/";
@@ -50,11 +50,14 @@ class ApiEndpoints {
 
   // ==================== NOTIFICATIONS ====================
   /// Update reminder times for the authenticated user
-  static const String updateReminders = "/user";
+  /// Backend: PUT /notification/reminders
+  static const String updateReminders = "/notification/reminders";
 
   /// Update FCM token for push notifications
-  static const String updateFcmToken = "/user";
+  /// Backend: POST /notification/fcm-token
+  static const String updateFcmToken = "/notification/fcm-token";
 
   /// Trigger reminders manually (for testing)
-  static const String triggerReminders = "/user";
+  /// Backend: GET /notification/trigger-reminders
+  static const String triggerReminders = "/notification/trigger-reminders";
 }

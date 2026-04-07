@@ -1,30 +1,59 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled10/core/api/api_service.dart';
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
-import 'package:untitled10/core/utils/toast_utility.dart';
-import 'package:untitled10/features/auth/presentaion/manager/auth_cubit.dart';
-import 'package:untitled10/features/auth/presentaion/manager/auth_state.dart';
-import 'package:untitled10/features/home/presentation/manager/settings_cubit.dart';
-import 'package:untitled10/features/home/presentation/manager/settings_state.dart';
-import 'package:untitled10/features/home/presentation/widgets/change_password_bottom_sheet.dart';
-import 'package:untitled10/features/home/presentation/widgets/settings_item.dart';
-import 'package:untitled10/features/home/presentation/widgets/time_picker_item.dart';
-import 'package:untitled10/features/user/presentation/manager/user_cubit.dart';
-import 'package:untitled10/features/user/presentation/manager/user_state.dart';
+import 'package:get_it/get_it.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/utils/global_refresher.dart';
+import 'package:glucotrack/core/utils/toast_utility.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_state.dart';
+import 'package:glucotrack/features/home/presentation/manager/settings_cubit.dart';
+import 'package:glucotrack/features/home/presentation/manager/settings_state.dart';
+import 'package:glucotrack/features/home/presentation/widgets/change_password_bottom_sheet.dart';
+import 'package:glucotrack/features/home/presentation/widgets/settings_item.dart';
+import 'package:glucotrack/features/home/presentation/widgets/time_picker_item.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_cubit.dart';
+import 'package:glucotrack/features/user/presentation/manager/user_state.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late final GlobalRefresher _refresher;
+  late final UserCubit _userCubit;
+  late final StreamSubscription _refreshSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _userCubit = context.read<UserCubit>();
+    _userCubit.getUser();
+    _refresher = GetIt.I<GlobalRefresher>();
+    _refreshSubscription = _refresher.refreshStream.listen((_) {
+      _userCubit.getUser();
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final settingsCubit = SettingsCubit(ApiService());
+        final settingsCubit = SettingsCubit(context.read<UserCubit>());
         final userState = context.read<UserCubit>().state;
         if (userState is UserLoaded) {
           settingsCubit.loadSettings(userState.userModel);
@@ -63,59 +92,10 @@ class SettingsPage extends StatelessWidget {
           ),
           // Listen to SettingsCubit changes - show toast-based error feedback
           // Note: Error banner UI was removed; errors are now handled via toast with retry functionality
-          BlocListener<SettingsCubit, SettingsState>(
-            listener: (context, state) async {
-              if (state is SettingsFailure) {
-                // Show error toast with retry functionality
-                ToastUtility.showErrorWithRetryToast(
-                  context,
-                  message: state.message,
-                  onRetry: () {
-                    // Retry the failed setting
-                    final failedSetting = state.failedSetting;
-                    switch (failedSetting) {
-                      case FailedSetting.sugarReminder:
-                        context.read<SettingsCubit>().toggleSugarReminder(
-                          state.sugarReminder,
-                        );
-                        break;
-                      case FailedSetting.medicineReminder:
-                        context.read<SettingsCubit>().toggleMedicineReminder(
-                          state.medicineReminder,
-                        );
-                        break;
-                      case FailedSetting.none:
-                        // Reset to initial state
-                        context.read<SettingsCubit>().toggleSugarReminder(
-                          state.sugarReminder,
-                        );
-                    }
-                  },
-                );
-              } else if (state is SettingsInitial && state.isSuccess) {
-                // Capture references before async call to avoid context issues
-                final userCubit = context.read<UserCubit>();
-
-                // Re-fetch user data from backend to ensure UI shows correct values after update
-                // This provides proper revalidation of the settings state
-                try {
-                  await userCubit.getUser();
-                } catch (e) {
-                  // Silently handle - settings already updated locally in cubit
-                }
-                // Show success message using ToastUtility (using captured context)
-                if (context.mounted) {
-                  ToastUtility.showSuccessDismissibleToast(
-                    context,
-                    message: 'Settings updated successfully!',
-                  );
-                }
-              }
-            },
-          ),
         ],
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Text(
               context.read<LocaleCubit>().translate('app_title'),
               style: TextStyle(
@@ -126,14 +106,14 @@ class SettingsPage extends StatelessWidget {
             ),
             centerTitle: true,
             backgroundColor: AppColor.backgroundNeutral,
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.notifications);
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(CupertinoIcons.bell, color: AppColor.info),
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, AppRoutes.notifications);
+            //     },
+            //   ),
+            // ],
           ),
           backgroundColor: AppColor.backgroundNeutral,
           body: BlocBuilder<SettingsCubit, SettingsState>(

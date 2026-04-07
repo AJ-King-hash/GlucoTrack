@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glucotrack/features/auth/presentaion/manager/auth_cubit.dart';
 import '../../../../core/color/app_color.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -27,6 +28,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
   bool _isLoading = false;
 
   bool _validatePasswords() {
+    // Validate old password is not empty
     if (_oldPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -167,7 +169,15 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
           ),
         );
 
-        Navigator.pop(context);
+        // Logout the user after password change
+        await context.read<AuthCubit>().logout();
+
+        // Navigate to login screen
+        if (mounted) {
+          Navigator.of(
+            context,
+          ).pushNamedAndRemoveUntil('/login', (route) => false);
+        }
       }
     } catch (e) {
       if (mounted) {

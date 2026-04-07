@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
+import 'package:glucotrack/core/injection_container.dart';
 
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/utils/source_storage_service.dart';
 import '../../../../core/widgets/custom_icon_widget.dart';
+import '../../repo/auth_repo.dart';
 
 /// Splash Screen for DiabetesAssistant application
 /// Provides branded app launch experience while initializing diabetes management services
@@ -102,11 +104,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (mounted) {
       if (token != null) {
-        // User is already logged in
-        Navigator.of(
-          context,
-          rootNavigator: true,
-        ).pushReplacementNamed(AppRoutes.home);
+        // User is already logged in - fetch user data from API
+        final authRepository = sl<AuthRepository>();
+        await authRepository.autoLogin();
+
+        if (mounted) {
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushReplacementNamed(AppRoutes.home);
+        }
       } else if (isFirstTime) {
         // New users see login page
         Navigator.of(

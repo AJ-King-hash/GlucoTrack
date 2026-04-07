@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:untitled10/core/color/app_color.dart';
-import 'package:untitled10/core/localization/locale_cubit.dart';
-import 'package:untitled10/core/routes/app_routes.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+import 'package:glucotrack/core/localization/locale_cubit.dart';
+import 'package:glucotrack/core/routes/app_routes.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_logo.dart';
 import '../../../../core/widgets/app_text_feild.dart';
@@ -23,17 +23,14 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          // Show success toast
+        // FIX: Only react to OTP Sent here
+        if (state is AuthOtpSentSuccess) {
           ToastUtility.showSuccessDismissibleToast(
             context,
-            message: context.read<LocaleCubit>().translate(
-              'enter_email_for_otp',
-            ),
+            message: state.message,
           );
 
-          // Navigate after delay to allow toast to show
-          Future.delayed(const Duration(milliseconds: 3500), () {
+          Future.delayed(const Duration(seconds: 2), () {
             if (context.mounted) {
               Navigator.pushNamed(
                 context,
@@ -43,11 +40,15 @@ class ResetPasswordPage extends StatelessWidget {
             }
           });
         }
+
         if (state is AuthError) {
-          // Show error toast
-          ToastUtility.showErrorDismissibleToast(
+          ToastUtility.showErrorWithRetryToast(
             context,
             message: state.message,
+            onRetry:
+                () => context.read<AuthCubit>().forgotPassword(
+                  email: emailController.text.trim(),
+                ),
           );
         }
       },
@@ -132,9 +133,17 @@ class ResetPasswordPage extends StatelessWidget {
                           textColor: AppColor.textNeutral,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // context.read<AuthCubit>().forgotPassword(
-                              //   emailController.text.trim(),
-                              // );
+                              context.read<AuthCubit>().forgotPassword(
+                                email: emailController.text.trim(),
+                              );
+                            } else {
+                              // Show validation error toast
+                              ToastUtility.showErrorDismissibleToast(
+                                context,
+                                message: context.read<LocaleCubit>().translate(
+                                  'please_fill_all_fields',
+                                ),
+                              );
                             }
                           },
                         ),
@@ -151,7 +160,7 @@ class ResetPasswordPage extends StatelessWidget {
                             ),
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: AppColor.warning,
+                              color: AppColor.info,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
