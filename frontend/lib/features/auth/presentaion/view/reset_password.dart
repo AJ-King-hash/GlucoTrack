@@ -23,15 +23,14 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          // Show success toast
+        // FIX: Only react to OTP Sent here
+        if (state is AuthOtpSentSuccess) {
           ToastUtility.showSuccessDismissibleToast(
             context,
             message: state.message,
           );
 
-          // Navigate after delay to allow toast to show
-          Future.delayed(const Duration(milliseconds: 2000), () {
+          Future.delayed(const Duration(seconds: 2), () {
             if (context.mounted) {
               Navigator.pushNamed(
                 context,
@@ -41,18 +40,15 @@ class ResetPasswordPage extends StatelessWidget {
             }
           });
         }
+
         if (state is AuthError) {
-          // Show error toast with retry action
           ToastUtility.showErrorWithRetryToast(
             context,
             message: state.message,
-            onRetry: () {
-              if (_formKey.currentState!.validate()) {
-                context.read<AuthCubit>().forgotPassword(
-                  emailController.text.trim(),
-                );
-              }
-            },
+            onRetry:
+                () => context.read<AuthCubit>().forgotPassword(
+                  email: emailController.text.trim(),
+                ),
           );
         }
       },
@@ -138,7 +134,7 @@ class ResetPasswordPage extends StatelessWidget {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               context.read<AuthCubit>().forgotPassword(
-                                emailController.text.trim(),
+                                email: emailController.text.trim(),
                               );
                             } else {
                               // Show validation error toast

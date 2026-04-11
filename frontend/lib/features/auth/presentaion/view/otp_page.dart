@@ -28,8 +28,8 @@ class _OtpPageState extends State<OtpPage> {
   late List<TextEditingController> controllers;
   @override
   void initState() {
-    super.initState();
     controllers = List.generate(6, (_) => TextEditingController());
+    super.initState();
   }
 
   @override
@@ -43,25 +43,33 @@ class _OtpPageState extends State<OtpPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
+    final Object? args = ModalRoute.of(context)?.settings.arguments;
+    final String email = args is String ? args : '';
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          // Show success toast
+        if (state is AuthOtpVerifiedSuccess) {
           ToastUtility.showSuccessDismissibleToast(
             context,
             message: state.message,
           );
-          // Navigate after a brief delay
-          Future.delayed(const Duration(milliseconds: 2000), () {
-            if (context.mounted) {
-              Navigator.pushReplacementNamed(
-                context,
-                AppRoutes.newPassword,
-                arguments: widget.email,
-              );
-            }
-          });
+
+          Navigator.pushNamed(context, AppRoutes.newPassword, arguments: email);
         }
+
+        if (state is AuthOtpSentSuccess) {
+          ToastUtility.showSuccessDismissibleToast(
+            context,
+            message: state.message,
+          );
+          for (var controller in controllers) {
+            controller.clear();
+          }
+          if (controllers.isNotEmpty) {
+            FocusScope.of(context).requestFocus();
+          }
+        }
+
         if (state is AuthError) {
           // Show error toast with retry action
           ToastUtility.showErrorWithRetryToast(
@@ -69,9 +77,9 @@ class _OtpPageState extends State<OtpPage> {
             message: state.message,
             onRetry: () {
               final allFilled = controllers.every((c) => c.text.isNotEmpty);
-              if (allFilled) {
+              if (allFilled && email.isNotEmpty) {
                 final otp = controllers.map((e) => e.text).join();
-                cubit.verifyOtp(widget.email!, otp);
+                cubit.verifyOtp(email: email, otp: otp);
               } else {
                 ToastUtility.showErrorDismissibleToast(
                   context,
@@ -134,7 +142,7 @@ class _OtpPageState extends State<OtpPage> {
                                 children: List.generate(
                                   6,
                                   (index) => SizedBox(
-                                    width: 55.w,
+                                    width: 40.w,
                                     child: OtpBox(
                                       controller: controllers[index],
                                       autoFocus: index == 0,
@@ -162,10 +170,12 @@ class _OtpPageState extends State<OtpPage> {
                                 textColor: Colors.white,
                                 backgroundColor: AppColor.positive,
                                 onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
+                                  if (_formKey.currentState!.validate() &&
+                                      email.isNotEmpty) {
                                     final otp =
                                         controllers.map((e) => e.text).join();
-                                    cubit.verifyOtp(widget.email!, otp);
+
+                                    cubit.verifyOtp(email: email, otp: otp);
                                   } else {
                                     // Show validation error toast
                                     ToastUtility.showErrorDismissibleToast(
@@ -181,19 +191,37 @@ class _OtpPageState extends State<OtpPage> {
                           ),
                         ),
                         SizedBox(height: 24.h),
-                        TextButton(
-                          onPressed: () {
-                            cubit.close();
-                          },
-                          child: Text(
-                            context.read<LocaleCubit>().translate('resend_otp'),
-                            style: TextStyle(
-                              color: AppColor.info,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.bold,
+                        if (state is AuthLoading)
+                          const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColor.info,
+                              ),
+                            ),
+                          )
+                        else
+                          TextButton(
+                            onPressed: email.isEmpty
+                                ? null
+                                : () {
+                                    context.read<AuthCubit>().forgotPassword(
+                                          email: email,
+                                        );
+                                  },
+                            child: Text(
+                              context.read<LocaleCubit>().translate('resend_otp'),
+                              style: TextStyle(
+                                color: email.isEmpty
+                                    ? AppColor.textNeutral.withValues(alpha: 0.5)
+                                    : AppColor.info,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     );
                   },

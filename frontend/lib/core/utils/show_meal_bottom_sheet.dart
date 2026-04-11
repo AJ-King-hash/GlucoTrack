@@ -210,12 +210,17 @@ void showMealBottomSheet(BuildContext context) async {
                   ),
                   SizedBox(height: 24.h),
 
-                  // Submit logic with BlocConsumer
+                    // Submit logic with BlocConsumer
                   BlocConsumer<ArchiveCubit, ArchiveState>(
                     listener: (context, state) {
                       if (state.status == ArchiveStatus.success) {
-                        Navigator.pop(context); // Close bottom sheet
-                        Navigator.pushNamed(context, AppRoutes.archives);
+                        final lastArchive = state.archives.isNotEmpty
+                            ? state.archives.last
+                            : null;
+                        Navigator.pop(context);
+                        if (lastArchive != null && lastArchive.hba1c != null) {
+                          Navigator.pushNamed(context, AppRoutes.archives);
+                        }
                       } else if (state.status == ArchiveStatus.error) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

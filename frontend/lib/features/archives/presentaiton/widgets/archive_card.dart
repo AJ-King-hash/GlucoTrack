@@ -91,6 +91,10 @@ class ArchiveCard extends StatelessWidget {
                         letterSpacing: 0.3,
                       ),
                     ),
+                    if (archive.hba1c != null) ...[
+                      const SizedBox(height: 4),
+                      _buildHba1cIndicator(context),
+                    ],
                   ],
                 ),
               ),
@@ -176,6 +180,52 @@ class ArchiveCard extends StatelessWidget {
           letterSpacing: 0.5,
         ),
       ),
+    );
+  }
+
+  Widget _buildHba1cIndicator(BuildContext context) {
+    final locale = context.read<LocaleCubit>();
+    final classification = ArchiveModel.getHba1cRiskClassification(
+      archive.hba1c,
+    );
+    String label;
+    Color color;
+    switch (classification) {
+      case 'normal':
+        label = locale.translate('hba1c_normal');
+        color = AppColor.positive;
+        break;
+      case 'prediabetes':
+        label = locale.translate('hba1c_prediabetes');
+        color = AppColor.warning;
+        break;
+      case 'diabetes':
+        label = locale.translate('hba1c_diabetes');
+        color = AppColor.negative;
+        break;
+      case 'severe':
+        label = locale.translate('hba1c_severe');
+        color = Colors.red[900]!;
+        break;
+      default:
+        label = '';
+        color = Colors.grey;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.bloodtype, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          '${locale.translate('hba1c_result')}: ${archive.hba1c!.toStringAsFixed(1)}% ($label)',
+          style: TextStyle(
+            color: color,
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 
