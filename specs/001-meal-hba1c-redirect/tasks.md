@@ -24,10 +24,10 @@ _Goal_: Prepare development environment for the feature implementation
 
 ### Tasks
 
-- [ ] T001 Verify Python 3.11+ and Flutter SDK are installed
-- [ ] T002 [P] Navigate to Backend directory and verify dependencies: `pip install -r requirements.txt`
-- [ ] T003 [P] Navigate to frontend directory and verify dependencies: `flutter pub get`
-- [ ] T004 Verify database exists at `Backend/HealthApp.db`
+- [x] T001 Verify Python 3.11+ and Flutter SDK are installed
+- [x] T002 [P] Navigate to Backend directory and verify dependencies: `pip install -r requirements.txt`
+- [x] T003 [P] Navigate to frontend directory and verify dependencies: `flutter pub get`
+- [x] T004 Verify database exists at `Backend/HealthApp.db`
 
 ---
 
@@ -39,13 +39,13 @@ _Goal_: Identify and prepare the code locations that will be modified for this f
 
 ### Tasks
 
-- [ ] T005 [P] Locate meal creation endpoint in `Backend/routers/meal.py`
-- [ ] T006 [P] Review existing hba1c handling in `Backend/repositories/mealRepo.py` (lines 64-85)
-- [ ] T007 [P] Review response schema in `Backend/schemas.py` for hba1c field
-- [ ] T011b [P] Verify `POST /api/meal` endpoint is accessible and returns correct response format
-- [ ] T008 Locate mobile app meal creation screens.
-- [ ] T009 Locate mobile app API service for meal creation in `frontend/lib/core/api`
-- [ ] T010 Locate archives screen route definition in frontend
+- [x] T005 [P] Locate meal creation endpoint in `Backend/routers/meal.py`
+- [x] T006 [P] Review existing hba1c handling in `Backend/repositories/mealRepo.py` (lines 64-85)
+- [x] T007 [P] Review response schema in `Backend/schemas.py` for hba1c field
+- [x] T011b [P] Verify `POST /api/meal` endpoint is accessible and returns correct response format
+- [x] T008 Locate mobile app meal creation screens.
+- [x] T009 Locate mobile app API service for meal creation in `frontend/lib/core/api`
+- [x] T010 Locate archives screen route definition in frontend
 
 ---
 
@@ -118,10 +118,10 @@ _Goal_: Handle edge cases and final testing
 
 ### Tasks
 
-- [ ] T022 Handle API timeout - show loading indicator, do not redirect on timeout
-- [ ] T023 Handle network failure after meal creation - allow manual navigation to archives
-- [ ] T024 Validate hba1c values are within 0-100 range; reject any value outside this range as invalid
-- [ ] T025 Final integration test - full flow from meal creation to redirect verification with risk classification display
+- [x] T022 Handle API timeout - show loading indicator, do not redirect on timeout
+- [x] T023 Handle network failure after meal creation - allow manual navigation to archives
+- [x] T024 Validate hba1c values are within 0-100 range; reject any value outside this range as invalid
+- [x] T025 Final integration test - full flow from meal creation to redirect verification with risk classification display
 
 ---
 

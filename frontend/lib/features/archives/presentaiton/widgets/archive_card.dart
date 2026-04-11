@@ -185,7 +185,9 @@ class ArchiveCard extends StatelessWidget {
 
   Widget _buildHba1cIndicator(BuildContext context) {
     final locale = context.read<LocaleCubit>();
-    final classification = ArchiveModel.getHba1cRiskClassification(archive.hba1c);
+    final classification = ArchiveModel.getHba1cRiskClassification(
+      archive.hba1c,
+    );
     String label;
     Color color;
     switch (classification) {
