@@ -8,22 +8,6 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository authRepository;
   AuthCubit(this.authRepository) : super(AuthInitial());
 
-  Future<void> login({required String email, required String password}) async {
-    emit(AuthLoading());
-    final result = await authRepository.login(email, password);
-    result.fold((failure) => emit(AuthError(failure.message)), (user) {
-      if (user != null) {
-        // Save user ID to secure storage
-        if (user.id != null) {
-          PrefHelper.saveUserId(user.id.toString());
-        }
-        emit(AuthSuccess("Login successful"));
-      } else {
-        emit(AuthError("Invalid credentials"));
-      }
-    });
-  }
-
   Future<void> logout() async {
     emit(AuthLoading());
     try {
@@ -42,54 +26,46 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> verifyOtp(String email, String otp) async {
+  Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
-    try {
-      final result = await authRepository.verifyOtp(email, otp);
-      result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (_) => emit(AuthSuccess("OTP verified successfully")),
-      );
-    } catch (e) {
-      String errMsg = "Error in OTP verification";
-      if (e is ApiError) {
-        errMsg = e.message;
+    final result = await authRepository.login(email, password);
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      if (user != null && user.id != null) {
+        PrefHelper.saveUserId(user.id.toString());
       }
-      emit(AuthError(errMsg));
-    }
+      // Emit Login specific success
+      emit(AuthLoginSuccess("Login successful", user: user));
+    });
   }
 
-  Future<void> forgotPassword(String email) async {
+  Future<void> forgotPassword({required String email}) async {
     emit(AuthLoading());
-    try {
-      final result = await authRepository.forgotPassword(email);
-      result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (_) => emit(AuthSuccess("OTP sent to your email")),
-      );
-    } catch (e) {
-      String errMsg = "Error sending OTP";
-      if (e is ApiError) {
-        errMsg = e.message;
-      }
-      emit(AuthError(errMsg));
-    }
+    final result = await authRepository.forgotPassword(email);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (success) => emit(AuthOtpSentSuccess("OTP sent to your email")),
+    );
   }
 
-  Future<void> resetPassword(String email, String newPassword) async {
+  Future<void> verifyOtp({required String email, required String otp}) async {
     emit(AuthLoading());
-    try {
-      final result = await authRepository.resetPassword(email, newPassword);
-      result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (_) => emit(AuthSuccess("Password reset successfully")),
-      );
-    } catch (e) {
-      String errMsg = "Error resetting password";
-      if (e is ApiError) {
-        errMsg = e.message;
-      }
-      emit(AuthError(errMsg));
-    }
+    final result = await authRepository.verifyOtp(email, otp);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (success) => emit(AuthOtpVerifiedSuccess("OTP verified successfully")),
+    );
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    emit(AuthLoading());
+    final result = await authRepository.resetPassword(email, newPassword);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (success) =>
+          emit(AuthPasswordResetSuccess("Password reset successfully")),
+    );
   }
 }

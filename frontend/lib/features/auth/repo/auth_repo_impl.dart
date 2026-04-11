@@ -92,8 +92,14 @@ class AuthRepoImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> resetPassword(String email, String newPassword) async {
-    final result = await apiService.resetPassword({'email': email, 'new_password': newPassword});
+  Future<Either<Failure, void>> resetPassword(
+    String email,
+    String newPassword,
+  ) async {
+    final result = await apiService.resetPassword({
+      'email': email,
+      'new_password': newPassword,
+    });
     return result.fold((failure) => Left(failure), (_) => const Right(null));
   }
 

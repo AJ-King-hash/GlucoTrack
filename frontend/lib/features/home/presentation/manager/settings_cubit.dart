@@ -48,7 +48,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> toggleSugarReminder(bool value) async {
-    print("toggle value: " + value.toString());
     // Save the current state before emitting loading
     final currentState = state;
     if (currentState is! SettingsInitial) return;

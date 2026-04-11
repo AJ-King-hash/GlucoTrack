@@ -3,7 +3,7 @@ import models
 from fastapi import HTTPException,status
 
 def get_all(user_id:int,db:Session):
-    analysis=db.query(models.PrevAnalyse).where(models.PrevAnalyse.user_id==user_id).all()
+    analysis=db.query(models.PrevAnalyse).where(models.PrevAnalyse.user_id==user_id).where(models.PrevAnalyse.hba1c!=None).all()
     return analysis
 
 def get(arc_id:int,db:Session):

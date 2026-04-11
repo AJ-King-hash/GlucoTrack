@@ -23,19 +23,20 @@ class NewPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Object? args = ModalRoute.of(context)?.settings.arguments;
+    final String email = args is String ? args : '';
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
-          // Show success toast
+        if (state is AuthPasswordResetSuccess) {
           ToastUtility.showSuccessDismissibleToast(
             context,
             message: state.message,
           );
 
-          // Navigate after delay to allow toast to show
-          Future.delayed(const Duration(milliseconds: 2000), () {
+          // Per your requirement: Redirect to Login so they can sign in with new pass
+          Future.delayed(const Duration(seconds: 2), () {
             if (context.mounted) {
-              context.read<AuthCubit>().logout();
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 AppRoutes.login,
@@ -52,8 +53,8 @@ class NewPasswordPage extends StatelessWidget {
             onRetry: () {
               if (_formKey.currentState!.validate()) {
                 context.read<AuthCubit>().resetPassword(
-                  email,
-                  newPasswordController.text.trim(),
+                  email: email,
+                  newPassword: newPasswordController.text.trim(),
                 );
               }
             },
@@ -167,8 +168,8 @@ class NewPasswordPage extends StatelessWidget {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               context.read<AuthCubit>().resetPassword(
-                                email,
-                                newPasswordController.text.trim(),
+                                email: email,
+                                newPassword: newPasswordController.text.trim(),
                               );
                             } else {
                               // Show validation error toast
