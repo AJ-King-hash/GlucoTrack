@@ -95,6 +95,8 @@ class ArchiveDetailsPage extends StatelessWidget {
                     'yyyy-MM-dd | hh:mm a',
                   ).format(archive.analysedAt.toLocal()),
                 ),
+                if (archive.hba1c != null)
+                  _buildHba1cRow(locale),
                 _buildInfoRow(
                   locale.translate('risk_level'),
                   archive.riskResult,
@@ -268,6 +270,72 @@ class ArchiveDetailsPage extends StatelessWidget {
               textAlign: TextAlign.end,
               style: TextStyle(fontWeight: FontWeight.w600, color: valueColor),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHba1cRow(LocaleCubit locale) {
+    final classification = ArchiveModel.getHba1cRiskClassification(archive.hba1c);
+    String label;
+    Color color;
+    switch (classification) {
+      case 'normal':
+        label = locale.translate('hba1c_normal');
+        color = AppColor.positive;
+        break;
+      case 'prediabetes':
+        label = locale.translate('hba1c_prediabetes');
+        color = AppColor.warning;
+        break;
+      case 'diabetes':
+        label = locale.translate('hba1c_diabetes');
+        color = AppColor.negative;
+        break;
+      case 'severe':
+        label = locale.translate('hba1c_severe');
+        color = Colors.red[900]!;
+        break;
+      default:
+        label = '';
+        color = Colors.grey;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            locale.translate('hba1c_result'),
+            style: const TextStyle(color: Colors.grey),
+          ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: color, width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bloodtype, size: 16, color: color),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${archive.hba1c!.toStringAsFixed(1)}% ($label)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
