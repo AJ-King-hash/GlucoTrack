@@ -65,17 +65,17 @@ def update(id,request,db:Session):
         user.password=Hash.bcrypt(request.password)
     
     # Update reminder times if provided
-    if request.gluco_time:
-        user.gluco_reminder = parse_time_to_datetime(request.gluco_time)
-        # print(parse_time_to_datetime(request.gluco_time))
-    elif request.gluco_time is False and hasattr(request, 'gluco_time'):
-        # Allow clearing the reminder
+    if request.gluco_time is False and hasattr(request, 'gluco_time'):
         user.gluco_reminder = None
+        # print(parse_time_to_datetime(request.gluco_time))
+    elif request.gluco_time:
+        # Allow clearing the reminder
+        user.gluco_reminder = parse_time_to_datetime(request.gluco_time)
     
-    if request.medicine_time:
-        user.medicine_reminder = parse_time_to_datetime(request.medicine_time)
-    elif request.medicine_time is False and hasattr(request, 'medicine_time'):
+    if request.medicine_time is False and hasattr(request, 'medicine_time'):
         user.medicine_reminder = None
+    elif request.medicine_time:
+        user.medicine_reminder = parse_time_to_datetime(request.medicine_time)
     
     # Update FCM token if provided
     if request.fcm_token:

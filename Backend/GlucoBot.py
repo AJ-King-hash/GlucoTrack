@@ -15,7 +15,7 @@ class GlucoBot():
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
-        model="stepfun/step-3.5-flash:free",
+        model="z-ai/glm-4.5-air:free",
         messages=[
         {
           "role": "user",
@@ -26,7 +26,7 @@ class GlucoBot():
     
     def chatAsNumber(self,message):
         completion = self.client.chat.completions.create(
-        model="stepfun/step-3.5-flash:free",
+        model="z-ai/glm-4.5-air:free",
         messages=[
         {
           "role": "user",
@@ -79,7 +79,7 @@ class GlucoBot():
             """
             
             completion = self.client.chat.completions.create(
-            model="stepfun/step-3.5-flash:free",
+            model="z-ai/glm-4.5-air:free",
             messages=[
             {
               "role": "user",

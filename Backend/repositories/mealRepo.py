@@ -49,8 +49,9 @@ def create(request,db:Session,current_user):
         # Catch all exceptions (API errors, timeout errors, etc.) and use fallback
         print(f"GlucoBot API error: {str(e)}")
         res_dict = fallback_response
+    descs=db.query(models.Meal).filter(models.Meal.user_id==current_user.id)
     new_meal=models.Meal(
-        description=request.description,
+        description="\n".join([d[0] for d in descs.with_entities(models.Meal.description).all()]) if descs.count()==2 else request.description,
         meal_type=request.meal_type,
         meal_time=request.meal_time,
         user_id=current_user.id,
