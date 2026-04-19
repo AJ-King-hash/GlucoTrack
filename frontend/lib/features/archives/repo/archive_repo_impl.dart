@@ -10,22 +10,8 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   ArchiveRepositoryImpl({required this.apiService});
 
   @override
-  Future<Either<Failure, List<ArchiveModel>>> getUserArchives({
-    int page = 1,
-    int limit = 10,
-    String? search,
-    String? sortBy,
-    String sortOrder = 'desc',
-    String? riskFilter,
-  }) async {
-    final result = await apiService.getAllAnalysis(
-      page: page,
-      limit: limit,
-      search: search,
-      sortBy: sortBy,
-      sortOrder: sortOrder,
-      riskFilter: riskFilter,
-    );
+  Future<Either<Failure, List<ArchiveModel>>> getUserArchives() async {
+    final result = await apiService.getAllAnalysis();
 
     return result.fold(
       (failure) => Left(failure),
