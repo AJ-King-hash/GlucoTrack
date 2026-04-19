@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 # it is in built-in memory
-SQLALCHAMY_DATABASE_URL="sqlite:///./HealthApp.db"
+SQLALCHAMY_DATABASE_URL="sqlite:///./HealthApp2.db"
 engine=create_engine(SQLALCHAMY_DATABASE_URL,connect_args={"check_same_thread":False})
 
 
