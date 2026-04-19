@@ -51,7 +51,7 @@ def create(request,db:Session,current_user):
         res_dict = fallback_response
     descs=db.query(models.Meal).filter(models.Meal.user_id==current_user.id)
     new_meal=models.Meal(
-        description="\n".join([d[0] for d in descs.with_entities(models.Meal.description).all()]) if descs.count()==2 else request.description,
+        description=" ".join([d[0] for d in descs.with_entities(models.Meal.description).all()]) if descs.count()==3 else request.description,
         meal_type=request.meal_type,
         meal_time=request.meal_time,
         user_id=current_user.id,
@@ -65,10 +65,10 @@ def create(request,db:Session,current_user):
     if checking.count()>3:
             Qq=checking.with_entities(models.Meal.GL).all()
             mean_gluco_columns=sum([q[0] for q in Qq])/len([q[0] for q in Qq])
+            print(mean_gluco_columns)
             Fuzzy.fuzzy_sim.input["glycemic_load"]=round(float(mean_gluco_columns),2)
             Fuzzy.fuzzy_sim.input["physical_activity"]=db.query(models.RiskFactor).filter(models.RiskFactor.user_id==current_user.id).first().BMI
             Fuzzy.fuzzy_sim.compute()
-
             new_archive=models.PrevAnalyse(
                 user_id=current_user.id,
                 meal_id=new_meal.id,

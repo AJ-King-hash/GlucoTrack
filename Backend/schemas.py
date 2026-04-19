@@ -188,8 +188,13 @@ class ConversationShow(ConversationBase):
 
 
 class UserReminderUpdate(BaseModel):
+<<<<<<< HEAD
     gluco_time: Optional[str | bool] = None  # e.g., "03:00" (24-hour format)
     medicine_time: Optional[str | bool] = None  # e.g., "03:00"
+=======
+    gluco_time: Optional[str|bool] = None  # e.g., "03:00" (24-hour format)
+    medicine_time: Optional[str|bool] = None  # e.g., "03:00"
+>>>>>>> fe6a7ff9744f06559594d5e07ac1ff3182cc2e61
     timezone: Optional[str] = "UTC"  # User's timezone
 
 class FCMTokenUpdate(BaseModel):
