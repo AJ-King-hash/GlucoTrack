@@ -4,7 +4,10 @@ from fastapi import HTTPException,status
 
 def get_all(user_id:int,db:Session):
     analysis=db.query(models.PrevAnalyse).where(models.PrevAnalyse.user_id==user_id).where(models.PrevAnalyse.hba1c!=None).all()
-    return analysis
+    if analysis:
+        return analysis
+    else:
+        return {"message":"There is no Archives Yet!"}
 
 def get(arc_id:int,db:Session):
     analyse=db.query(models.PrevAnalyse).where(models.PrevAnalyse.id==arc_id).first()
