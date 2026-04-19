@@ -36,14 +36,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
       ),
     );
 
-    final result = await repository.getUserArchives(
-      page: currentPage,
-      limit: state.limit,
-      search: search ?? state.searchQuery,
-      sortBy: sortBy ?? state.sortBy,
-      sortOrder: sortOrder ?? state.sortOrder,
-      riskFilter: riskFilter ?? state.riskFilter,
-    );
+    final result = await repository.getUserArchives();
 
     result.fold(
       (failure) => emit(
@@ -52,15 +45,18 @@ class ArchiveCubit extends Cubit<ArchiveState> {
           errorMessage: failure.message,
         ),
       ),
-      (archives) => emit(
-        state.copyWith(
-          status: ArchiveStatus.success,
-          archives: archives,
-          totalCount:
-              archives.length, // Estimate: backend doesn't provide count
-          hasMore: archives.length >= state.limit,
-        ),
-      ),
+      (archives) {
+        print("archives: " + archives.toString());
+        emit(
+          state.copyWith(
+            status: ArchiveStatus.success,
+            archives: archives,
+            totalCount:
+                archives.length, // Estimate: backend doesn't provide count
+            hasMore: archives.length >= state.limit,
+          ),
+        );
+      },
     );
   }
 
@@ -71,14 +67,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
     final nextPage = state.currentPage + 1;
     emit(state.copyWith(status: ArchiveStatus.loading));
 
-    final result = await repository.getUserArchives(
-      page: nextPage,
-      limit: state.limit,
-      search: state.searchQuery,
-      sortBy: state.sortBy,
-      sortOrder: state.sortOrder,
-      riskFilter: state.riskFilter,
-    );
+    final result = await repository.getUserArchives();
 
     result.fold(
       (failure) => emit(

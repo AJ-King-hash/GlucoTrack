@@ -24,6 +24,7 @@ def get_user(id:int,db:Session=Depends(get_db)):
 
 @router.put("/",response_model=schemas.ShowUserWithMessage)
 def update_user(request:schemas.UserUpdate,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user),current_token:str=Depends(oauth2.get_current_token)):
+    print(request)
     # If password is being changed, invalidate the token
     if request.password and request.old_password:
         credentials_exception = HTTPException(

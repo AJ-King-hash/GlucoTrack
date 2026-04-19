@@ -104,8 +104,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       // If enabling: use current time or default
       // If disabling: send empty string to disable
-      final newMedicineTime =
-          value ? (currentState.medicineTime ?? '20:00') : '';
+      final newMedicineTime = value ? ('20:00') : '';
 
       final updated = currentState.copyWith(
         medicineReminder: value,

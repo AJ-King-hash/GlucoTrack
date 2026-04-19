@@ -81,8 +81,16 @@ class UserRepositoryImpl implements UserRepository {
       data["old_password"] = oldPassword;
     }
 
+    if (glucoTime == "") {
+      data['gluco_time'] = false;
+    }
+
     if (glucoTime != null && glucoTime.isNotEmpty) {
       data['gluco_time'] = glucoTime;
+    }
+
+    if (medicineTime == "") {
+      data['medicine_time'] = false;
     }
 
     if (medicineTime != null && medicineTime.isNotEmpty) {
