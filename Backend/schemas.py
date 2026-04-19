@@ -13,8 +13,8 @@ class UserUpdate(BaseModel):
     password:Optional[str] = None
     gender:Optional[str] = None
     old_password: Optional[str] = None
-    gluco_time: Optional[str] = None  # e.g., "08:00" (24-hour format)
-    medicine_time: Optional[str] = None  # e.g., "20:00"
+    gluco_time: Optional[str | bool] = None  # e.g., "08:00" (24-hour format)
+    medicine_time: Optional[str | bool] = None  # e.g., "20:00"
     fcm_token: Optional[str] = None  # Firebase Cloud Messaging token
 
 class AnalyseBase(BaseModel):
@@ -188,8 +188,8 @@ class ConversationShow(ConversationBase):
 
 
 class UserReminderUpdate(BaseModel):
-    gluco_time: Optional[str] = None  # e.g., "03:00" (24-hour format)
-    medicine_time: Optional[str] = None  # e.g., "03:00"
+    gluco_time: Optional[str | bool] = None  # e.g., "03:00" (24-hour format)
+    medicine_time: Optional[str | bool] = None  # e.g., "03:00"
     timezone: Optional[str] = "UTC"  # User's timezone
 
 class FCMTokenUpdate(BaseModel):
