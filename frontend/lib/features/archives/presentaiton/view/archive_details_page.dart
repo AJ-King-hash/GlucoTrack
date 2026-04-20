@@ -95,8 +95,7 @@ class ArchiveDetailsPage extends StatelessWidget {
                     'yyyy-MM-dd | hh:mm a',
                   ).format(archive.analysedAt.toLocal()),
                 ),
-                if (archive.hba1c != null)
-                  _buildHba1cRow(locale),
+                if (archive.hba1c != null) _buildHba1cRow(locale),
                 _buildInfoRow(
                   locale.translate('risk_level'),
                   archive.riskResult,
@@ -277,7 +276,9 @@ class ArchiveDetailsPage extends StatelessWidget {
   }
 
   Widget _buildHba1cRow(LocaleCubit locale) {
-    final classification = ArchiveModel.getHba1cRiskClassification(archive.hba1c);
+    final classification = ArchiveModel.getHba1cRiskClassification(
+      archive.hba1c,
+    );
     String label;
     Color color;
     switch (classification) {

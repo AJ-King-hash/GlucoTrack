@@ -202,24 +202,6 @@ class RiskDetailsView extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            safeRisk.bmi.toStringAsFixed(1),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: _getBmiColor(safeRisk.bmi),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 16),

@@ -70,7 +70,14 @@ class ArchivesPage extends StatelessWidget {
     }
 
     if (state.archives.isEmpty) {
-      return const EmptyState(lottieAsset: 'assets/lottie/empty ghost.json');
+      return EmptyState(
+        lottieAsset: 'assets/lottie/empty ghost.json',
+        messageKey: 'archives_empty_message',
+        actionLabel: 'create_new_risk',
+        onActionPressed: () {
+          Navigator.of(context).pushNamed('/risk');
+        },
+      );
     }
 
     return RefreshIndicator(

@@ -13,6 +13,8 @@ class EmptyState extends StatelessWidget {
   final IconData? icon;
   final double? iconSize;
   final Color? iconColor;
+  final String? actionLabel;
+  final VoidCallback? onActionPressed;
 
   const EmptyState({
     super.key,
@@ -23,6 +25,8 @@ class EmptyState extends StatelessWidget {
     this.icon,
     this.iconSize,
     this.iconColor,
+    this.actionLabel,
+    this.onActionPressed,
   });
 
   @override
@@ -57,6 +61,27 @@ class EmptyState extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+          if (actionLabel != null) ...[
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: onActionPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                locale.translate(actionLabel!),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
         ],
       ),
     );

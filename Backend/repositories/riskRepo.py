@@ -66,3 +66,4 @@ def delete(user_id:int,db:Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Risk Factors with the user id {user_id} is not available")
     db.delete(risks)
     db.commit() 
+ 
