@@ -15,9 +15,16 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
 
     return result.fold(
       (failure) => Left(failure),
-      (data) => Right(
-        (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
-      ),
+      (data) {
+        // If data is null, return an empty list (no archives)
+        if (data == null) {
+          return Right(<ArchiveModel>[]);
+        }
+        // Otherwise, cast to List and map
+        return Right(
+          (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
+        );
+      },
     );
   }
 
