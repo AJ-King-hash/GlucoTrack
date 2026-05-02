@@ -127,9 +127,6 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         );
       },
       (newArchive) {
-        print("newArchive: " + newArchive.toString());
-        ToastUtility.showSuccess("Archive created successfully");
-        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList = [...state.archives, newArchive];
         emit(
           state.copyWith(
@@ -138,6 +135,8 @@ class ArchiveCubit extends Cubit<ArchiveState> {
             totalCount: state.totalCount + 1,
           ),
         );
+        ToastUtility.showSuccess("Archive created successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       },
     );
   }
@@ -149,14 +148,14 @@ class ArchiveCubit extends Cubit<ArchiveState> {
 
     result.fold(
       (failure) {
-        ToastUtility.showError(failure.message);
-        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         emit(
           state.copyWith(
             status: ArchiveStatus.error,
             errorMessage: failure.message,
           ),
         );
+        ToastUtility.showError(failure.message);
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       },
       (updatedArchive) {
         ToastUtility.showSuccess("Archive updated successfully");
@@ -187,8 +186,6 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         );
       },
       (_) {
-        ToastUtility.showSuccess("Archive deleted successfully");
-        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
         final updatedList =
             state.archives.where((archive) => archive.id != archiveId).toList();
 
@@ -199,6 +196,8 @@ class ArchiveCubit extends Cubit<ArchiveState> {
             totalCount: state.totalCount - 1,
           ),
         );
+        ToastUtility.showSuccess("Archive deleted successfully");
+        GetIt.I<GlobalRefresher>().triggerGlobalRefresh();
       },
     );
   }
