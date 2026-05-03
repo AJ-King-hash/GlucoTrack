@@ -3,6 +3,7 @@ import 'package:glucotrack/core/api/dio_client.dart';
 import 'package:glucotrack/core/api/end_point.dart';
 import 'package:glucotrack/core/errors/failure.dart';
 import 'package:glucotrack/core/utils/either.dart';
+import 'package:glucotrack/features/archives/data/model/archives_model.dart';
 
 /// Unified API Service for GlucoTrack Application
 ///
@@ -256,7 +257,7 @@ class ApiService {
   /// The user ID is extracted from the JWT token on the backend.
 
   /// Get all analysis with pagination, search, and filtering
-  Future<Either<Failure, dynamic>> getAllAnalysis({
+  Future<Either<Failure, List<dynamic>>> getAllAnalysis({
     int page = 1,
     int limit = 10,
     String? search,

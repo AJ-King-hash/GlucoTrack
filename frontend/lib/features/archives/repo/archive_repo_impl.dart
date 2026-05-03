@@ -13,19 +13,12 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
   Future<Either<Failure, List<ArchiveModel>>> getUserArchives() async {
     final result = await apiService.getAllAnalysis();
 
-    return result.fold(
-      (failure) => Left(failure),
-      (data) {
-        // If data is null, return an empty list (no archives)
-        if (data == null) {
-          return Right(<ArchiveModel>[]);
-        }
-        // Otherwise, cast to List and map
-        return Right(
-          (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
-        );
-      },
-    );
+    return result.fold((failure) => Left(failure), (data) {
+      // Otherwise, cast to List and map
+      return Right(
+        (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
+      );
+    });
   }
 
   @override
