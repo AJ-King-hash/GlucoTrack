@@ -19,8 +19,8 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
     return {"message":"User Created Successfully!","user":user,"access_token":access_token,"token_type":"bearer"}  
 
 @router.get("/{id}",response_model=schemas.ShowUserWithMessage)
-def get_user(id:int,db:Session=Depends(get_db)):
-    return {"message": "User has successfully Found!", "user": userRepo.show(id,db)}
+def get_user(id:int,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
+    return {"message": "User has successfully Found!", "user": userRepo.show(current_user.id,db)}
 
 @router.put("/",response_model=schemas.ShowUserWithMessage)
 def update_user(request:schemas.UserUpdate,db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user),current_token:str=Depends(oauth2.get_current_token)):
