@@ -1,16 +1,16 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,selectinload
 import models
 from fastapi import HTTPException,status
 
 def get_all(user_id:int,db:Session):
-    analysis=db.query(models.PrevAnalyse).where(models.PrevAnalyse.user_id==user_id).where(models.PrevAnalyse.hba1c!=None).all()
+    analysis=db.query(models.PrevAnalyse).options(selectinload(models.PrevAnalyse.meal)).where(models.PrevAnalyse.user_id==user_id).where(models.PrevAnalyse.hba1c!=None).all()
     if analysis:
         return analysis
     else:
         return []
 
 def get(arc_id:int,db:Session):
-    analyse=db.query(models.PrevAnalyse).where(models.PrevAnalyse.id==arc_id).first()
+    analyse=db.query(models.PrevAnalyse).options(selectinload(models.PrevAnalyse.meal)).where(models.PrevAnalyse.id==arc_id).first()
     return analyse
 
 def delete(id:int,db:Session):
