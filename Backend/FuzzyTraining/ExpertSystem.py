@@ -51,7 +51,7 @@ class InsulinExpertSystem:
         elif 0.2 <= final_cf < 0.6:
             return "Medium Risk"
         elif -0.2 <= final_cf < 0.2:
-            return "Unknown / Stable"
+            return "Stable"
         else:
             return "Low Risk / Healthy Response"
 
