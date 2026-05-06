@@ -58,8 +58,12 @@ class ArchivesPage extends StatelessWidget {
     ArchiveCubit cubit,
     LocaleCubit locale,
   ) {
+    final locale = context.read<LocaleCubit>();
+
     if (state.status == ArchiveStatus.loading) {
-      return const LoadingState(message: 'Loading archives...');
+      return LoadingState(
+        message: locale.translate("archives_loading_message"),
+      );
     }
 
     if (state.status == ArchiveStatus.error) {
