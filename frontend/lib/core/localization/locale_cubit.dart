@@ -43,6 +43,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "home": "Home",
       "chat_gpt": "Chat Gpt",
       "archives": "Archives",
+      "medical_disclaimer_short": "Not a substitute for medical advice",
       "recommendations": "Health Recommendations",
       "meal_tips": "Proactive Meal Tips",
       "settings": "Settings",
@@ -306,6 +307,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "date_oldest": "الأقدم أولاً",
       "gluco_high": "أعلى سكر",
       "gluco_low": "أقل سكر",
+      "medical_disclaimer_short": "لا يغني عن مراجعة الطبيب",
       "recommendations": "توصيات صحية",
       "meal_tips": "نصائح الوجبة",
       "settings": "الاعدادات",
@@ -474,6 +476,13 @@ class LocaleCubit extends Cubit<LocaleState> {
   };
 
   String translate(String key) {
-    return _localizedValues[_currentLocale.languageCode]?[key] ?? key;
+    // Get the language code from the current state if it's LocaleChanged
+    // otherwise fallback to the default _currentLocale
+    final code =
+        (state is LocaleChanged)
+            ? (state as LocaleChanged).locale.languageCode
+            : _currentLocale.languageCode;
+
+    return _localizedValues[code]?[key] ?? key;
   }
 }

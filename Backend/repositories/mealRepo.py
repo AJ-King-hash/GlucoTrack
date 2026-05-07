@@ -17,57 +17,68 @@ def get_all(user_id:int,db:Session):
 
 def create(request, db: Session, current_user):
     if request.meal_type not in ["Fast", "Before Meal", "After Meal"]:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Meal type Not Found, it can be only: 'Fast','Before Meal', 'After Meal'")
-    
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Meal type error")
+
+    # 1. البحث عن الوجبات التي ليس لها تحليل مسبقاً (قبل إضافة الوجبة الحالية)
+    # نستخدم .all() لضمان الحصول على البيانات قبل التعديل
+    unanalysed_meals = db.query(models.Meal).filter(
+        models.Meal.user_id == current_user.id,
+        ~models.Meal.analyse.any()
+    ).all()
+
     current_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     fallback_response = {
-        'risk': 'Medium',
-        'gluco_percent': 10.0,
-        'analysed_at': current_time,
-        'recommendations': 'Analysis pending',
-        'meal_tips': 'Consider pairing with protein or fiber'
+        'risk': 'Medium', 'gluco_percent': 10.0, 'analysed_at': current_time,
+        'recommendations': 'Analysis pending', 'meal_tips': 'Consider fiber'
     }
-    
+
     try:
-        # تحليل الوجبة عبر البوت لاستخراج الـ Glycemic Load
         res_dict = gluco_bot.chatAsJSON(request.description)
     except Exception as e:
-        print(f"GlucoBot API error: {str(e)}")
         res_dict = fallback_response
 
-    # إنشاء سجل الوجبة
-    descs = db.query(models.Meal).filter(models.Meal.user_id == current_user.id)
+    # 2. منطق دمج الـ Descriptions إذا كانت هذه هي الوجبة الثالثة (أي يوجد 2 سابقات)
+    final_description = request.description
+    if len(unanalysed_meals) == 2:  # الوجبتين السابقتين + الحالية = 3
+        previous_descs = [m.description for m in unanalysed_meals]
+        final_description = " | ".join(previous_descs + [request.description])
+
+    # 3. إنشاء سجل الوجبة الجديدة
     new_meal = models.Meal(
-        description=" ".join([d[0] for d in descs.with_entities(models.Meal.description).all()]) if descs.count() == 3 else request.description,
+        description=final_description,
         meal_type=request.meal_type,
         meal_time=request.meal_time,
         user_id=current_user.id,
         GL=round(float(res_dict["gluco_percent"]), 2)
     )
-    
     db.add(new_meal)
     db.commit()
     db.refresh(new_meal)
+
+    # 4. التحقق من العدد الإجمالي للوجبات بدون تحليل (بعد إضافة الحالية)
+    checking_query = db.query(models.Meal).filter(
+        models.Meal.user_id == current_user.id,
+        ~models.Meal.analyse.any()
+    )
     
-    checking = db.query(models.Meal).filter(models.Meal.user_id == current_user.id)
-    
-    # التحليل عند توفر 4 وجبات فأكثر
-    if checking.count() > 3:
-        Qq = checking.with_entities(models.Meal.GL).all()
-        mean_gl = sum([q[0] for q in Qq]) / len(Qq)
+    total_unanalysed = checking_query.count()
+
+    if total_unanalysed >= 3:
+        # جلب الـ GL لجميع الوجبات التي ليس لها تحليل
+        unanalysed_records = checking_query.all()
+        mean_gl = sum([m.GL for m in unanalysed_records]) / len(unanalysed_records)
         
-        # جلب بيانات المريض
+        # بيانات المريض للنظام الخبير والفازي
         user_risk = db.query(models.RiskFactor).filter(models.RiskFactor.user_id == current_user.id).first()
         bmi = user_risk.BMI if user_risk and user_risk.BMI else 22.0
         genetic = user_risk.genetic_disease if user_risk else False
         
-        # تحويل النشاط البدني لقيمة رقمية للفازي (0-10)
         activity_val = 5 
         if user_risk and user_risk.physical_activity:
             activity_map = {"high": 9, "medium": 5, "low": 1}
             activity_val = activity_map.get(user_risk.physical_activity.lower(), 5)
 
-        # 1. تطبيق المنطق الضبابي (Fuzzy Logic) للتنبؤ بـ HbA1c
+        # Fuzzy Logic
         try:
             Fuzzy.fuzzy_sim.input["glycemic_load"] = round(float(mean_gl), 2)
             Fuzzy.fuzzy_sim.input["physical_activity"] = activity_val
@@ -76,11 +87,11 @@ def create(request, db: Session, current_user):
         except:
             predicted_hba1c = None
 
-        # 2. تطبيق نظام الخبرة (Expert System - CF) لتحديد الخطر
+        # Expert System
         cf_score = expert_system.expert_system.evaluate_patient_risk(mean_gl, bmi, genetic)
         expert_risk_label = expert_system.expert_system.get_risk_label(cf_score)
 
-        # 3. حفظ التحليل الهجين
+        # حفظ التحليل المجمع (مرتبط بآخر وجبة تم إنشاؤها)
         new_archive = models.PrevAnalyse(
             user_id=current_user.id,
             meal_id=new_meal.id,
@@ -91,29 +102,36 @@ def create(request, db: Session, current_user):
             recommendations=f"Expert CF Score: {cf_score}. {res_dict['recommendations']}",
             meal_tips=res_dict["meal_tips"]
         )
-        
         db.add(new_archive)
-        # تنظيف الوجبات القديمة
-        db.query(models.Meal).filter(models.Meal.user_id == new_archive.user_id, models.Meal.id != new_archive.meal_id).delete()
         db.commit()
-        db.refresh(new_archive, attribute_names=["meal"])
+
+        # 5. تنظيف الوجبات: حذف كل الوجبات ماعدا الوجبة التي تم ربط التحليل بها حالياً
+        db.query(models.Meal).filter(
+            models.Meal.user_id == current_user.id,
+            models.Meal.id != new_meal.id  # استثناء الوجبة الحالية
+        ).delete(synchronize_session=False)
+        
+        db.commit()
+        db.refresh(new_archive,attribute_names=["meal"])
+
 
         return {"message": "Hybrid Analysis (Expert + Fuzzy) Completed", "archive": new_archive}
         
     else:
-        new_archive = models.PrevAnalyse(
-            user_id=current_user.id,
-            meal_id=new_meal.id,
-            gluco_percent=round(float(res_dict["gluco_percent"]), 2),
-            hba1c=None,
-            risk_result=res_dict["risk"],
-            analysed_at=pd.to_datetime(res_dict["analysed_at"]),
-            recommendations=res_dict["recommendations"],
-            meal_tips=res_dict["meal_tips"]
-        )
-        db.add(new_archive)
-        db.commit()
-        db.refresh(new_archive, attribute_names=["meal"])
+        new_archive=[]
+        # new_archive = models.PrevAnalyse(
+        #     user_id=current_user.id,
+        #     meal_id=new_meal.id,
+        #     gluco_percent=round(float(res_dict["gluco_percent"]), 2),
+        #     hba1c=None,
+        #     risk_result=res_dict["risk"],
+        #     analysed_at=pd.to_datetime(res_dict["analysed_at"]),
+        #     recommendations=res_dict["recommendations"],
+        #     meal_tips=res_dict["meal_tips"]
+        # )
+        # db.add(new_archive)
+        # db.commit()
+        # db.refresh(new_archive, attribute_names=["meal"])
 
     return {"message": "Meal created successfully", "archive": new_archive}
 

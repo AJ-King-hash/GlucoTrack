@@ -60,8 +60,9 @@ class ArchiveDetailsPage extends StatelessWidget {
               title: locale.translate('recommendations'),
               content:
                   archive.recommendations ?? 'No recommendations available',
-              icon: Icons.auto_awesome, // Represents AI/Smart insight
+              icon: Icons.auto_awesome,
               accentColor: AppColor.info,
+              showMedicalDisclaimer: true, // TRIGGER THE DISCLAIMER HERE
             ),
 
             const SizedBox(height: 20),
@@ -103,6 +104,41 @@ class ArchiveDetailsPage extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 24),
+
+            // PRO DISCLAIMER FOOTER
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.red.withOpacity(0.1)),
+              ),
+              child: Column(
+                // Using Column for a cleaner centered stack
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.gpp_maybe_outlined,
+                    color: Colors.green[300],
+                    size: 24,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    locale.translate('medical_disclaimer_short'),
+                    textAlign: TextAlign.center, // Centers the text lines
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blueGrey[600],
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 40),
           ],
         ),
@@ -116,57 +152,65 @@ class ArchiveDetailsPage extends StatelessWidget {
     required String content,
     required IconData icon,
     required Color accentColor,
+    bool showMedicalDisclaimer = false, // Added flag to control visibility
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: accentColor.withOpacity(0.1), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: accentColor.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: accentColor, size: 20),
+    return Builder(
+      builder: (context) {
+        final locale = context.read<LocaleCubit>();
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: accentColor.withOpacity(0.1), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: accentColor.withOpacity(0.05),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
               ),
-              const SizedBox(width: 12),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  // Icon and Title
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: accentColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: accentColor, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
               Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+                content,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.blueGrey[800],
+                  height: 1.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            content,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.blueGrey[800],
-              height: 1.5, // Better readability for long text
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
