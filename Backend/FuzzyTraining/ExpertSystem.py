@@ -55,5 +55,6 @@ class InsulinExpertSystem:
         else:
             return "Low Risk / Healthy Response"
 
+
 # إنشاء نسخة (Instance) لاستخدامها في التطبيق
 expert_system = InsulinExpertSystem()
