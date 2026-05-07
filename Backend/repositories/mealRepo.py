@@ -125,7 +125,7 @@ def create(request, db: Session, current_user):
         "risk_result": "Need More Meals To Check",
         "user_id": current_user.id,
         "meal_tips": "Need More Meals To Check",
-        "gluco_percent": 0,
+        "gluco_percent": float(0.00),
         "meal_id": 1,
         "recommendations": "Need More Meals To Check",
         "hba1c": None,
@@ -133,7 +133,7 @@ def create(request, db: Session, current_user):
         "meal": {
         "user_id": current_user.id,
         "meal_time": request.meal_time,
-        "GL": 0,
+        "GL":  float(0.00),
         "created_at": "2026-05-07T11:31:49.941467",
         "id": new_meal.id,
         "meal_type": request.meal_type,
