@@ -128,7 +128,7 @@ def create(request, db: Session, current_user):
         "gluco_percent": 0,
         "meal_id": 1,
         "recommendations": "Need More Meals To Check",
-        "hba1c": 0,
+        "hba1c": None,
         "analysed_at": current_time,
         "meal": {
         "user_id": current_user.id,
