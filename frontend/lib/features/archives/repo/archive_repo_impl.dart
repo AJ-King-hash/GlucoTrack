@@ -14,10 +14,9 @@ class ArchiveRepositoryImpl implements ArchiveRepository {
     final result = await apiService.getAllAnalysis();
 
     return result.fold((failure) => Left(failure), (data) {
+      print("data: " + data.toString());
       // Otherwise, cast to List and map
-      return Right(
-        (data as List).map((json) => ArchiveModel.fromJson(json)).toList(),
-      );
+      return Right((data).map((json) => ArchiveModel.fromJson(json)).toList());
     });
   }
 

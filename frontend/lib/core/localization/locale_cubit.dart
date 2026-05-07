@@ -43,6 +43,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "home": "Home",
       "chat_gpt": "Chat Gpt",
       "archives": "Archives",
+      "medical_disclaimer_short": "Not a substitute for medical advice",
       "recommendations": "Health Recommendations",
       "meal_tips": "Proactive Meal Tips",
       "settings": "Settings",
@@ -140,7 +141,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "send_code": "Send Code",
       "back_to_login": "Back to Login",
       "otp_sent_successfully": "OTP sent successfully",
-      "check_email_for_otp": "Please check your email for the verification code",
+      "check_email_for_otp":
+          "Please check your email for the verification code",
       "otp_expired": "OTP has expired",
       "invalid_otp": "Invalid OTP",
       "password_reset_success": "Password reset successfully",
@@ -148,7 +150,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "reset_your_password": "Reset Your Password",
       "enter_new_password_desc": "Enter your new password below",
       "password_reset_button": "Reset Password",
-      "password_reset_success_desc": "Your password has been reset successfully. You can now login with your new password.",
+      "password_reset_success_desc":
+          "Your password has been reset successfully. You can now login with your new password.",
       "tit": "Gluco AI Assistant",
       "subt":
           "I'm ready to help you with any diabetes-related health questions.\n start by asking your questions  ",
@@ -174,6 +177,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "gluco_low": "Lowest Sugar",
       "archives_error_message": "Failed to load archives",
       "archives_empty_message": "No analysis records found",
+      "archives_loading_message": "Loading Archives...",
       "reminders": "Reminders",
       "sugar_reminder": "Blood Sugar Reminder",
       "medicine_reminder": "Medicine Reminder",
@@ -256,7 +260,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "send_code": "إرسال الرمز",
       "back_to_login": "العودة إلى تسجيل الدخول",
       "otp_sent_successfully": "تم إرسال رمز التحقق بنجاح",
-      "check_email_for_otp": "يرجى التحقق من بريدك الإلكتروني للحصول على رمز التحقق",
+      "check_email_for_otp":
+          "يرجى التحقق من بريدك الإلكتروني للحصول على رمز التحقق",
       "otp_expired": "انتهت صلاحية رمز التحقق",
       "invalid_otp": "رمز التحقق غير صحيح",
       "password_reset_success": "تم إعادة تعيين كلمة المرور بنجاح",
@@ -264,7 +269,8 @@ class LocaleCubit extends Cubit<LocaleState> {
       "reset_your_password": "إعادة تعيين كلمة المرور",
       "enter_new_password_desc": "أدخل كلمة المرور الجديدة أدناه",
       "password_reset_button": "إعادة تعيين كلمة المرور",
-      "password_reset_success_desc": "تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
+      "password_reset_success_desc":
+          "تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
       "account_information": "معلومات الحساب",
       'login': 'تسجيل الدخول',
       'welcome_back': 'مرحباً بعودتك',
@@ -301,6 +307,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "date_oldest": "الأقدم أولاً",
       "gluco_high": "أعلى سكر",
       "gluco_low": "أقل سكر",
+      "medical_disclaimer_short": "لا يغني عن مراجعة الطبيب",
       "recommendations": "توصيات صحية",
       "meal_tips": "نصائح الوجبة",
       "settings": "الاعدادات",
@@ -359,6 +366,7 @@ class LocaleCubit extends Cubit<LocaleState> {
       "new_conversation": "محادثة جديدة",
       "archives_error_message": "فشل تحميل السجلات",
       "archives_empty_message": "لا توجد سجلات تحليلية",
+      "archives_loading_message": "...جاري تحميل السجلات",
       "reminders": "التذكيرات",
       "sugar_reminder": "تذكير بفحص السكر",
       "medicine_reminder": "تذكير بالدواء",
@@ -468,6 +476,13 @@ class LocaleCubit extends Cubit<LocaleState> {
   };
 
   String translate(String key) {
-    return _localizedValues[_currentLocale.languageCode]?[key] ?? key;
+    // Get the language code from the current state if it's LocaleChanged
+    // otherwise fallback to the default _currentLocale
+    final code =
+        (state is LocaleChanged)
+            ? (state as LocaleChanged).locale.languageCode
+            : _currentLocale.languageCode;
+
+    return _localizedValues[code]?[key] ?? key;
   }
 }

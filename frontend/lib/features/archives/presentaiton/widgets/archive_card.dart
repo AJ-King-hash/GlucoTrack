@@ -217,12 +217,12 @@ class ArchiveCard extends StatelessWidget {
       children: [
         Icon(Icons.bloodtype, size: 14, color: color),
         const SizedBox(width: 4),
-        Text(
-          '${locale.translate('hba1c_result')}: ${archive.hba1c!.toStringAsFixed(1)}% ($label)',
-          style: TextStyle(
-            color: color,
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
+        // FIX: Use Flexible to allow text to wrap or truncate
+        Flexible(
+          child: Text(
+            '${locale.translate('hba1c_result')}: ${archive.hba1c!.toStringAsFixed(1)}% ($label)',
+            overflow: TextOverflow.visible, // Or TextOverflow.ellipsis
+            style: TextStyle(/*...*/),
           ),
         ),
       ],
