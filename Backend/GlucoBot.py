@@ -15,7 +15,7 @@ class GlucoBot():
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
-        model="deepseek/deepseek-r1:free",
+        model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
           "role": "user",
@@ -26,7 +26,7 @@ class GlucoBot():
     
     def chatAsNumber(self,message):
         completion = self.client.chat.completions.create(
-        model="deepseek/deepseek-r1:free",
+        model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
           "role": "user",
@@ -79,7 +79,7 @@ class GlucoBot():
             """
             
             completion = self.client.chat.completions.create(
-            model="deepseek/deepseek-r1:free",
+            model="inclusionai/ring-2.6-1t:free",
             messages=[
             {
               "role": "user",
