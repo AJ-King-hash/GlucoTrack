@@ -46,7 +46,6 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         ),
       ),
       (archives) {
-        print("archives: " + archives.toString());
         emit(
           state.copyWith(
             status: ArchiveStatus.success,

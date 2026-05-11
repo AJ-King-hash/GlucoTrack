@@ -7,10 +7,10 @@ import '../../data/model/archives_model.dart';
 
 class ArchiveDetailsPage extends StatelessWidget {
   final ArchiveModel archive;
-
   const ArchiveDetailsPage({super.key, required this.archive});
 
-  Color _getStatusColor() {
+  // Keep this for the overall Risk Result (The Python score logic)
+  Color _getRiskColor() {
     switch (archive.riskResult.toLowerCase()) {
       case 'high':
         return AppColor.negative;
@@ -24,7 +24,8 @@ class ArchiveDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>();
-    final statusColor = _getStatusColor();
+    final riskColor = _getRiskColor(); // Color for the Glucose/Risk score
+    final Color hba1cColor = ArchiveModel.getHba1cColor(archive.hba1c ?? 0.0);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -37,55 +38,32 @@ class ArchiveDetailsPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(20),
-
         child: Column(
           children: [
-            // 1. The Hero Percentage Header
-            _buildHeroHeader(statusColor, locale),
+            // 1. Hero Header (Shows the Glucose Score)
+            _buildHeroHeader(riskColor, locale),
 
             const SizedBox(height: 20),
 
-            // 1. NEW: Proactive Meal Tips
+            // 2. Insight Sections (Meal Tips & Recommendations)
             _buildInsightSection(
               title: locale.translate('meal_tips'),
               content: archive.mealTips ?? 'No specific tips for this meal',
               icon: Icons.lightbulb_outline,
               accentColor: Colors.orange,
             ),
-
             const SizedBox(height: 20),
-
-            // 2. NEW: Health Recommendations (AI Insight)
             _buildInsightSection(
               title: locale.translate('recommendations'),
               content:
                   archive.recommendations ?? 'No recommendations available',
               icon: Icons.auto_awesome,
               accentColor: AppColor.info,
-              showMedicalDisclaimer: true, // TRIGGER THE DISCLAIMER HERE
             ),
 
             const SizedBox(height: 20),
 
-            // 4. Meal Information Section
-            _buildInfoSection(
-              title: locale.translate('meal_details'),
-              icon: Icons.restaurant,
-              children: [
-                _buildInfoRow(
-                  locale.translate('meal_type'),
-                  archive.meal.mealType,
-                ),
-                _buildInfoRow(
-                  locale.translate('meal_description'),
-                  archive.meal.description,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 5. Time and Metadata Section
+            // 3. Metadata Section (Now with the Dynamic HbA1c Row)
             _buildInfoSection(
               title: locale.translate('report_metadata'),
               icon: Icons.history,
@@ -96,11 +74,13 @@ class ArchiveDetailsPage extends StatelessWidget {
                     'yyyy-MM-dd | hh:mm a',
                   ).format(archive.analysedAt.toLocal()),
                 ),
-                if (archive.hba1c != null) _buildHba1cRow(locale),
+
+                if (archive.hba1c != null) _buildHba1cRow(locale, hba1cColor),
+
                 _buildInfoRow(
                   locale.translate('risk_level'),
                   archive.riskResult,
-                  valueColor: statusColor,
+                  valueColor: riskColor,
                 ),
               ],
             ),
@@ -319,36 +299,13 @@ class ArchiveDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHba1cRow(LocaleCubit locale) {
+  Widget _buildHba1cRow(LocaleCubit locale, Color color) {
     final classification = ArchiveModel.getHba1cRiskClassification(
       archive.hba1c,
     );
-    String label;
-    Color color;
-    switch (classification) {
-      case 'normal':
-        label = locale.translate('hba1c_normal');
-        color = AppColor.positive;
-        break;
-      case 'prediabetes':
-        label = locale.translate('hba1c_prediabetes');
-        color = AppColor.warning;
-        break;
-      case 'diabetes':
-        label = locale.translate('hba1c_diabetes');
-        color = AppColor.negative;
-        break;
-      case 'severe':
-        label = locale.translate('hba1c_severe');
-        color = Colors.red[900]!;
-        break;
-      default:
-        label = '';
-        color = Colors.grey;
-    }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -356,31 +313,31 @@ class ArchiveDetailsPage extends StatelessWidget {
             locale.translate('hba1c_result'),
             style: const TextStyle(color: Colors.grey),
           ),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: color, width: 1),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.lens, size: 10, color: color), // Match card "Circle"
+                const SizedBox(width: 6),
+                Text(
+                  '${archive.hba1c!}%',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                    fontSize: 14,
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.bloodtype, size: 16, color: color),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${archive.hba1c!.toStringAsFixed(1)}% ($label)',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: color,
-                      ),
-                    ),
-                  ],
+                Text(
+                  ' ($classification)',
+                  style: TextStyle(color: color.withOpacity(0.8), fontSize: 11),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
