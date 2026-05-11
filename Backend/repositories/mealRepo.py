@@ -1,4 +1,5 @@
 import math
+from sqlalchemy import null
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,status
 import models
@@ -108,7 +109,8 @@ def create(request, db: Session, current_user):
         # 5. تنظيف الوجبات: حذف كل الوجبات ماعدا الوجبة التي تم ربط التحليل بها حالياً
         db.query(models.Meal).filter(
             models.Meal.user_id == current_user.id,
-            models.Meal.id != new_meal.id  # استثناء الوجبة الحالية
+            models.Meal.id != new_meal.id , # استثناء الوجبة الحالية
+            ~models.Meal.analyse.any()
         ).delete(synchronize_session=False)
         
         db.commit()
@@ -118,7 +120,29 @@ def create(request, db: Session, current_user):
         return {"message": "Hybrid Analysis (Expert + Fuzzy) Completed", "archive": new_archive}
         
     else:
-        new_archive=[]
+        dummy_archive={
+        "id": 50,
+        "risk_result": "Need More Meals To Check",
+        "user_id": current_user.id,
+        "meal_tips": "Need More Meals To Check",
+        "gluco_percent": float(0.00),
+        "meal_id": 1,
+        "recommendations": "Need More Meals To Check",
+        "hba1c": None,
+        "analysed_at": current_time,
+        "meal": {
+        "user_id": current_user.id,
+        "meal_time": request.meal_time,
+        "GL":  float(0.00),
+        "created_at": "2026-05-07T11:31:49.941467",
+        "id": new_meal.id,
+        "meal_type": request.meal_type,
+        "updated_at": None,
+        "description": request.description
+        }
+        }
+    
+        new_archive=dummy_archive
         # new_archive = models.PrevAnalyse(
         #     user_id=current_user.id,
         #     meal_id=new_meal.id,

@@ -67,6 +67,10 @@ def create_message(user_id,request,db:Session):
         db.refresh(new_message)
         return {"message":"Message created successfully","messsage":new_message}
     else:
+        unanalysed_meals = db.query(models.Meal).filter(
+        models.Meal.user_id == user_id,
+        ~models.Meal.analyse.any()
+        ).all()
         concat_message=""
         # all_messages=get_messages(request.conversation_id,db)
         # single_last_message=all_messages[len(all_messages)-1]
@@ -82,7 +86,11 @@ def create_message(user_id,request,db:Session):
                 concat_arr.append(f"{val}")
           print(request.message)
           concat_message=functools.reduce(lambda x,y:x+","+y,concat_arr)
-        message=gluco_bot.chat("hey AI Agent please answer to the weight the height the user how sent the message is: "+auth_user.name+" , depending on the user risk Factors:"+concat_message+"give me some advice including the info of this message :"+request.message+", and then answer and do not mention the risk factors again in your answer")
+        final_description="(no meals to analyse yet!) tell the user they should have more meals to make the response more useful"
+        if unanalysed_meals!=[]:
+            previous_descs = [m.description for m in unanalysed_meals]
+            final_description = " | ".join(previous_descs)
+        message=gluco_bot.chat("hey AI Agent please answer to the weight the height the user how sent the message is: "+auth_user.name+" , depending on the user risk Factors:"+concat_message+"give me some advice including the info of this message :"+request.message+",and depending also on the previous aten meals:"+final_description+" and then answer and do not mention the risk factors again in your answer")
         bot_message=models.Message(
             conversation_id=request.conversation_id,
             sender_type=request.sender_type,
