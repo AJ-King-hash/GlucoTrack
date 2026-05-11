@@ -9,7 +9,7 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="",
+        api_key="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",
         timeout=20.0,
         max_retries=1)
 
@@ -18,7 +18,6 @@ class GlucoBot():
         model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
-            
           "role": "user",
         "content": message
        }
