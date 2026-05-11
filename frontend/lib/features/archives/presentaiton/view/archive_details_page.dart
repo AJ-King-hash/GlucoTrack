@@ -10,8 +10,8 @@ class ArchiveDetailsPage extends StatelessWidget {
   const ArchiveDetailsPage({super.key, required this.archive});
 
   Color _getRiskColor() {
-    switch (archive.riskResult.toLowerCase()) {
-      case 'High Insulin Need':
+    switch (archive.riskResult) {
+      case 'High Insuline  Need':
         return AppColor.negative;
       case 'Medium Risk':
         return AppColor.warning;
@@ -64,7 +64,25 @@ class ArchiveDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 3. Metadata Section (Now with the Dynamic HbA1c Row)
+            // 4. Meal Information Section
+            _buildInfoSection(
+              title: locale.translate('meal_details'),
+              icon: Icons.restaurant,
+              children: [
+                _buildInfoRow(
+                  locale.translate('meal_type'),
+                  archive.meal.mealType,
+                ),
+                _buildInfoRow(
+                  locale.translate('meal_description'),
+                  archive.meal.description,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // 4. Metadata Section (Now with the Dynamic HbA1c Row)
             _buildInfoSection(
               title: locale.translate('report_metadata'),
               icon: Icons.history,

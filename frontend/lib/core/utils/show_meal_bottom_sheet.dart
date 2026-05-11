@@ -210,13 +210,14 @@ void showMealBottomSheet(BuildContext context) async {
                   ),
                   SizedBox(height: 24.h),
 
-                    // Submit logic with BlocConsumer
+                  // Submit logic with BlocConsumer
                   BlocConsumer<ArchiveCubit, ArchiveState>(
                     listener: (context, state) {
                       if (state.status == ArchiveStatus.success) {
-                        final lastArchive = state.archives.isNotEmpty
-                            ? state.archives.last
-                            : null;
+                        final lastArchive =
+                            state.archives.isNotEmpty
+                                ? state.archives.last
+                                : null;
                         Navigator.pop(context);
                         if (lastArchive != null && lastArchive.hba1c != null) {
                           Navigator.pushNamed(context, AppRoutes.archives);

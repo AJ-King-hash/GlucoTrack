@@ -26,7 +26,6 @@ class ArchiveModel {
   });
 
   static Color getHba1cColor(double percentage) {
-    print("percentage: " + percentage.toString());
     if (percentage >= 6.5) return AppColor.negative; // Diabetes
     if (percentage >= 5.7) return AppColor.warning; // Prediabetes
     return AppColor.positive; // Normal
