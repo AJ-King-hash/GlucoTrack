@@ -47,13 +47,13 @@ class InsulinExpertSystem:
     def get_risk_label(self, final_cf: float) -> str:
         """تحويل رقم اليقين إلى نص يمكن تخزينه في قاعدة البيانات"""
         if final_cf >= 0.6:
-            return "High Risk / High Insulin Need"
+            return "High Insuline Need"
         elif 0.2 <= final_cf < 0.6:
             return "Medium Risk"
         elif -0.2 <= final_cf < 0.2:
             return "Stable"
         else:
-            return "Low Risk / Healthy Response"
+            return "Healthy Response"
 
 
 # إنشاء نسخة (Instance) لاستخدامها في التطبيق
