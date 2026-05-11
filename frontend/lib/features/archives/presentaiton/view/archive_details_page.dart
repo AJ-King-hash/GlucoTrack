@@ -9,13 +9,14 @@ class ArchiveDetailsPage extends StatelessWidget {
   final ArchiveModel archive;
   const ArchiveDetailsPage({super.key, required this.archive});
 
-  // Keep this for the overall Risk Result (The Python score logic)
   Color _getRiskColor() {
     switch (archive.riskResult.toLowerCase()) {
-      case 'high':
+      case 'High Insulin Need':
         return AppColor.negative;
-      case 'medium':
+      case 'Medium Risk':
         return AppColor.warning;
+      case "Stable":
+        return AppColor.positive;
       default:
         return AppColor.positive;
     }
