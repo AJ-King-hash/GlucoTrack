@@ -9,7 +9,7 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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",
+        api_key="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",
         timeout=20.0,
         max_retries=1)
 
