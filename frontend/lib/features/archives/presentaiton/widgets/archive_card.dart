@@ -99,22 +99,29 @@ class ArchiveCard extends StatelessWidget {
                 ),
               ),
 
+              const SizedBox(width: 8),
+
               // Right Section: Risk Level & Action
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _buildRiskBadge(riskColor),
-                  const SizedBox(height: 4),
-                  IconButton(
-                    onPressed: () => _showDeleteConfirmation(context),
-                    icon: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red[300],
-                      size: 20,
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 100,
+                ), // Adjust width as needed
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _buildRiskBadge(riskColor),
+                    const SizedBox(height: 4),
+                    IconButton(
+                      onPressed: () => _showDeleteConfirmation(context),
+                      icon: Icon(
+                        Icons.delete_outline,
+                        color: Colors.red[300],
+                        size: 20,
+                      ),
+                      visualDensity: VisualDensity.compact,
                     ),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -171,13 +178,17 @@ class ArchiveCard extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        archive.riskResult.toUpperCase(),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
+      child: FittedBox(
+        // <--- Adds UX Masterness: scales text to fit
+        fit: BoxFit.scaleDown,
+        child: Text(
+          archive.riskResult.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.5,
+          ),
         ),
       ),
     );
@@ -185,9 +196,16 @@ class ArchiveCard extends StatelessWidget {
 
   Widget _buildHba1cIndicator(BuildContext context) {
     final locale = context.read<LocaleCubit>();
+    final theme = Theme.of(context);
+
+    // Guard against null, though hba1c is expected here
+    final double value = archive.hba1c ?? 0.0;
+    final Color statusColor = ArchiveModel.getHba1cColor(value);
+
     final classification = ArchiveModel.getHba1cRiskClassification(
       archive.hba1c,
     );
+
     String label;
     Color color;
     switch (classification) {
@@ -215,14 +233,38 @@ class ArchiveCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.bloodtype, size: 14, color: color),
-        const SizedBox(width: 4),
-        // FIX: Use Flexible to allow text to wrap or truncate
+        // The "Circle" indicator requested by the client
+        Icon(Icons.lens, size: 12, color: statusColor),
+        const SizedBox(width: 6),
+
         Flexible(
-          child: Text(
-            '${locale.translate('hba1c_result')}: ${archive.hba1c!.toStringAsFixed(1)}% ($label)',
-            overflow: TextOverflow.visible, // Or TextOverflow.ellipsis
-            style: TextStyle(/*...*/),
+          child: RichText(
+            text: TextSpan(
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.grey[700],
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(text: '${locale.translate('hba1c_result')}: '),
+                // Highlight the percentage value with the dynamic color
+                TextSpan(
+                  text: '${value.toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    color: statusColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                // Classification in parentheses
+                TextSpan(
+                  text: ' ($classification)',
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

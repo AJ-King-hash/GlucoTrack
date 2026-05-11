@@ -1,3 +1,7 @@
+import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
+import 'package:glucotrack/core/color/app_color.dart';
+
 import 'meal_model.dart';
 
 class ArchiveModel {
@@ -20,6 +24,13 @@ class ArchiveModel {
     this.mealTips,
     required this.meal,
   });
+
+  static Color getHba1cColor(double percentage) {
+    print("percentage: " + percentage.toString());
+    if (percentage >= 6.5) return AppColor.negative; // Diabetes
+    if (percentage >= 5.7) return AppColor.warning; // Prediabetes
+    return AppColor.positive; // Normal
+  }
 
   factory ArchiveModel.fromJson(Map<String, dynamic> json) {
     return ArchiveModel(
