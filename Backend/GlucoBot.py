@@ -18,6 +18,7 @@ class GlucoBot():
         model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
+            
           "role": "user",
         "content": message
        }
