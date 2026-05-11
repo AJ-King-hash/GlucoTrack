@@ -15,10 +15,12 @@ class ArchiveCard extends StatelessWidget {
 
   Color _getRiskColor() {
     switch (archive.riskResult.toLowerCase()) {
-      case 'high':
+      case 'High Insulin Need':
         return AppColor.negative;
-      case 'medium':
+      case 'Medium Risk':
         return AppColor.warning;
+      case "Stable":
+        return AppColor.positive;
       default:
         return AppColor.positive;
     }
@@ -234,7 +236,7 @@ class ArchiveCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // The "Circle" indicator requested by the client
-        Icon(Icons.lens, size: 12, color: statusColor),
+        Icon(Icons.lens, size: 12, color: color),
         const SizedBox(width: 6),
 
         Flexible(
@@ -248,7 +250,7 @@ class ArchiveCard extends StatelessWidget {
                 TextSpan(text: '${locale.translate('hba1c_result')}: '),
                 // Highlight the percentage value with the dynamic color
                 TextSpan(
-                  text: '${value.toStringAsFixed(1)}%',
+                  text: '${value.toStringAsFixed(2)}%',
                   style: TextStyle(
                     color: statusColor,
                     fontWeight: FontWeight.bold,
