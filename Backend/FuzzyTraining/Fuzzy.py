@@ -12,7 +12,7 @@ class FuzzySystem:
         # 2. تعريف الدوال العضوية (Membership Functions)
         activity['low'] = fuzz.trapmf(activity.universe, [0, 0, 2, 4])
         activity['medium'] = fuzz.trimf(activity.universe, [3, 5, 7])
-        activity['high'] = fuzz.trapmf(activity.universe, [6, 8, 10, 10])
+        activity['high'] = fuzz.trapmf(activity.universe, [6, 8, 10, 20])
 
         gl['low'] = fuzz.trapmf(gl.universe, [0, 0, 70, 100])
         gl['medium'] = fuzz.trimf(gl.universe, [80, 120, 160])
