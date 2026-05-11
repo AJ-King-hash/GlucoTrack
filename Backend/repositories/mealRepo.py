@@ -130,16 +130,17 @@ def create(request, db: Session, current_user):
         "recommendations": "Need More Meals To Check",
         "hba1c": None,
         "analysed_at": current_time,
-        "meal": {
-        "user_id": current_user.id,
-        "meal_time": request.meal_time,
-        "GL":  float(0.00),
-        "created_at": "2026-05-07T11:31:49.941467",
-        "id": new_meal.id,
-        "meal_type": request.meal_type,
-        "updated_at": None,
-        "description": request.description
-        }
+        "meal": new_meal
+        # "meal": {
+        # "user_id": current_user.id,
+        # "meal_time": request.meal_time,
+        # "GL":  float(0.00),
+        # "created_at": "2026-05-07T11:31:49.941467",
+        # "id": new_meal.id,
+        # "meal_type": request.meal_type,
+        # "updated_at": None,
+        # "description": request.description
+        # }
         }
     
         new_archive=dummy_archive
