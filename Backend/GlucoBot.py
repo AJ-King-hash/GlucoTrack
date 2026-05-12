@@ -9,13 +9,13 @@ class GlucoBot():
     def __init__(self):
         self.client=OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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",
+        api_key="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",
         timeout=20.0,
         max_retries=1)
 
     def chat(self,message):
         completion = self.client.chat.completions.create(
-        model="stepfun/step-3.5-flash:free",
+        model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
           "role": "user",
@@ -26,7 +26,7 @@ class GlucoBot():
     
     def chatAsNumber(self,message):
         completion = self.client.chat.completions.create(
-        model="stepfun/step-3.5-flash:free",
+        model="inclusionai/ring-2.6-1t:free",
         messages=[
         {
           "role": "user",
@@ -79,7 +79,7 @@ class GlucoBot():
             """
             
             completion = self.client.chat.completions.create(
-            model="stepfun/step-3.5-flash:free",
+            model="inclusionai/ring-2.6-1t:free",
             messages=[
             {
               "role": "user",

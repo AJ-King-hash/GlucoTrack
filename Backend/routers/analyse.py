@@ -32,8 +32,8 @@ router=APIRouter(
     tags=["Gluco Analysis"]
 )
 
-
-@router.get("/all/",response_model=List[schemas.AnalyseShow])
+# response_model=List[schemas.AnalyseShow]
+@router.get("/all/")
 def get_all_analysis(db:Session=Depends(get_db),current_user:schemas.User=Depends(oauth2.get_current_user)):
     return AnalyseRepo.get_all(current_user.id,db)
 
