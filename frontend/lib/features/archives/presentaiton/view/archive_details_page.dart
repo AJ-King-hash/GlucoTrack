@@ -11,7 +11,7 @@ class ArchiveDetailsPage extends StatelessWidget {
 
   Color _getRiskColor() {
     switch (archive.riskResult) {
-      case 'High Insuline  Need':
+      case 'High Insuline Need':
         return AppColor.negative;
       case 'Medium Risk':
         return AppColor.warning;

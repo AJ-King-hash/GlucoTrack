@@ -14,8 +14,8 @@ class ArchiveCard extends StatelessWidget {
   const ArchiveCard({super.key, required this.archive, required this.onTap});
 
   Color _getRiskColor() {
-    switch (archive.riskResult.toLowerCase()) {
-      case 'High Insulin Need':
+    switch (archive.riskResult) {
+      case 'High Insuline Need':
         return AppColor.negative;
       case 'Medium Risk':
         return AppColor.warning;
