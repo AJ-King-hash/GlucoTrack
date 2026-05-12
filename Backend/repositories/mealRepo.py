@@ -76,7 +76,7 @@ def create(request, db: Session, current_user):
         
         activity_val = 5 
         if user_risk and user_risk.physical_activity:
-            activity_map = {"high": int(9*round(float(mean_gl), 2)), "medium": int(5*round(float(mean_gl), 2)), "low": int(1*round(float(mean_gl), 2))}
+            activity_map = {"high": int(9*round(float(mean_gl), 2)), "medium": int(5*round(float(mean_gl)/2, 2)), "low": int(1*round(float(mean_gl)/4, 2))}
             activity_val = activity_map.get(user_risk.physical_activity.lower(), 5)
 
         # Fuzzy Logic
